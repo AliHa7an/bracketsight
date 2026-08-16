@@ -44,7 +44,7 @@ export default function SourcesPage() {
               pre-launch placeholder values.
             </>
           }
-          fix="This build does not launch until every rule set below reads verified. Open items are tracked in VERIFICATION-NEEDED.md at the repository root."
+          fix="This build does not launch until every rule set below reads verified. Each rule set's own status and citations are listed below, and the open items across all five tools are summarised on the about page."
         />
       ) : null}
 

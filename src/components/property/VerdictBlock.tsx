@@ -203,9 +203,18 @@ export function VerdictBlock({ check }: { check: AssessmentCheck }) {
         <p className="micro-label">Why</p>
         <ul className="mt-1.5 flex list-none flex-col gap-1.5 p-0" style={{ maxWidth: "68ch" }}>
           {verdict.reasons.map((reason) => (
-            <li key={reason} className="flex gap-2.5">
+            // `min-w-0` + `break-words`: the engine writes primary-source URLs
+            // into these reasons ("Re-fetch the table from https://…"), and a
+            // 389px unbreakable token in a flex item put a horizontal
+            // scrollbar on the whole page at 375.
+            <li key={reason} className="flex min-w-0 gap-2.5">
               <span aria-hidden="true" className="mt-[0.55em] h-px w-3 shrink-0 bg-dim" />
-              <span style={{ fontSize: "var(--text-step--1)", lineHeight: 1.5 }}>{reason}</span>
+              <span
+                className="min-w-0 break-words"
+                style={{ fontSize: "var(--text-step--1)", lineHeight: 1.5 }}
+              >
+                {reason}
+              </span>
             </li>
           ))}
         </ul>

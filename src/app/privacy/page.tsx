@@ -41,10 +41,55 @@ export default function PrivacyPage() {
 
         <h2>Do you use cookies?</h2>
         <p>
-          We set no cookies of our own and run no analytics that identify you. If
-          advertising is enabled on this site in future, the ad provider may set cookies
-          and use them for ad personalisation, and this page will say so plainly and name
-          the provider before that happens. Nothing of that kind runs today.
+          We set no cookies of our own and run no analytics that identify you. No
+          advertising runs on this site today, and no ad network&rsquo;s script is loaded
+          on any page &mdash; you can confirm that by viewing the page source. The section
+          below sets out what changes if advertising is switched on, so it is on the
+          record before it happens rather than after.
+        </p>
+
+        <h2>What happens when advertising is enabled?</h2>
+        <p>
+          The intended provider is Google AdSense. When it is switched on, Google and its
+          partners will serve ads on this site and, like any ad network, they use cookies
+          and similar identifiers to do it. This page will be updated to say that
+          advertising is live on the day it goes live, rather than describing it in the
+          future tense as it does now.
+        </p>
+        <p>
+          Third-party vendors, Google included, use cookies to serve ads based on a
+          user&rsquo;s prior visits to this and other websites. Google&rsquo;s use of
+          advertising cookies lets it and its partners serve ads based on your visits to
+          this site and other sites on the internet.
+        </p>
+        <p>
+          You can turn off personalised advertising for Google at{" "}
+          <a
+            className="text-ink underline underline-offset-2"
+            href="https://www.google.com/settings/ads"
+            rel="noopener"
+          >
+            google.com/settings/ads
+          </a>
+          , and opt out of a third-party vendor&rsquo;s use of cookies for personalised
+          advertising at{" "}
+          <a
+            className="text-ink underline underline-offset-2"
+            href="https://www.aboutads.info/choices/"
+            rel="noopener"
+          >
+            aboutads.info/choices
+          </a>
+          . Ads that are not personalised still appear; they are chosen from the page
+          content and your general location rather than from a profile.
+        </p>
+        <p>
+          One thing will not change: an ad network never receives what you type into a
+          tool. Your income, balances, assessed values and job costs are computed in your
+          own browser and are never sent anywhere, so there is nothing for an advertiser to
+          be given. No result, ranking or recommendation changes because of an advertiser,
+          and no ad slot sits inside a calculator where it could be mistaken for part of
+          the tool.
         </p>
 
         <h2>Will you ever process a document I upload?</h2>

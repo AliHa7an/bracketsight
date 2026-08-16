@@ -36,13 +36,43 @@ export default function TermsPage() {
         <h2>Are all the underlying figures verified?</h2>
         <p>
           No, and we publish exactly which ones are not. Each engine records what was
-          checked against a primary source and what could not be, and the open items are
-          tracked in <span className="num">KNOWN-GAPS.md</span> in the source repository.
-          Where a figure could not be verified we say so rather than filling the gap with
-          a plausible guess. In two places the tools refuse to answer at all rather than
-          answer wrongly: contract generation is blocked in states whose statutory notice
-          text has not been transcribed, and a New Jersey assessment verdict is withheld
-          when the governing ratio is unavailable.
+          checked against a primary source and what could not be. There are{" "}
+          <span className="num">55</span> open items across the five engines today, grouped
+          by what would unblock each; the summary is on the{" "}
+          <Link className="text-ink underline underline-offset-2" href="/about">
+            about page
+          </Link>{" "}
+          and the specifics are on each tool&rsquo;s sources and changelog pages. Where a
+          figure could not be verified we say so on the page that shows it, rather than
+          filling the gap with a plausible guess. In two places the tools refuse to answer
+          at all rather than answer wrongly: contract generation is blocked in states whose
+          statutory notice text has not been transcribed, and a New Jersey assessment
+          verdict is withheld when the governing ratio is unavailable.
+        </p>
+
+        <h2>Is this a finished product?</h2>
+        <p>
+          Not yet, and the site says so where it matters. This is a pre-launch build:
+          several rule values are placeholders awaiting verification against their primary
+          sources, and no credentialed reviewer &mdash; an enrolled agent or CPA for the
+          tax and subsidy engines, a construction attorney for the contract clause
+          language, working contractors for the trades pricing data &mdash; has signed off
+          on any section. Every page affected by that carries the warning. Treat the
+          figures as illustrative of the method until it is lifted.
+        </p>
+
+        <h2>Does advertising affect what the tools tell me?</h2>
+        <p>
+          No, and it cannot. No advertising runs on the site today. If it is enabled, the
+          ad network receives nothing you type &mdash; the arithmetic happens in your
+          browser and never leaves it &mdash; and there is no code path by which an
+          advertiser could change a computed figure, a ranking, a clause list or a
+          recommendation. No lender, insurer, employer, servicer, marketplace or county
+          pays for placement or mention anywhere here. The{" "}
+          <Link className="text-ink underline underline-offset-2" href="/privacy">
+            privacy notice
+          </Link>{" "}
+          sets out the cookie and personalisation position in full.
         </p>
 
         <h2>What is each tool actually telling me?</h2>

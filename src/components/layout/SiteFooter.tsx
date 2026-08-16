@@ -9,6 +9,7 @@ import {
   SECTIONS,
   SECTION_PAGES,
   SITE_NAME,
+  TRUST_PAGES,
   sectionFromPath,
   sectionHref,
   sectionPageHref,
@@ -86,14 +87,29 @@ export function SiteFooter() {
                       </li>
                     );
                   })}
-              <li>
-                <Link
-                  href="/contact"
-                  className="inline-flex min-h-11 items-center rounded-atlas underline-offset-4 hover:text-ink hover:underline"
-                >
-                  Contact
-                </Link>
-              </li>
+            </ul>
+          </nav>
+
+          {/*
+            The site-level trust column. Every entry in TRUST_PAGES renders on
+            every page, section pages included — about, contact, privacy,
+            terms. Before this existed, /terms was four clicks from the hub and
+            reachable only through /privacy, which for a site computing
+            high-stakes money figures is the same as not having a disclaimer.
+          */}
+          <nav aria-label="About this site" className="min-w-[10rem]">
+            <p className="micro-label mb-2">This site</p>
+            <ul className="space-y-0">
+              {TRUST_PAGES.map((page) => (
+                <li key={page.href}>
+                  <Link
+                    href={page.href}
+                    className="inline-flex min-h-11 items-center rounded-atlas underline-offset-4 hover:text-ink hover:underline"
+                  >
+                    {page.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
 

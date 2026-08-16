@@ -169,7 +169,11 @@ export function LedgerTable({
                           aria-expanded={isOpen}
                           aria-controls={traceId}
                           onClick={() => setOpenTrace(isOpen ? null : row.id)}
-                          className="inline-flex items-center gap-1.5 rounded-atlas text-left underline decoration-rule underline-offset-4 hover:decoration-current"
+                          // The row's own name is the trace toggle, so on a
+                          // phone it has to clear the touch floor; on a
+                          // pointer device the row returns to instrument
+                          // density (32px) and the label sits on its baseline.
+                          className="inline-flex min-h-11 items-center gap-1.5 rounded-atlas text-left underline decoration-rule underline-offset-4 hover:decoration-current sm:min-h-0"
                           style={{
                             borderRadius: "var(--radius-atlas)",
                             transitionDuration: "var(--dur-fast)",

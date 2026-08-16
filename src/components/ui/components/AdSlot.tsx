@@ -3,27 +3,63 @@
 import * as React from "react";
 
 /**
- * AdSlot — CLS 0.00 is a component guarantee, not a hope.
+ * AdSlot — two guarantees, both structural rather than conventional.
  *
- * The slot's height is reserved by an inline `min-height` that is present in
- * the very first paint, before anything loads and before hydration. Nothing
- * this component does afterwards — coming into view, rendering, failing — can
- * change the box's height, so nothing below it can ever move. A layout shift
- * from an ad costs more in rankings than the ad earns.
+ * ── 1. CLS 0.00 ────────────────────────────────────────────────────────────
+ * The box is a FIXED `height`, present in the very first paint, before anything
+ * loads and before hydration. It was `min-height`, which only holds the floor:
+ * a responsive ad unit taller than the reservation grows the box and pushes
+ * every element below it down — precisely the shift this component exists to
+ * prevent. A fixed height plus `overflow: hidden` means nothing the network
+ * serves can move the page. Oversized creative is clipped, which is the correct
+ * trade: a layout shift costs more in rankings than the extra pixels earn.
  *
- * Lazy: content mounts only once the slot is within a viewport of the fold,
- * via IntersectionObserver. If the observer is unavailable the slot mounts
- * immediately rather than staying blank.
+ * ── 2. An ad can never be rendered inside a tool ───────────────────────────
+ * "Disguised ads" is a named AdSense rejection reason, and an ad sitting inside
+ * a calculator's own panel reads as part of the computed answer. Two defences:
  *
- * Fails silent: if `render` throws, the slot renders nothing at all. No error
- * text, no broken frame, no apology — just the reserved space, which is what
- * the layout was promised.
+ *   a. Visual. The slot is deliberately NOT built like the rest of the system.
+ *      Everything that carries tool output — AnswerBox, LedgerTable, the trace
+ *      panels — sits on `--paper-raised` inside a hairline. If an ad wore that
+ *      frame it would look like output. This one sits on the page's own paper,
+ *      inside a dashed rule, under a permanent "Advertisement" label.
  *
- * v1 wires no ad network. What ships is the reserved, labelled placeholder.
+ *   b. Structural. Any container showing computed output wraps its children in
+ *      `<ToolBoundary>`. An AdSlot inside one refuses to render and, in
+ *      development, throws with the slot id — so a wrong placement fails at the
+ *      moment it is written, not after a policy reviewer finds it. This is the
+ *      same fail-closed precedent the trades contract engine uses: refuse the
+ *      output rather than emit something that looks fine and is not.
+ *
+ * Lazy: content mounts only once within a viewport of the fold. If the observer
+ * is unavailable it mounts immediately rather than staying blank.
+ *
+ * Fails silent: if `render` throws, the slot renders nothing. No error text, no
+ * broken frame — just the reserved space, which is what the layout was promised.
+ *
+ * v1 wires no ad network and has zero usages. What exists is the reserved,
+ * labelled, guarded placeholder.
  */
 
+/**
+ * Marks a subtree as tool output. Wrap any panel that shows a computed figure.
+ * Cheap to apply and the only thing that makes the placement rule enforceable.
+ */
+const ToolBoundaryContext = React.createContext(false);
+
+export function ToolBoundary({ children }: { children: React.ReactNode }) {
+  return (
+    <ToolBoundaryContext.Provider value={true}>{children}</ToolBoundaryContext.Provider>
+  );
+}
+
+/** True when the caller sits inside a tool-output subtree. */
+export function useInsideTool(): boolean {
+  return React.useContext(ToolBoundaryContext);
+}
+
 export type AdSlotProps = {
-  /** Reserved height in CSS pixels. Must match the creative's real height. */
+  /** Reserved height in CSS pixels. The box is exactly this tall, always. */
   height: number;
   /** Stable slot identifier — also the element id the network would target. */
   id: string;
@@ -38,17 +74,15 @@ export type AdSlotProps = {
 };
 
 export function AdSlot({ height, id, render, label = "Advertisement", className }: AdSlotProps) {
+  const insideTool = useInsideTool();
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const [inView, setInView] = React.useState(false);
 
   React.useEffect(() => {
     const node = containerRef.current;
-    if (!node) return;
+    if (!node || insideTool) return;
 
     if (typeof IntersectionObserver === "undefined") {
-      // No observer: mount anyway rather than leave the slot permanently
-      // blank. Deferred to a task so it lands as a normal update rather than
-      // a cascading render inside the effect body.
       const timer = setTimeout(() => setInView(true), 0);
       return () => clearTimeout(timer);
     }
@@ -60,24 +94,36 @@ export function AdSlot({ height, id, render, label = "Advertisement", className 
           observer.disconnect();
         }
       },
-      // One viewport of lead time: loaded by the time it is looked at, but
-      // never loaded for a reader who stops above it.
       { rootMargin: "100% 0px" },
     );
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, []);
+  }, [insideTool]);
+
+  if (insideTool) {
+    // Loud in development, silent in production: a reader should never see a
+    // developer's mistake, but a developer must never be able to miss it.
+    if (process.env.NODE_ENV !== "production") {
+      throw new Error(
+        `AdSlot "${id}" is inside a <ToolBoundary>. An ad rendered within a ` +
+          `calculator reads as part of its computed output, which is the ` +
+          `"disguised ads" policy violation. Move it outside the tool panel.`,
+      );
+    }
+    return null;
+  }
 
   let content: React.ReactNode = null;
   if (inView && render) {
     try {
       content = render();
     } catch {
-      // Renders nothing on failure. The reserved height stays.
       content = null;
     }
   }
+
+  const LABEL_LINE = 20;
 
   return (
     <aside
@@ -85,8 +131,9 @@ export function AdSlot({ height, id, render, label = "Advertisement", className 
       id={id}
       aria-label={label}
       className={["w-full min-w-0 overflow-hidden", className].filter(Boolean).join(" ")}
-      // The whole guarantee, in one declaration, in the first paint.
-      style={{ minHeight: `${height}px` }}
+      // The whole CLS guarantee, in one declaration, in the first paint.
+      // Fixed, not minimum: see the note at the top of this file.
+      style={{ height: `${height}px` }}
     >
       <span className="micro-label block" style={{ marginBottom: "4px" }}>
         {label}
@@ -95,13 +142,14 @@ export function AdSlot({ height, id, render, label = "Advertisement", className 
       {content ?? (
         <span
           aria-hidden="true"
-          className="hairline-all block w-full rounded-atlas"
+          className="block w-full"
           style={{
-            // Height minus the label line, so the reserved box is exactly the
-            // height the caller asked for.
-            minHeight: `${Math.max(0, height - 20)}px`,
+            height: `${Math.max(0, height - LABEL_LINE)}px`,
+            // Dashed, on the page's own paper — deliberately unlike every
+            // surface that carries a computed figure.
+            border: "1px dashed color-mix(in srgb, var(--ink) 20%, transparent)",
             borderRadius: "var(--radius-atlas)",
-            background: "var(--paper-raised)",
+            background: "transparent",
           }}
         />
       )}

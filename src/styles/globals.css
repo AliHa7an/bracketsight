@@ -50,6 +50,9 @@
   --ease-atlas: cubic-bezier(0.2, 0, 0.13, 1);
 }
 
+/* The six semantic names, plus everything derived from them. Declared once
+   here for the shell and once on [data-section] below; see the note there for
+   why the repetition is load-bearing rather than sloppy. */
 :root {
   --paper: var(--color-paper);
   --ink: var(--color-ink);
@@ -74,48 +77,85 @@
 /* ---- The five identities. Six tokens each, no seventh. --------------------
  * Applied with data-section on the section's layout wrapper. Verified ratios
  * against that section's own --paper are recorded beside each block.
+ *
+ * EACH SECTION REDEFINES THE `--color-*` NAMES, NOT THE BARE ONES.
+ *
+ * That distinction is the whole mechanism, and getting it wrong is invisible
+ * in code review and glaring on screen. There are two families of consumer:
+ *
+ *   • Components that write `var(--ink)` / `var(--flag)` directly.
+ *   • Tailwind utilities — `text-ink`, `bg-paper`, `border-rule`,
+ *     `bg-signal/10` — which compile to `var(--color-ink)` and friends,
+ *     because that is what the `@theme` block above is named.
+ *
+ * Redefining only the bare names re-themed the first family and left the
+ * second frozen on whatever `@theme` declared — so four of the five sections
+ * rendered their chrome, their hairlines and their flag colour in the loans
+ * palette while their body text was correctly themed. Redefining `--color-*`
+ * here re-themes both families at once.
+ *
+ * The generic `[data-section]` block below then re-derives the bare names and
+ * the composites from whichever `--color-*` this subtree resolved. It has to
+ * be repeated rather than inherited from `:root`: a custom property whose
+ * value contains `var()` is substituted at computed-value time on the element
+ * that declares it, so `--hairline` computed at `:root` inherits downward as
+ * an already-resolved navy and never sees a section's own ink.
  * ------------------------------------------------------------------------ */
+
+[data-section] {
+  --paper: var(--color-paper);
+  --ink: var(--color-ink);
+  --rule: var(--color-rule);
+  --dim: var(--color-dim);
+  --signal: var(--color-signal);
+  --flag: var(--color-flag);
+
+  --hairline: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  --hairline-strong: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+  --paper-raised: color-mix(in srgb, var(--ink) 3%, var(--paper));
+  --paper-sunken: color-mix(in srgb, var(--ink) 5%, var(--paper));
+}
 
 /* Loans — "federal ledger, redrawn".  ink 14.96 · dim 5.02 · signal 5.75 · flag 5.13 */
 [data-section="loans"] {
-  --paper: #f5f7fa;
-  --ink: #14213a;
-  --rule: #c9d4e2;
-  --dim: #5c6b85;
-  --signal: #0f6e5c;
-  --flag: #b4451f;
+  --color-paper: #f5f7fa;
+  --color-ink: #14213a;
+  --color-rule: #c9d4e2;
+  --color-dim: #5c6b85;
+  --color-signal: #0f6e5c;
+  --color-flag: #b4451f;
 }
 
 /* Paycheck — "the annotated paystub".  ink 15.80 · dim 5.16 · signal 5.62 · flag 4.98
    Amber means "money you're about to leave behind", never irreversible.
    4.98 is the thinnest margin in the portfolio — do not lighten it. */
 [data-section="paycheck"] {
-  --paper: #f6f5f2;
-  --ink: #1c1b18;
-  --rule: #dad7d0;
-  --dim: #6b675f;
-  --signal: #0e6e63;
-  --flag: #9a5b00;
+  --color-paper: #f6f5f2;
+  --color-ink: #1c1b18;
+  --color-rule: #dad7d0;
+  --color-dim: #6b675f;
+  --color-signal: #0e6e63;
+  --color-flag: #9a5b00;
 }
 
 /* ACA — "the clinical margin".  ink 14.90 · dim 5.15 · signal 5.40 · flag 5.12 */
 [data-section="aca"] {
-  --paper: #f4f7f8;
-  --ink: #16232b;
-  --rule: #c6d6dc;
-  --dim: #5a6b73;
-  --signal: #0a6e8a;
-  --flag: #b4451f;
+  --color-paper: #f4f7f8;
+  --color-ink: #16232b;
+  --color-rule: #c6d6dc;
+  --color-dim: #5a6b73;
+  --color-signal: #0a6e8a;
+  --color-flag: #b4451f;
 }
 
 /* Property — "the plat book".  ink 15.37 · dim 5.28 · signal 5.75 · flag 5.93 */
 [data-section="property"] {
-  --paper: #f7f5f0;
-  --ink: #221d14;
-  --rule: #d8d0c2;
-  --dim: #6e6553;
-  --signal: #3d6b35;
-  --flag: #a83820;
+  --color-paper: #f7f5f0;
+  --color-ink: #221d14;
+  --color-rule: #d8d0c2;
+  --color-dim: #6e6553;
+  --color-signal: #3d6b35;
+  --color-flag: #a83820;
 }
 
 /* Trades — "the takeoff sheet".  ink 14.53 · dim 5.00 · signal 6.12 · flag 4.91
@@ -124,12 +164,12 @@
    last text that should be hard to read on a phone in daylight. Darkened to
    #AD5210 (4.91:1). Same hue family. DO NOT revert to the spec value. */
 [data-section="trades"] {
-  --paper: #f7f7f5;
-  --ink: #20242a;
-  --rule: #d5d7da;
-  --dim: #666b73;
-  --signal: #155ea8;
-  --flag: #ad5210;
+  --color-paper: #f7f7f5;
+  --color-ink: #20242a;
+  --color-rule: #d5d7da;
+  --color-dim: #666b73;
+  --color-signal: #155ea8;
+  --color-flag: #ad5210;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -179,6 +219,20 @@
   }
 
   :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+    border-radius: var(--radius-atlas);
+  }
+  /* A date input delegates focus to the segment widgets inside its own shadow
+     tree, so tabbing into one leaves the host matching :focus-within but never
+     :focus-visible — the tab stop landed with no ring of ours on it. That was
+     the single unringed stop in the whole keyboard path (the loan disbursement
+     date). :focus-within is the only selector that sees it. */
+  input[type="date"]:focus-within,
+  input[type="month"]:focus-within,
+  input[type="time"]:focus-within,
+  input[type="week"]:focus-within,
+  input[type="datetime-local"]:focus-within {
     outline: 2px solid var(--signal);
     outline-offset: 2px;
     border-radius: var(--radius-atlas);

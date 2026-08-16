@@ -6,6 +6,7 @@ import { STATE_IDS, STATE_RULES, TRADE_IDS, TRADE_RULES } from "@/engines/trades
 import TakeoffBuilder from "@/components/trades/TakeoffBuilder";
 import { LastVerified } from "@/components/ui";
 import { formatDate } from "@/components/ui/format";
+import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Free Estimate Builder for Trades — Itemised, With Ranges",
@@ -14,11 +15,33 @@ export const metadata: Metadata = {
   alternates: { canonical: "/trades" },
 };
 
+/*
+ * `WebApplication` for the tool root, matching /loans, /paycheck and /aca.
+ * Claims only what is visibly on the page. No FAQPage — the H2s here are
+ * statements, and marking up an FAQ that a reader cannot see on the page is
+ * the structured-data abuse the policy prohibits.
+ */
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Trades Estimate and Contract Builder",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Any",
+  url: absoluteUrl("/trades"),
+  description:
+    "Builds an itemised trade estimate with a low-high range and the basis for every line, then a matching invoice and a contract template carrying the clauses the job's state requires, each with its statute.",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+};
+
 export default function HomePage() {
   const citation = TRADE_RULES.decks.citations[0];
 
   return (
     <div className="space-y-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* The hero is the tool. One line of orientation, then the sheet. */}
       <div className="no-print">
         <h1>Price the job on a takeoff sheet</h1>
@@ -73,9 +96,17 @@ export default function HomePage() {
 
         <h2>Then paper it</h2>
         <p>
-          The invoice mirrors the sheet line for line and matches the total to the cent. The
-          contract pulls the same price and scope, then adds the clauses your state requires
-          for a job that size — each one carrying its statute. Start with{" "}
+          The{" "}
+          <Link href="/trades/invoice" className="underline underline-offset-4">
+            invoice
+          </Link>{" "}
+          mirrors the sheet line for line and matches the total to the cent, credits any deposit
+          already taken, and prints as a document rather than a web page. The{" "}
+          <Link href="/trades/contract" className="underline underline-offset-4">
+            contract
+          </Link>{" "}
+          pulls the same price and scope, then adds the clauses your state requires for a job that
+          size — each one carrying its statute. Start with{" "}
           {STATE_IDS.map((s, i) => (
             <span key={s}>
               {i > 0 ? (i === STATE_IDS.length - 1 ? " or " : ", ") : ""}

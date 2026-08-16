@@ -316,8 +316,16 @@ function TurnMark() {
   );
 }
 
-/** A dollar draining out — the amber mark. Never used decoratively. */
-function LeakMark() {
+/**
+ * A dollar draining out — the amber mark. Never used decoratively.
+ *
+ * Exported because the flag law is "icon AND word, always": three other
+ * surfaces in this section (the phase-out meter, the occupation search, and
+ * the calculator's occupation field) were printing "Money left behind" in
+ * amber with no mark beside it, so the same fact carried two different
+ * signatures depending on where the reader met it.
+ */
+export function LeakMark() {
   return (
     <svg
       width="11"

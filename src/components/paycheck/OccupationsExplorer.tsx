@@ -4,6 +4,7 @@ import * as React from "react";
 import { resolveRules, searchOccupations } from "@/engines/paycheck";
 import { Field, Input, LedgerTable } from "@/components/ui";
 import { TAX_YEAR } from "@/lib/paycheck/rules-meta";
+import { LeakMark } from "./Paystub";
 
 /**
  * Search-as-you-type over the qualified occupation list, returning an instant
@@ -72,10 +73,17 @@ export function OccupationsExplorer() {
           ) : null}
 
           {searching && matches.length === 0 ? (
-            <p className="text-flag" style={{ fontWeight: 500 }}>
-              <span className="micro-label text-flag">Money left behind — </span>
-              nothing on the qualified list matches that. Tips earned in an unlisted occupation
-              do not qualify for the deduction, even when they are genuinely tips.
+            <p
+              className="flex items-baseline gap-1.5 text-flag"
+              style={{ fontWeight: 500 }}
+            >
+              <LeakMark />
+              <span>
+                <span className="micro-label text-flag">Money left behind — </span>
+                nothing on the qualified list matches that. Tips earned in an unlisted
+                occupation do not qualify for the deduction, even when they are genuinely
+                tips.
+              </span>
             </p>
           ) : null}
 

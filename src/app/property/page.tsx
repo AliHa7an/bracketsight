@@ -3,6 +3,7 @@ import Link from "next/link";
 import { counties, filingFeeSummary } from "@/engines/property";
 import { CheckTool } from "@/components/property/CheckTool";
 import { FactTable } from "@/components/ui";
+import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Is Your Home Over-Assessed? Free Property Tax Check",
@@ -17,9 +18,32 @@ export const metadata: Metadata = {
  * answer form is a stronger opening than promising one. The argument for the
  * product comes after it.
  */
+/*
+ * `WebApplication` for the tool root, matching /loans, /paycheck and /aca.
+ * Only claims what is visibly on the page: what the tool does, that it is
+ * free, and where it lives. No FAQPage here — the H2s on this page are
+ * statements rather than questions, and marking up an FAQ that is not visibly
+ * an FAQ is exactly the structured-data abuse the policy prohibits.
+ */
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Property Tax Assessment Check",
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any",
+  url: absoluteUrl("/property"),
+  description:
+    "Compares a home's assessment against comparable assessments using the median-ratio statistics assessors use, scores the confidence, and returns one verdict: strong case, worth filing, or not worth the fee.",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+};
+
 export default function HomePage() {
   return (
     <div className="mx-auto max-w-5xl px-4">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <section className="pt-8 pb-10">
         <h1 className="max-w-[20ch]">Is your home over-assessed?</h1>
         <p className="mt-3 max-w-[68ch]" style={{ fontSize: "var(--text-step-1)" }}>

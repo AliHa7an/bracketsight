@@ -73,6 +73,51 @@ export const SITE_DESCRIPTION =
  */
 export const CONTACT_EMAIL = "info@bracketsight.com";
 
+/* ---- Attribution --------------------------------------------------------
+ * WHO IS BEHIND THIS SITE. Currently unset, and that is the single largest
+ * unmet requirement before this site is submitted to an ad network or offered
+ * to a reader as a source on money.
+ *
+ * Google's publisher policies, and the E-E-A-T signals that decide whether a
+ * YMYL finance page ranks at all, both ask the same question: who wrote this,
+ * and what qualifies them? A site that computes a household's subsidy cliff
+ * and a borrower's 30-year repayment cost while naming nobody answers it with
+ * silence. The site currently names no human anywhere.
+ *
+ * This is deliberately typed as `Maintainer | null` rather than filled with a
+ * placeholder: a fabricated name, a stock photo or an invented credential on a
+ * YMYL finance site is a worse failure than an empty field, and the empty
+ * field is at least honest. `/about` renders the attribution block only when
+ * this is set, so filling it in is the whole change.
+ *
+ * TO FILL IN — the owner must supply, and only the owner can:
+ *   name          the legal or professional name that stands behind the
+ *                 figures. A person, or a registered entity with a person
+ *                 named as its editor.
+ *   role          "Editor and maintainer", "Founder", etc.
+ *   background    2–4 sentences of relevant, checkable experience. What makes
+ *                 this person able to read 34 C.F.R. § 685.209 correctly.
+ *                 Not a bio — the specific basis for the reader's trust.
+ *   profileUrl    optional: a LinkedIn, a personal site, a GitHub. A page a
+ *                 reviewer can open to confirm the person exists.
+ *   entity        optional: registered business name, and the jurisdiction it
+ *                 is registered in, if the site trades as one.
+ *
+ * A postal address is NOT required by AdSense and is not modelled here; the
+ * reachable email in CONTACT_EMAIL is the contact requirement.
+ * ---------------------------------------------------------------------- */
+
+export type Maintainer = {
+  readonly name: string;
+  readonly role: string;
+  readonly background: string;
+  readonly profileUrl?: string;
+  readonly entity?: string;
+};
+
+/** Unset. See the block above for exactly what has to go here, and why. */
+export const MAINTAINER: Maintainer | null = null;
+
 /* ---- The five sections -------------------------------------------------- */
 
 /** Section slugs, in nav order. Also the `data-section` theme keys. */
@@ -152,11 +197,21 @@ export function sectionHref(section: Section): string {
 
 export type StaticPage = { readonly href: string; readonly label: string };
 
-/** Site-level pages that exist outside any section. */
+/**
+ * Site-level pages that exist outside any section.
+ *
+ * Every one of these is rendered in the footer on EVERY page, section pages
+ * included. That is not decoration: a privacy notice and a "this is not
+ * advice" disclaimer that a reader can only reach from one other page is, for
+ * a YMYL site, the same as not having one. `/privacy` and `/terms` were
+ * previously in this list and in the sitemap but rendered in no nav at all —
+ * `/terms` was four clicks from the hub and reachable only via `/privacy`.
+ */
 export const TRUST_PAGES: readonly StaticPage[] = [
+  { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
   { href: "/privacy", label: "Privacy" },
-  { href: "/terms", label: "Terms" },
+  { href: "/terms", label: "Terms and disclaimer" },
 ] as const;
 
 export type SectionPage = {

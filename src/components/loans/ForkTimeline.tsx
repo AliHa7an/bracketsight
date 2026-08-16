@@ -60,8 +60,6 @@ import {
   suppressCollidingMarkers,
   trackDash,
   trackPath,
-  trackWidth,
-  SWATCH_LENGTH,
   type Crossover,
   type ForkLayout,
   type ForkPoint,
@@ -128,6 +126,46 @@ const moneyExact = (n: number): string => usdExact(Math.round(n));
 
 /** The draw finishes at 80% of the signature, leaving 20% for the markers. */
 const DRAW_PHASE = 0.8;
+
+/* -------------------------------------------------------------------------- *
+ * Track weight
+ *
+ * The recommended plan is the only solid track and the only one in `--signal`;
+ * every other track is `--ink` with its own dash pattern, so the picture
+ * survives greyscale, projection and every form of colour blindness.
+ *
+ * Non-winners were drawn at 1.6 viewBox units, which is a hairline once the
+ * 880-unit board is scaled down — the signature element read as an empty
+ * frame with one green line in it. At 2.0 the eight patterns carry their own
+ * weight while the winner still leads on all three cues at once: it is
+ * thicker, solid, and the only coloured track. Hover adds 1.3 so an
+ * interrogated track outranks even the winner, which is the point of hovering.
+ *
+ * These live here rather than in `src/lib/loans/fork.ts` because they are a
+ * drawing decision, not geometry: nothing about the crossover arithmetic, the
+ * sampling or the layout changes with them.
+ * -------------------------------------------------------------------------- */
+const TRACK_W_WINNER = 2.6;
+const TRACK_W_OTHER = 2;
+const TRACK_W_EMPHASIS = 1.3;
+
+function trackStroke(isWinner: boolean, emphasised: boolean): number {
+  return (isWinner ? TRACK_W_WINNER : TRACK_W_OTHER) + (emphasised ? TRACK_W_EMPHASIS : 0);
+}
+
+/**
+ * Length of the dash swatch in front of a direct label, in viewBox units.
+ *
+ * 24, not 14. The longest pattern is `16 5`, so a 14-unit swatch rendered it
+ * as an unbroken line — PAYE's key was indistinguishable from the winner's
+ * solid track except by colour, which is the one cue the dash patterns exist
+ * to avoid depending on. 24 shows 16 on, 5 off, 3 on: unmistakably a long
+ * dash. It is also the width of the swatch in the readout table below, so the
+ * two keys for the same track are now literally the same drawing.
+ */
+const PLOT_SWATCH_LENGTH = 24;
+/** The same key in the readout table, in CSS pixels. */
+const ROW_SWATCH_LENGTH = 24;
 
 /**
  * What sits at the end of a track. `open` means the axis ran out first — it
@@ -414,7 +452,7 @@ function ForkPlot({ layout, tracks, month, emphasised, onScrub, onEmphasise, uid
   // preceded by a swatch of its own track — the exact stroke, dash array and
   // width — so the match is made on the pattern rather than traced along a
   // line. (Design review §7.12: this is the thing removed.)
-  const swatchLength = isH ? SWATCH_LENGTH : 10;
+  const swatchLength = isH ? PLOT_SWATCH_LENGTH : 12;
   const terminals = tracks.map((t) => layout.point(t.end, t.cost[t.end] ?? 0));
   const labelPositions = deconflictLabels(
     terminals.map((p) => p.y),
@@ -547,7 +585,7 @@ function ForkPlot({ layout, tracks, month, emphasised, onScrub, onEmphasise, uid
             key={track.planId}
             d={trackPath(layout, track.months, track.cost)}
             stroke={track.stroke}
-            strokeWidth={trackWidth(track.isWinner, track.planId === emphasised)}
+            strokeWidth={trackStroke(track.isWinner, track.planId === emphasised)}
             strokeDasharray={track.dash === "" ? undefined : track.dash}
           />
         ))}
@@ -627,7 +665,7 @@ function ForkPlot({ layout, tracks, month, emphasised, onScrub, onEmphasise, uid
                 x2={swatchX + swatchLength}
                 y2={labelAt}
                 stroke={track.stroke}
-                strokeWidth={trackWidth(track.isWinner, track.planId === emphasised)}
+                strokeWidth={trackStroke(track.isWinner, track.planId === emphasised)}
                 strokeDasharray={track.dash === "" ? undefined : track.dash}
               />
               {shown && kind === "forgiven" && (
@@ -819,25 +857,25 @@ function ForkReadout({
 }) {
   return (
     <div className="mt-4 overflow-x-auto">
-      <table className="density-instrument w-full min-w-[456px] border-collapse">
+      <table className="density-instrument w-full min-w-[496px] border-collapse">
         <caption className="sr-only">
           Every plan at the scrubbed month. Drag the timeline, or use the arrow keys, to change it.
         </caption>
         <thead>
           <tr className="border-b border-rule text-left text-dim">
-            <th scope="col" className="px-2 py-1.5 font-medium">
+            <th scope="col" className="px-3 py-2 font-medium">
               Plan
             </th>
-            <th scope="col" className="px-2 py-1.5 text-right font-medium">
+            <th scope="col" className="px-3 py-2 text-right font-medium">
               Payment
             </th>
-            <th scope="col" className="px-2 py-1.5 text-right font-medium">
+            <th scope="col" className="px-3 py-2 text-right font-medium">
               Balance
             </th>
-            <th scope="col" className="px-2 py-1.5 text-right font-medium">
+            <th scope="col" className="px-3 py-2 text-right font-medium">
               Interest waived
             </th>
-            <th scope="col" className="px-2 py-1.5 text-right font-medium">
+            <th scope="col" className="px-3 py-2 text-right font-medium">
               Paid to date
             </th>
           </tr>
@@ -860,7 +898,7 @@ function ForkReadout({
                     : undefined
                 }
               >
-                <th scope="row" className="px-2 py-1.5 text-left font-normal">
+                <th scope="row" className="px-3 py-2 text-left font-normal">
                   <button
                     type="button"
                     aria-pressed={isPinned}
@@ -869,14 +907,19 @@ function ForkReadout({
                     onBlur={() => onHover(null)}
                     className="flex min-h-11 items-center gap-2 text-left sm:min-h-0"
                   >
-                    <svg width={24} height={8} aria-hidden="true" className="shrink-0">
+                    <svg
+                      width={ROW_SWATCH_LENGTH}
+                      height={8}
+                      aria-hidden="true"
+                      className="shrink-0"
+                    >
                       <line
                         x1={0}
                         y1={4}
-                        x2={24}
+                        x2={ROW_SWATCH_LENGTH}
                         y2={4}
                         stroke={track.stroke}
-                        strokeWidth={track.isWinner ? 2.6 : 1.6}
+                        strokeWidth={trackStroke(track.isWinner, false)}
                         strokeDasharray={track.dash === "" ? undefined : track.dash}
                       />
                     </svg>
@@ -891,20 +934,20 @@ function ForkReadout({
                     )}
                   </button>
                 </th>
-                <td className="num-cell px-2 py-1.5">
+                <td className="num num-cell px-3 py-2">
                   {resolved ? (
                     <span className="text-dim">resolved</span>
                   ) : (
                     <LiveNumber value={paymentAt(track.plan, m)} format={moneyExact} />
                   )}
                 </td>
-                <td className="num-cell px-2 py-1.5">
+                <td className="num num-cell px-3 py-2">
                   <LiveNumber value={resolved ? 0 : balanceAt(track.plan, m)} format={money} />
                 </td>
-                <td className="num-cell px-2 py-1.5">
+                <td className="num num-cell px-3 py-2">
                   <LiveNumber value={track.waived[m] ?? 0} format={money} />
                 </td>
-                <td className="num-cell px-2 py-1.5">
+                <td className="num num-cell px-3 py-2">
                   <LiveNumber value={track.paid[m] ?? 0} format={money} />
                 </td>
               </tr>
@@ -932,16 +975,48 @@ function ForkLegend({
   const crossed = tracks.find((t) => t.planId === headline?.planId);
   const against = tracks.find((t) => t.planId === headline?.againstPlanId);
 
+  /*
+   * REMOVE ONE THING (design review §7.12): the key now describes only the
+   * marks that are actually on the drawing.
+   *
+   * It used to print all three unconditionally, which meant "✕ irreversible
+   * decision" was set in oxide on every result — including the common case
+   * where no eligible plan carries an irreversible decision and the drawing
+   * has no ✕ anywhere on it. That is the flag law broken by a legend: red
+   * appearing on a page where nothing red is true. It was, measurably, the
+   * only flag-coloured element on the default loans result.
+   *
+   * A key for a mark the reader cannot find is also just noise. So each entry
+   * is conditional on its own mark existing, and the whole line disappears
+   * when none of them do — leaving the axis description, which is always true.
+   */
+  const hasForgiveness = tracks.some((t) => terminalKind(t) === "forgiven");
+  const hasCrossover = tracks.some((t) => t.crossover !== null);
+  const hasIrreversible = tracks.some((t) => t.irreversible !== null);
+
   return (
     <figcaption className="mt-3">
       <p className="text-dim" style={{ fontSize: "var(--text-step--1)" }}>
-        <span aria-hidden="true">●</span> forgiveness &ensp;
-        <span aria-hidden="true">▲</span> crossover &ensp;
-        <span className="text-flag">
-          <span aria-hidden="true">✕</span> irreversible decision
-        </span>
-        &ensp;· cumulative cost over{" "}
-        <span className="num">{durationLabel(horizon)}</span>, tax on forgiveness included.
+        {hasForgiveness && (
+          <>
+            <span aria-hidden="true">●</span> forgiveness &ensp;
+          </>
+        )}
+        {hasCrossover && (
+          <>
+            <span aria-hidden="true">▲</span> crossover &ensp;
+          </>
+        )}
+        {hasIrreversible && (
+          <>
+            <span className="text-flag">
+              <span aria-hidden="true">✕</span> irreversible decision
+            </span>
+            &ensp;
+          </>
+        )}
+        {hasForgiveness || hasCrossover || hasIrreversible ? "· cumulative" : "Cumulative"} cost
+        over <span className="num">{durationLabel(horizon)}</span>, tax on forgiveness included.
       </p>
       {headline && crossed && against && (
         <p className="mt-1" style={{ fontSize: "var(--text-step--1)" }}>

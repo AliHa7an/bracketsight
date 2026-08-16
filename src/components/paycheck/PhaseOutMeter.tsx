@@ -1,5 +1,6 @@
 import type { EngineResult } from "@/engines/paycheck";
 import { usd } from "@/lib/paycheck/format";
+import { LeakMark } from "./Paystub";
 
 /**
  * The phase-out meter — where this household's MAGI sits against the shared
@@ -43,15 +44,19 @@ export function PhaseOutMeter({ result }: { result: EngineResult }) {
       </h3>
 
       <p
-        className={`mt-1 ${over ? "text-flag" : "text-dim"}`}
+        className={`mt-1 ${over ? "flex items-baseline gap-1.5 text-flag" : "text-dim"}`}
         style={{
           fontSize: "var(--text-step--1)",
           fontWeight: over ? 500 : 400,
           maxWidth: "var(--measure)",
         }}
       >
-        {over ? <span className="micro-label text-flag">Money left behind — </span> : null}
-        {sentence}
+        {/* Icon AND word, the same pair the paystub uses for the same fact. */}
+        {over ? <LeakMark /> : null}
+        <span>
+          {over ? <span className="micro-label text-flag">Money left behind — </span> : null}
+          {sentence}
+        </span>
       </p>
 
       <div
@@ -114,8 +119,14 @@ export function PhaseOutMeter({ result }: { result: EngineResult }) {
         className="micro-label flex justify-between gap-2"
         style={{ textTransform: "none", letterSpacing: 0 }}
       >
+        {/* The axis labels stay in --dim at every state. Amber on the word
+            "threshold" was the one place in the portfolio where the flag
+            colour carried no icon and named no fact — it labelled a tick on a
+            scale. The three cues that DO say "you are over" are the amber
+            band, the marker's position in it, and the sentence above stating
+            the distance in dollars; a fourth, weaker one only dilutes them. */}
         <span>full deductions</span>
-        <span className={over ? "text-flag" : undefined}>threshold</span>
+        <span>threshold</span>
         <span>fully phased out</span>
       </div>
 

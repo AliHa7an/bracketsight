@@ -171,12 +171,36 @@ Extended:        level payment, 300 months, requires >$30,000 in eligible loans`
           <li>
             AGI grows at your chosen annual rate, recomputed at each annual recertification.
           </li>
+          <li>
+            PAYE eligibility tests only one limb of the two-part new-borrower rule in{" "}
+            <span className="font-data">34 C.F.R. § 685.209(b)(13)(i)</span>: whether you took a
+            Direct loan on or after 1 Oct 2011. It does not test the other limb — that you had no
+            outstanding Direct or FFEL balance as of 1 Oct 2007 — because nothing on the form asks
+            for it. The engine therefore <strong>over-admits</strong> to PAYE: it can rank a plan a
+            servicer would turn you down for. If PAYE comes out ahead, confirm your new-borrower
+            status with your servicer before you count on it.
+          </li>
+          <li>
+            The Tiered Standard step interval of 24 months is a servicer convention, not a
+            regulatory term. <span className="font-data">§ 685.208(b)(6)(i)</span> prescribes only
+            &ldquo;payments at two or more levels&rdquo;. The term lengths and the
+            final-to-first ratio <em>are</em> verified; the step spacing cannot be, in principle.
+          </li>
+          <li>
+            The tax on a forgiven balance uses a flat assumed marginal rate. That is a modelling
+            estimate for ranking purposes, not a regulatory figure — it is labelled as an
+            assumption wherever the engine uses it, and your real rate in the forgiveness year
+            depends on facts this form never asks for.
+          </li>
         </ul>
         <p className="mt-2">
-          Anything we could not verify against a live primary source is listed in the
-          repository&apos;s VERIFICATION-NEEDED file and on the{" "}
+          Anything that could not be verified against a live primary source is listed on the{" "}
           <Link href="/loans/sources" className="underline underline-offset-4">
             sources page
+          </Link>
+          , and summarised across all five tools on{" "}
+          <Link href="/about" className="underline underline-offset-4">
+            about
           </Link>
           .
         </p>

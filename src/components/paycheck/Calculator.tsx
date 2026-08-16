@@ -14,6 +14,7 @@ import {
 import type { Cents, EngineResult, FilingStatus, HouseholdInput } from "@/engines/paycheck";
 import { formatBps, formatCents, usd } from "@/lib/paycheck/format";
 import { rulesMeta, TAX_YEAR } from "@/lib/paycheck/rules-meta";
+import { LeakMark } from "./Paystub";
 import { completeness, phaseOutLossCents, verdictSentence } from "@/lib/paycheck/verdict-copy";
 import {
   Button,
@@ -307,10 +308,16 @@ function OccupationPicker({
         ) : null}
 
         {searching && matches.length === 0 ? (
-          <p className="mt-1 text-flag" style={{ fontSize: "var(--text-step--1)", fontWeight: 500 }}>
-            <span className="micro-label text-flag">Money left behind — </span>
-            no match on the qualified list. Tips from an unlisted occupation do not qualify,
-            even when they are genuinely tips.
+          <p
+            className="mt-1 flex items-baseline gap-1.5 text-flag"
+            style={{ fontSize: "var(--text-step--1)", fontWeight: 500 }}
+          >
+            <LeakMark />
+            <span>
+              <span className="micro-label text-flag">Money left behind — </span>
+              no match on the qualified list. Tips from an unlisted occupation do not
+              qualify, even when they are genuinely tips.
+            </span>
           </p>
         ) : null}
 

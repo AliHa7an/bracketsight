@@ -84,6 +84,19 @@ export default function ContactPage() {
         nothing sent by email can be processed under the no-storage promise the tools run on.
       </p>
 
+      <h2 className="mt-12">Who is on the other end?</h2>
+
+      <p className="mt-4 max-w-[68ch] text-dim">
+        {SITE_NAME} is independent — not a lender, servicer, insurer, marketplace, payroll
+        provider, county or contractor, and none of those pays for placement anywhere on it. How a
+        rule gets from a regulation into a number here, how the site is funded, and which figures
+        are still recorded as unverified are all set out on the{" "}
+        <Link href="/about" className="rounded-atlas underline underline-offset-4 hover:text-ink">
+          about page
+        </Link>
+        .
+      </p>
+
       <p className="hairline-t mt-8 max-w-[68ch] pt-6 text-step--1 text-dim">{DISCLAIMER}</p>
 
       <p className="mt-6">

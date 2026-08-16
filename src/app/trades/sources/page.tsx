@@ -86,18 +86,30 @@ export default function SourcesPage() {
                   className="text-dim mt-2 ml-5 list-disc"
                   style={{ fontSize: "var(--text-step--1)" }}
                 >
-                  {r.citations.map((c, i) => (
-                    <li key={c.label}>
-                      {c.label} — verified{" "}
-                      <span className="num">{formatDate(c.lastVerified)}</span>
-                      <SourceCitation
-                        index={i + 1}
-                        label={c.label}
-                        url={c.url}
-                        lastVerified={c.lastVerified}
-                      />
-                    </li>
-                  ))}
+                  {r.citations.map((c, i) => {
+                    /* `.invalid` is a reserved TLD that can never resolve. A
+                       citation marker that opens a DNS failure looks like a
+                       broken link rather than the deliberate placeholder it
+                       is, so a placeholder is named as one in plain text and
+                       is not made clickable. */
+                    const placeholder = /\.invalid(\/|$)/i.test(c.url);
+                    return (
+                      <li key={c.label}>
+                        {c.label} — verified{" "}
+                        <span className="num">{formatDate(c.lastVerified)}</span>
+                        {placeholder ? (
+                          <> — no source URL yet; placeholder pending a licensed cost source</>
+                        ) : (
+                          <SourceCitation
+                            index={i + 1}
+                            label={c.label}
+                            url={c.url}
+                            lastVerified={c.lastVerified}
+                          />
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </li>
             );

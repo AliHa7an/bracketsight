@@ -94,7 +94,7 @@ export { FactTable } from "./components/FactTable";
 export type { FactRow, FactTableProps } from "./components/FactTable";
 export { SourceCitation } from "./components/SourceCitation";
 export type { SourceCitationProps } from "./components/SourceCitation";
-export { AdSlot } from "./components/AdSlot";
+export { AdSlot, ToolBoundary, useInsideTool } from "./components/AdSlot";
 export type { AdSlotProps } from "./components/AdSlot";
 export { SkeletonBlock, EmptyState, ErrorState } from "./components/States";
 export type {

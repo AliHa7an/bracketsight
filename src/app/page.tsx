@@ -186,6 +186,16 @@ export default function HubPage() {
       </ul>
 
       <p className="mt-4 max-w-[68ch] text-step--1 text-dim">
+        For how a rule gets from a regulation into a number on this site, who stands behind it,
+        how it is funded, and the{" "}
+        <span className="num">55</span> items still recorded as unverified, read{" "}
+        <Link href="/about" className="rounded-atlas underline underline-offset-4 hover:text-ink">
+          about Bracketsight
+        </Link>
+        .
+      </p>
+
+      <p className="mt-4 max-w-[68ch] text-step--1 text-dim">
         Found a figure that is wrong?{" "}
         <Link href="/contact" className="rounded-atlas underline underline-offset-4 hover:text-ink">
           Report it and it gets fixed

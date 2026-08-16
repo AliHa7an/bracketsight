@@ -1,5 +1,8 @@
 import type { MetadataRoute } from "next";
 
+import { counties } from "@/engines/property";
+import { STATE_IDS } from "@/engines/trades";
+
 import {
   SECTIONS,
   SECTION_PAGES,
@@ -33,11 +36,16 @@ import {
  * freshness stamp is detected by Google and by readers, and this file will not
  * invent one.
  *
- * NOT covered, by design: the dynamic routes
- * `/property/counties/[state]/[county]` and `/trades/contracts/[state]`. Those
- * enumerate from rules data owned by their sections, and the section owners
- * should emit them with `generateSitemaps` rather than have the shell guess at
- * which counties and states have shipped.
+ * The two prerendered dynamic routes — `/property/counties/[state]/[county]`
+ * and `/trades/contracts/[state]` — are enumerated from the SAME exports their
+ * `generateStaticParams` reads (`counties`, `STATE_IDS`), so the sitemap and
+ * the build cannot disagree about which pages exist. They were previously
+ * omitted "by design", on the theory that the section owners would emit them
+ * with `generateSitemaps`; nobody did, and the result was seven prerendered,
+ * internally-linked, fully-cited pages — five state contract-law pages and two
+ * county appeal playbooks — that no sitemap ever declared. Omitting a real
+ * page from the sitemap costs discovery; the guess this avoided was never the
+ * risk, because the enumeration is imported rather than guessed.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
@@ -70,5 +78,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...hub, ...sections, ...trust];
+  // The prerendered dynamic routes, enumerated from the same engine exports
+  // their `generateStaticParams` uses. A county or state that has not shipped
+  // is not in these arrays, so it cannot reach the sitemap.
+  const countyPages: MetadataRoute.Sitemap = counties.map((county) => {
+    const [state, slug] = county.countyId.split("-");
+    return {
+      url: absoluteUrl(`/property/counties/${state}/${slug}`),
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    };
+  });
+
+  const contractPages: MetadataRoute.Sitemap = STATE_IDS.map((state) => ({
+    url: absoluteUrl(`/trades/contracts/${state}`),
+    lastModified,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  return [...hub, ...sections, ...trust, ...countyPages, ...contractPages];
 }

@@ -79,6 +79,28 @@ export default function LoansLayout({ children }: { children: React.ReactNode })
             change with your servicer before acting. Your loan data never leaves your
             browser.
           </p>
+
+          {/* Named specifically rather than as a generic hedge. A reader
+              choosing between plans needs to know which of the three figures
+              in front of them rests on something unresolved, not that
+              "some values are unverified". */}
+          <p className="hairline-t pt-3" style={{ maxWidth: "var(--measure)" }}>
+            Pre-launch build. Three things here are not fully settled and are worth knowing
+            before you act on a ranking. The tax on a forgiven balance is estimated at a flat
+            assumed marginal rate, which is a modelling choice and not a regulatory figure — it
+            is labelled as an assumption wherever it is used. The eligibility test for PAYE
+            models only part of the two-part new-borrower rule, so the engine can show PAYE to a
+            borrower a servicer would turn down. And the Tiered Standard step interval is a
+            servicer convention rather than a term the regulation prescribes. Each is set out
+            on{" "}
+            <Link
+              href="/loans/methodology"
+              className="underline underline-offset-4 hover:text-ink"
+            >
+              methodology
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </div>
