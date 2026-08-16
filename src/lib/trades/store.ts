@@ -23,15 +23,15 @@ import { z } from "zod";
 import type { Estimate } from "@/engines/trades";
 
 /**
- * Keys are namespaced `fineprint.<section>.<thing>.<version>`.
+ * Keys are namespaced `bracketsight.<section>.<thing>.<version>`.
  *
  * Five tools share one origin now, so a bare `estimate` key would be a
  * collision waiting to happen. The previous keys (`jobpaper.estimate.v1`) were
  * written on a different origin and cannot exist in this one's storage, so no
  * migration is kept — there is nothing to migrate from.
  */
-const ESTIMATE_KEY = "fineprint.trades.estimate.v1";
-const CONTRACT_FACTS_KEY = "fineprint.trades.contract-facts.v1";
+const ESTIMATE_KEY = "bracketsight.trades.estimate.v1";
+const CONTRACT_FACTS_KEY = "bracketsight.trades.contract-facts.v1";
 
 const centsSchema = z.number().int();
 

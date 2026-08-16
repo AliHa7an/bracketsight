@@ -15,7 +15,7 @@ export default function MethodologyPage() {
     <article className="density-reading mx-auto px-4 py-10">
       <h1>Methodology</h1>
       <p className="text-ink">
-        Every number Fineprint shows is produced by a deterministic,
+        Every number Bracketsight shows is produced by a deterministic,
         open-formula engine with zero AI in the calculation path. Money is
         integer cents; rates are basis points; every threshold lives in
         versioned JSON with citations (
@@ -91,7 +91,7 @@ PTC             = max(0, benchmarkSilverPremium − expectedContrib)`}
           poverty line repays the entire excess advance, exactly as one at 405%
           does. Whether a limitation exists is carried in the dated rules file,
           so a future reinstatement is a data change rather than a code change.
-          Fineprint surfaces this as the clawback warning whenever you enter a
+          Bracketsight surfaces this as the clawback warning whenever you enter a
           monthly advance amount.
         </p>
       </section>
@@ -105,7 +105,7 @@ PTC             = max(0, benchmarkSilverPremium − expectedContrib)`}
           The SEHI deduction and the credit define each other: the deduction
           lowers MAGI, a lower MAGI raises the credit, a higher credit lowers
           the out-of-pocket premium that is deductible, which raises MAGI
-          again. Rev. Proc. 2014-41 blesses an iterative method. Fineprint
+          again. Rev. Proc. 2014-41 blesses an iterative method. Bracketsight
           iterates <span className="num">d ← min(premium − PTC(MAGI − d), earned-income limit)</span>{" "}
           until successive values differ by no more than $1.00, capped at 50
           iterations. Because the credit multiplies each step by roughly the
@@ -144,7 +144,7 @@ PTC             = max(0, benchmarkSilverPremium − expectedContrib)`}
       </section>
 
       <section className="space-y-3">
-        <h2>What Fineprint never does</h2>
+        <h2>What Bracketsight never does</h2>
         <ul className="list-disc space-y-2 pl-5">
           <li>No AI computes, adjusts, or sanity-checks any number.</li>
           <li>No specific insurance plan is ever recommended.</li>

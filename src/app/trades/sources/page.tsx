@@ -24,7 +24,7 @@ export default function SourcesPage() {
     <article className="mx-auto max-w-3xl space-y-6">
       <h1>Sources</h1>
       <p style={{ maxWidth: "var(--measure)" }}>
-        Everything Fineprint computes traces to a versioned rules file carrying citations
+        Everything Bracketsight computes traces to a versioned rules file carrying citations
         and a last-verified date. When a source changes, one file changes and every
         affected page updates. How the numbers are used is on the{" "}
         <Link href="/trades/pricing-methodology" className="underline underline-offset-4">
@@ -48,9 +48,9 @@ export default function SourcesPage() {
             body: (
               <>
                 The citation URLs on the pricing rulesets are placeholders until a licensed
-                cost source lands. Every price Fineprint produces is an estimate only, not a
+                cost source lands. Every price Bracketsight produces is an estimate only, not a
                 binding quote, and nothing here is legal advice. Where a state prescribes
-                notice wording word-for-word and Fineprint has not transcribed it, no
+                notice wording word-for-word and Bracketsight has not transcribed it, no
                 contract is generated for that state at all.
               </>
             ),

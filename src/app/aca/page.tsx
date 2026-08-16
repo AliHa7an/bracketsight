@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const webAppJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "Fineprint ACA subsidy cliff planner",
+  name: "Bracketsight ACA subsidy cliff planner",
   applicationCategory: "FinanceApplication",
   operatingSystem: "Any",
   // The origin is configuration, never a literal — a hardcoded production

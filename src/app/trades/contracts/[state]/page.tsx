@@ -76,7 +76,7 @@ export default async function StateContractPage({
               {clause.textStatus === "VERBATIM_REQUIRED_NOT_TRANSCRIBED"
                 ? "The statute prescribes this notice word-for-word."
                 : "The statute prescribes a form this notice must read substantially similar to."}{" "}
-              Fineprint does not reproduce it until it has been transcribed from the statute,
+              Bracketsight does not reproduce it until it has been transcribed from the statute,
               so no contract is generated for {rules.stateName}.{" "}
               {clause.sourceUrl ? (
                 <a
@@ -149,7 +149,7 @@ export default async function StateContractPage({
                   label: "No contract produced",
                   title: (
                     <>
-                      Fineprint does not generate {rules.stateName} contracts.{" "}
+                      Bracketsight does not generate {rules.stateName} contracts.{" "}
                       <span className="num">{blockers.length}</span> required{" "}
                       {blockers.length === 1 ? "clause has" : "clauses have"} wording the
                       statute prescribes, and it has not been transcribed.

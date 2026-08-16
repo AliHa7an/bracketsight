@@ -16,7 +16,7 @@ export default function SourcesPage() {
         Sources
       </h1>
       <p>
-        Every deadline, fee, form, and evidence standard in Fineprint lives in
+        Every deadline, fee, form, and evidence standard in Bracketsight lives in
         versioned data files with citations — nothing is hard-coded, and
         nothing is encoded from a blog post. When a rule changes, the data
         file changes, the{" "}

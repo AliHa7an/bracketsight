@@ -1,5 +1,5 @@
 /**
- * Geometry for the Cliff Meter — Fineprint's signature visual.
+ * Geometry for the Cliff Meter — Bracketsight's signature visual.
  *
  * Pure functions and two fixed layouts, kept out of the component so the
  * drawing and its screen-reader table are provably reading the same numbers.

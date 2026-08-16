@@ -7,7 +7,7 @@ import { EASE_CSS, prefersReducedMotion } from "@/components/ui/motion";
 import { PARCEL_MS, PARCEL_STEP_MS } from "@/lib/property/signature";
 
 /**
- * The Comp Map — Fineprint's signature element.
+ * The Comp Map — Bracketsight's signature element.
  *
  * A plat sheet, not a chart. Hand-rolled SVG: a ruled block of lots with the
  * subject parcel picked out in the middle, each comparable a small parcel card

@@ -29,7 +29,7 @@ const DEV_ORIGIN = "http://localhost:3000";
 
 /**
  * Trims whitespace, supplies `https://` when the value came in bare
- * (`fineprint.app`), and drops any trailing slash so callers can always
+ * (`bracketsight.app`), and drops any trailing slash so callers can always
  * concatenate `${SITE_URL}/path` without producing a double slash.
  * Returns `null` for anything unusable, so a typo falls back to the dev
  * origin — obviously broken locally — rather than emitting a malformed
@@ -60,7 +60,7 @@ export function absoluteUrl(path: string): string {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
-export const SITE_NAME = "Fineprint";
+export const SITE_NAME = "Bracketsight";
 
 /** ≤160 characters. Used as the site-level fallback description. */
 export const SITE_DESCRIPTION =
@@ -71,7 +71,7 @@ export const SITE_DESCRIPTION =
  * `mailto:` link on /contact and in the footer — a working contact method is
  * an AdSense requirement and the route a correction arrives by.
  */
-export const CONTACT_EMAIL = "alihexan@gmail.com";
+export const CONTACT_EMAIL = "info@bracketsight.com";
 
 /* ---- The five sections -------------------------------------------------- */
 
@@ -250,4 +250,4 @@ export function sectionFromPath(pathname: string): Section | null {
  * this is and — more importantly for a YMYL site — what it is not.
  */
 export const DISCLAIMER =
-  "Fineprint is an independent estimate engine. It is not financial, tax or legal advice, and it is not your servicer, your employer, your insurer or your county. Every figure is an estimate under current rules — confirm anything irreversible before you act on it.";
+  "Bracketsight is an independent estimate engine. It is not financial, tax or legal advice, and it is not your servicer, your employer, your insurer or your county. Every figure is an estimate under current rules — confirm anything irreversible before you act on it.";

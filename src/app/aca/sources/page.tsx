@@ -34,7 +34,7 @@ export default function SourcesPage() {
       <p className="hairline-all rounded-atlas p-4">
         <strong>Pre-launch status:</strong> files marked <span className="num">UNVERIFIED</span>{" "}
         or <span className="num">SAMPLE_DATA</span> carry placeholder or illustrative values
-        pending primary-source verification. Fineprint does not launch until every file reads
+        pending primary-source verification. Bracketsight does not launch until every file reads
         verified.
       </p>
 

@@ -12,25 +12,25 @@ export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 space-y-8">
       <h1>
-        About Fineprint
+        About Bracketsight
       </h1>
       <p>
         Homeowners are routinely over-assessed and almost never appeal,
         because every county has different deadlines, forms, and evidence
         standards — and the services that will handle it for you take 25–50%
-        of your savings. Fineprint is the self-service path: check your
+        of your savings. Bracketsight is the self-service path: check your
         assessment in two minutes, see the evidence, and file your own appeal
         with your county&apos;s actual rules in front of you.
       </p>
 
       <section className="space-y-3">
         <h2>
-          What Fineprint is not
+          What Bracketsight is not
         </h2>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
             <strong>Not a law firm.</strong> Nothing here is legal advice or
-            legal representation. Fineprint provides assistance preparing
+            legal representation. Bracketsight provides assistance preparing
             your own appeal.
           </li>
           <li>

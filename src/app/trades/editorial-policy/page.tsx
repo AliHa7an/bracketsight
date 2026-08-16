@@ -45,7 +45,7 @@ export default function EditorialPolicyPage() {
 
       <h2>Funding disclosure</h2>
       <p>
-        Fineprint is free and requires no signup. Planned revenue — advertising,
+        Bracketsight is free and requires no signup. Planned revenue — advertising,
         unbranded-document upgrades, and clearly labeled software affiliations — never
         influences a computed estimate, a clause selection, or a recommendation.
       </p>

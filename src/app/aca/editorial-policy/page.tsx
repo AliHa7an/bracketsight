@@ -30,7 +30,7 @@ export default function EditorialPolicyPage() {
       <section className="space-y-2">
         <h2>Credentialed review</h2>
         <p className="text-ink">
-          Fineprint launches only with a named EA/CPA reviewer for the tax
+          Bracketsight launches only with a named EA/CPA reviewer for the tax
           logic and content. Reviewer engagement is in progress; this page
           will carry their name, credential, and review dates before launch.
           Until then the site is a pre-launch build and says so.
@@ -57,7 +57,7 @@ export default function EditorialPolicyPage() {
       <section className="space-y-2">
         <h2>Funding and conflicts</h2>
         <p className="text-ink">
-          Fineprint plans to earn from clearly separated display advertising
+          Bracketsight plans to earn from clearly separated display advertising
           and an optional paid planning PDF — never from insurance
           commissions. We do not sell or recommend specific insurance plans,
           we are not a brokerage, and no revenue source influences a computed

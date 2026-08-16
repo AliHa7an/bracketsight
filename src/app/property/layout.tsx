@@ -12,7 +12,7 @@ import type { ReactNode } from "react";
 export const metadata: Metadata = {
   title: {
     default: "Property Tax Assessment Check — Is Your Home Over-Assessed?",
-    template: "%s · Property tax · Fineprint",
+    template: "%s · Property tax · Bracketsight",
   },
   description:
     "Compare your assessment against comparable homes using the median-ratio statistics assessors use, then get your county's deadline, fee and forms. Free, no signup.",

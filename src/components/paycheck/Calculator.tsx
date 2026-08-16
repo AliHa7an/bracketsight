@@ -87,11 +87,11 @@ const DEFAULTS: FormValues = {
 
 /*
  * Five sections now share one origin, so every key this section writes is
- * namespaced `fineprint.<section>.` — two tools cannot collide in the same
+ * namespaced `bracketsight.<section>.` — two tools cannot collide in the same
  * browser. The standalone key is still read once so a returning reader's
  * entries survive the merge; the next edit writes them back namespaced.
  */
-const STORAGE_KEY = "fineprint.paycheck.calculator.v1";
+const STORAGE_KEY = "bracketsight.paycheck.calculator.v1";
 const LEGACY_STORAGE_KEY = "clearpaycheck.calculator.v2";
 /** One extra 8-hour shift — the unit an hourly worker actually thinks in. */
 const SHIFT_HOURS = 8;

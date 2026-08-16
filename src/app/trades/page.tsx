@@ -62,7 +62,7 @@ export default function HomePage() {
 
         <h2>Why the estimate is a range</h2>
         <p>
-          A point estimate on a job you have not walked is a guess wearing a suit. Fineprint
+          A point estimate on a job you have not walked is a guess wearing a suit. Bracketsight
           quotes a low–high band around the computed total and shows the assumption behind
           every line, so when a footing hits rock or a wall needs a second coat, the
           conversation starts from something you wrote down rather than something you

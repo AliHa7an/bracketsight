@@ -1,17 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Fineprint">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Bracketsight">
   <!--
-    The mark: a ruled document with one line picked out — the line in the fine
-    print that decides the money. Same drawing as components/layout/Logo.tsx,
-    which reads the six colour tokens and so re-themes per section. A standalone
-    SVG file has no page to inherit from, so this copy carries the default
-    (loans) palette: ledger navy ground, ledger green on the line that matters.
+    Bracketsight, in 32 units: a pair of brackets with a sightline finding the
+    band you actually land in.
+
+    Every tool on this site is a bracket-and-threshold system — RAP's AGI bands,
+    the federal tax brackets, the 400% FPL cliff, county assessment ratios,
+    contract-value thresholds. The product is not "what is my payment"; it is
+    "which bracket am I in, and what does the next dollar cost". The mark says
+    exactly that: two grey bands you are not in, one green band you are, and a
+    sight dot on it.
+
+    Hex rather than tokens because a favicon renders outside the document and
+    has nothing to inherit from. It carries the shell palette.
   -->
   <rect width="32" height="32" rx="3" fill="#14213A"/>
-  <g stroke="#F5F7FA" stroke-opacity="0.28" stroke-width="2" stroke-linecap="round">
-    <path d="M7 9h18"/>
-    <path d="M7 14h18"/>
-    <path d="M7 24h12"/>
+
+  <!-- the brackets -->
+  <g fill="none" stroke="#F5F7FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11.5 7H7.5v18h4"/>
+    <path d="M20.5 7h4v18h-4"/>
   </g>
-  <path d="M7 19h13" stroke="#0F6E5C" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="25" cy="19" r="2.5" fill="#0F6E5C"/>
+
+  <!-- bands you are not in: inset, muted -->
+  <g stroke="#F5F7FA" stroke-opacity="0.34" stroke-width="2" stroke-linecap="round">
+    <path d="M14 11h4"/>
+    <path d="M14 21h4"/>
+  </g>
+
+  <!-- the band you land in: full width, signal green, and thicker -->
+  <path d="M12.5 16h7" stroke="#0F6E5C" stroke-width="3.2" stroke-linecap="round"/>
 </svg>

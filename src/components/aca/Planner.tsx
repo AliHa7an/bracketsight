@@ -51,7 +51,7 @@ import { LeverList } from "./LeverList";
 import { ResultsPanel } from "./ResultsPanel";
 
 /**
- * Storage keys are namespaced `fineprint.<section>.<thing>.<version>`.
+ * Storage keys are namespaced `bracketsight.<section>.<thing>.<version>`.
  *
  * Five tools now share one origin, so an unprefixed key is a collision waiting
  * to happen — two sections writing `planner` would silently overwrite each
@@ -59,7 +59,7 @@ import { ResultsPanel } from "./ResultsPanel";
  * different origin; nothing in this origin's storage can be carrying it, so
  * there is no migration path to keep and none is written.
  */
-const STORAGE_KEY = "fineprint.aca.planner.v2";
+const STORAGE_KEY = "bracketsight.aca.planner.v2";
 /** The probe quotes its derivative per $1,000 — the unit these decisions move in. */
 const PROBE_STEP = 100_000;
 

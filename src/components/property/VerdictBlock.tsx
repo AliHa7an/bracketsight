@@ -93,7 +93,7 @@ export function VerdictBlock({ check }: { check: AssessmentCheck }) {
             id: "cannot-determine",
             severity: "caution" as const,
             title: `${county.stateName} decides appeals on a statutory ratio test this check cannot run yet.`,
-            body: "Nothing below is filing guidance. The comparables arithmetic is sound; the rule that converts it into relief needs data Fineprint does not have.",
+            body: "Nothing below is filing guidance. The comparables arithmetic is sound; the rule that converts it into relief needs data Bracketsight does not have.",
           },
         ]
       : []),

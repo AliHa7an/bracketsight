@@ -2,9 +2,9 @@
 
 
 /* ============================================================================
- * FINEPRINT — one design system, five identities.
+ * BRACKETSIGHT — one design system, five identities.
  *
- * Every component in @fineprint/ui reads ONLY the six semantic colour tokens
+ * Every component in @bracketsight/ui reads ONLY the six semantic colour tokens
  * plus the shared scale. A section changes identity by redefining those six
  * values on its own subtree — nothing else moves. That is why the five apps
  * could merge into one without the components knowing anything about it.

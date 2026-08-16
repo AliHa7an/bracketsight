@@ -123,7 +123,7 @@ export default function ContractView() {
       ),
       body: (
         <>
-          Fineprint selects which clauses {stateRules.stateName} law appears to require for a
+          Bracketsight selects which clauses {stateRules.stateName} law appears to require for a
           job of this size. A construction attorney must confirm both the list and the exact
           statutory wording before you put this in front of a customer. A signed contract
           missing a required clause can be voidable — that is the risk this notice exists
@@ -257,7 +257,7 @@ export default function ContractView() {
                 label: "No contract produced",
                 title: (
                   <>
-                    Fineprint will not generate a {stateRules.stateName} contract.{" "}
+                    Bracketsight will not generate a {stateRules.stateName} contract.{" "}
                     <span className="num">{blockers.length}</span> required{" "}
                     {blockers.length === 1 ? "clause has" : "clauses have"} wording the
                     statute prescribes word-for-word, and that wording has not been

@@ -26,12 +26,12 @@ import { Button } from "./Button";
 /**
  * Versioned: a format change orphans old pins instead of misreading them.
  *
- * Namespaced `fineprint.*` because the five tools now share one origin and so
+ * Namespaced `bracketsight.*` because the five tools now share one origin and so
  * one localStorage. Renamed from the pre-merge `atlas.pins.v1`; only loans ever
  * wrote that key, and nothing had shipped, so no migration is needed — any
  * stale value is simply ignored, which is what versioning is for.
  */
-export const PINS_STORAGE_KEY = "fineprint.pins.v1";
+export const PINS_STORAGE_KEY = "bracketsight.pins.v1";
 
 /** Comparison stops being comparison somewhere past half a dozen. */
 export const MAX_PINS = 6;

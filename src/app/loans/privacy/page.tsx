@@ -29,7 +29,7 @@ export default function PrivacyPage() {
         <p>
           The simulation runs entirely client-side. Your loans, income, household details, and
           results are stored in your browser&apos;s localStorage under the key{" "}
-          <span className="num">fineprint.loans.scenario.v1</span> — on your device, under your
+          <span className="num">bracketsight.loans.scenario.v1</span> — on your device, under your
           control — and nowhere else. There are no accounts, no server-side database, and no
           transmission of your financial details to us or anyone. Clearing your browser
           storage erases everything.

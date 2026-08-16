@@ -74,7 +74,7 @@ export default function HomePage() {
         <h2>County playbooks</h2>
         <p className="mt-2 max-w-[68ch] text-dim">
           Every county has its own deadline, fee, forms and evidence standard, and getting one
-          wrong costs you the year. Fineprint encodes each county&apos;s rules as versioned, cited
+          wrong costs you the year. Bracketsight encodes each county&apos;s rules as versioned, cited
           data — starting with two, expanding one county at a time. A county page only publishes
           once its rules are complete.
         </p>
@@ -131,7 +131,7 @@ export default function HomePage() {
             planned as a one-time purchase for people who want the paperwork done too.
           </p>
           <p className="text-dim">
-            Fineprint is assistance with an appeal you file yourself. It is not a law firm, does
+            Bracketsight is assistance with an appeal you file yourself. It is not a law firm, does
             not represent you, and does not produce an appraisal. Read the{" "}
             <Link href="/property/methodology" className="underline underline-offset-4">
               methodology

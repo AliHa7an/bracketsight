@@ -15,7 +15,7 @@ export default function MethodologyPage() {
         Methodology
       </h1>
       <p>
-        Fineprint&apos;s check is statistics, not AI, and not an appraisal.
+        Bracketsight&apos;s check is statistics, not AI, and not an appraisal.
         Every number is deterministic: the same inputs always produce the same
         verdict, and a hearing officer could re-run the arithmetic by hand.
         This page documents each step.

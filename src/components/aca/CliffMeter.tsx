@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * The Cliff Meter — Fineprint's signature visual.
+ * The Cliff Meter — Bracketsight's signature visual.
  *
  * One horizontal gauge from 100% to 450% of the federal poverty line. Behind
  * it, the premium tax credit is drawn as the ground the household stands on: a

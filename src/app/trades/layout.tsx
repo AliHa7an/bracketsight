@@ -20,7 +20,7 @@ import "./takeoff-sheet.css";
 export const metadata: Metadata = {
   title: {
     default: "Free Estimate Builder for Trades — Itemised, With Ranges",
-    template: "%s · Trades · Fineprint",
+    template: "%s · Trades · Bracketsight",
   },
   description:
     "Build an itemised takeoff with honest price ranges, turn it into an invoice that matches to the cent, and see which contract clauses your state requires. No signup.",

@@ -11,12 +11,12 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <article className="density-reading mx-auto">
-      <h1>About Fineprint</h1>
+      <h1>About Bracketsight</h1>
       <p>
-        Fineprint exists because solo and small-crew contractors quote jobs in text
+        Bracketsight exists because solo and small-crew contractors quote jobs in text
         messages, underprice from guesswork, and sign contracts missing clauses their state
         requires. Field-service software solves this for $50–200 a month behind a signup
-        wall; template sites hand out state-blind Word files. Fineprint is the gap: free, no
+        wall; template sites hand out state-blind Word files. Bracketsight is the gap: free, no
         signup, state-aware — and it helps with the pricing, not just the paper.
       </p>
       <p>

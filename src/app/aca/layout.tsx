@@ -19,7 +19,7 @@ import type { ReactNode } from "react";
 export const metadata: Metadata = {
   title: {
     default: "ACA Subsidy Cliff Calculator — Distance to 400% FPL",
-    template: "%s · Health cover · Fineprint",
+    template: "%s · Health cover · Bracketsight",
   },
   description:
     "Your household's exact distance to the 400% federal poverty line subsidy cliff, what one more dollar costs, and every legal lever back under it. Free, no signup.",

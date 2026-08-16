@@ -227,7 +227,7 @@ export function EvidenceSummary({ check }: { check: AssessmentCheck }) {
           }}
         />
         <p className="mt-2 max-w-[68ch] text-dim" style={{ fontSize: "var(--text-step--1)" }}>
-          Fineprint prepares the evidence for an appeal you file yourself — assistance, not legal
+          Bracketsight prepares the evidence for an appeal you file yourself — assistance, not legal
           representation, and not an appraisal. Confirm the deadline and the current fee with the{" "}
           {county.appealBody} before you file.
         </p>

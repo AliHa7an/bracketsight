@@ -45,12 +45,12 @@ import { Results } from "./Results";
 
 /*
  * Five sections now share one origin, so every key this section writes is
- * namespaced `fineprint.<section>.` — two tools cannot collide in the same
+ * namespaced `bracketsight.<section>.` — two tools cannot collide in the same
  * browser. The standalone key is still read once, so a returning borrower
  * whose scenario predates the merge does not lose it; the next change writes
  * it back under the new key.
  */
-const STORAGE_KEY = "fineprint.loans.scenario.v1";
+const STORAGE_KEY = "bracketsight.loans.scenario.v1";
 const LEGACY_STORAGE_KEY = "atlas.scenario.v1";
 const HASH_PREFIX = "#s=";
 

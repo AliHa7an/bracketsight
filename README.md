@@ -1,4 +1,4 @@
-# Fineprint
+# Bracketsight
 
 Five US consumer-finance decision engines on one site. Each answers a question a
 calculator cannot: not "what is my payment" but "which choice costs least, and

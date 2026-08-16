@@ -73,7 +73,7 @@ export default function EditorialPolicyPage() {
           Funding and independence
         </h2>
         <p>
-          Fineprint plans to earn revenue from advertising on content pages,
+          Bracketsight plans to earn revenue from advertising on content pages,
           a one-time paid appeal packet, and clearly labelled referrals to
           contingency services for counties we do not yet cover. None of these
           influence a verdict: the engine has no knowledge of monetization,

@@ -20,7 +20,7 @@ export default function ChangelogPage() {
         <p className="mt-2">
           A bill restoring the enhanced premium tax credits passed the House in
           January 2026 but is not law. If enacted, the 400% cliff would soften
-          or disappear for the years it covers. Fineprint&apos;s rules are
+          or disappear for the years it covers. Bracketsight&apos;s rules are
           versioned by effective date, so a change lands here as a new ruleset
           within 48 hours — every page updates from one file. Until then, the
           2026 cliff rules below are what the law says today.
@@ -40,7 +40,7 @@ export default function ChangelogPage() {
               <strong>The advance-credit repayment cap is gone entirely.</strong>{" "}
               Pub. L. 119-21 §71305 struck IRC §36B(f)(2)(B) for tax years
               beginning after 31 December 2025, so for 2026 there is no cap at
-              any income. Fineprint previously told a household at{" "}
+              any income. Bracketsight previously told a household at{" "}
               <span className="num">250%</span> of the poverty line its clawback
               was capped at <span className="num">$1,000</span>. It is not — the
               whole excess is repaid.

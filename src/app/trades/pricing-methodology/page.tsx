@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/trades/pricing-methodology" },
   title: "Pricing Methodology — Where Every Number Comes From",
   description:
-    "How Fineprint estimates are computed: assemblies, waste factors, regional multipliers, overhead and profit — and the honest status of the v1 placeholder pricing data.",
+    "How Bracketsight estimates are computed: assemblies, waste factors, regional multipliers, overhead and profit — and the honest status of the v1 placeholder pricing data.",
 };
 
 const REGION_IDS = Object.keys(REGION_LABELS) as RegionId[];
@@ -48,7 +48,7 @@ export default function PricingMethodologyPage() {
 
   return (
     <article className="mx-auto max-w-3xl space-y-6">
-      <h1>How Fineprint prices a job</h1>
+      <h1>How Bracketsight prices a job</h1>
 
       <AnswerBox>
         Every job decomposes into assemblies with a quantity formula, a waste factor, a

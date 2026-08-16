@@ -11,12 +11,12 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <article className="density-reading mx-auto px-4 py-10">
-      <h1>About Fineprint</h1>
+      <h1>About Bracketsight</h1>
       <p className="text-ink">
-        Fineprint is a planning tool for the households the 2026 ACA subsidy
+        Bracketsight is a planning tool for the households the 2026 ACA subsidy
         cliff actually hits: self-employed people, early retirees, and gig
         workers whose income sits near 400% of the federal poverty line. Other
-        calculators tell you the number. Fineprint tells you the move — how
+        calculators tell you the number. Bracketsight tells you the move — how
         far you are from the edge, what crossing costs, and which legal levers
         pull you back, ranked by dollars recovered per dollar committed.
       </p>
@@ -45,7 +45,7 @@ export default function AboutPage() {
             account.
           </li>
           <li>
-            <strong>No insurance sales.</strong> Fineprint never recommends a
+            <strong>No insurance sales.</strong> Bracketsight never recommends a
             specific plan and earns nothing from enrollment.
           </li>
         </ul>

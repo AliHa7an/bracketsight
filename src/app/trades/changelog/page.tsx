@@ -60,14 +60,14 @@ export default function ChangelogPage() {
           </li>
           <li>
             <strong>
-              Fineprint no longer generates contracts for{" "}
+              Bracketsight no longer generates contracts for{" "}
               {STATE_IDS.filter((s) => untranscribedClauses(STATE_RULES[s]).length > 0)
                 .map((s) => STATE_RULES[s].stateName)
                 .join(", ")}
               .
             </strong>{" "}
             Those states prescribe notice wording word-for-word — with type-size,
-            placement and signature rules attached — and Fineprint had been shipping
+            placement and signature rules attached — and Bracketsight had been shipping
             paraphrases of it, or omitting the notice entirely. A paraphrase of prescribed
             text is not a weaker clause; it is a non-compliant contract. The generator
             fails closed until each notice is transcribed from the statute. Every affected

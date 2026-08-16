@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * THE TAKEOFF SHEET — Fineprint's signature element.
+ * THE TAKEOFF SHEET — Bracketsight's signature element.
  *
  * As the job is described, line items materialise on a ruled sheet in real
  * time: qty, unit, unit cost, labor hours and line total in mono columns,

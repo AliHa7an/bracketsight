@@ -258,7 +258,7 @@ export default function InvoiceView() {
               ]}
               ruleVersion={invoice.ruleSetVersion}
               citation={{
-                label: "Fineprint pricing methodology",
+                label: "Bracketsight pricing methodology",
                 url: "/trades/pricing-methodology",
                 lastVerified: estimate.rulesLastVerified,
               }}
