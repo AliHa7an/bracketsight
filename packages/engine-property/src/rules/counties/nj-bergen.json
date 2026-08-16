@@ -1,0 +1,160 @@
+{
+  "countyId": "nj-bergen",
+  "state": "NJ",
+  "stateName": "New Jersey",
+  "countyName": "Bergen County",
+  "ruleSetVersion": "2026-08",
+  "_verificationNote": {
+    "lastPass": "2026-08-15",
+    "status": "PARTIALLY VERIFIED — see /VERIFICATION-STATUS.md. Batch A corrections applied 2026-08-15: Chapter 123 modelled, filing fee tiered, dead form URLs replaced, received-by cutoff encoded. Everything still marked UNRESOLVED below is unchanged.",
+    "primarySource": "NJ Division of Taxation, Handbook for New Jersey Assessors, ch. 11 (Tax Appeals), sections 1105.01-1105.20. Fetched 2026-08-15 from https://www.ridgewoodnj.net/DocumentCenter/View/122/NJ-Assessors-Handbook-Chapter-11---Tax-Appeals-PDF (state publication hosted on a NJ municipal .gov). Also https://www.nj.gov/treasury/taxation/lpt/lpt-appeal.shtml and https://bergencountynj.gov/faq/tax-appeals/",
+    "blockingGap": "RESOLVED IN CODE, BLOCKED ON DATA. Chapter 123 is now implemented (reliefModel COMMON_LEVEL_RANGE; packages/engine/src/common-level-range.ts) and verdict.ts routes NJ through the corridor test instead of the generic 5%/10% threshold. commonLevelRange.municipalities is EMPTY because no Director's Ratio value has been fetched from a primary source, so every Bergen verdict returns CANNOT_DETERMINE by design. Populate the table before any NJ result is presented as filing guidance.",
+    "chapter123": {
+      "rule": "VERIFIED and IMPLEMENTED. Common Level Range = Average Ratio (Director's Ratio) +/- 15%, MULTIPLICATIVE on the ratio (handbook example: avg 78.00% => lower 66.30%, upper 89.70%). Subject Property Ratio = assessed value / true value as found by the hearing body. If the Subject Property Ratio falls WITHIN the range, NO reduction is made. If it exceeds the upper limit OR falls below the lower limit, the assessment becomes Average Ratio x true value — so falling below the corridor produces an INCREASE, which is the statutory outcome, not merely a risk.",
+      "statutes": "N.J.S.A. 54:1-35a (average ratio); 54:3-22(c) (limits relief the county board may grant); 54:51A-6 (same limit on the Tax Court). Case law: North Brunswick Twp. v. Gochal, 27 N.J. Tax 31 (Tax Ct. 2012).",
+      "missingInputs": "STILL MISSING: the per-municipality Average Ratio values themselves. The schema field exists (commonLevelRange.municipalities) and is deliberately empty — no ratio has been read from a primary source, and none is invented. Tables: https://www.state.nj.us/treasury/taxation/lpt/chapter123.shtml (path NOT fetched — confirm the live nj.gov location before encoding). Republished EVERY 1 APRIL, per municipality.",
+      "reliefBasis": "IMPLEMENTED. When relief IS due the new assessment is Average Ratio x true value (or County Percentage Level x true value under handbook clause 1105.20(4)) — computed in common-level-range.ts, NOT from impliedFairAssessmentCents."
+    },
+    "dependsOn": {
+      "appealWindow": "April 1 VERIFIED, and the 'whichever is later' condition VERIFIED: N.J.S.A. 54:3-21 — 'by April 1 or 45 days from the date the Notification of Assessment is mailed by the taxing district, whichever is later.' The deadline extends past April 1 whenever a municipality has not completed bulk mailing at least 45 days before April 1, based on the certification of bulk mailing filed with the county board — the engine has no bulk-mailing date input and cannot model this. May 1 in revaluation/reassessment municipalities VERIFIED.",
+      "postmarkVsReceived": "ENCODED 2026-08-15 as appealWindow.filingCutoff RECEIVED_BY with filingCutoffNote, and surfaced in the verdict block and the county page. Handbook 1105.01: \"The word 'filed' has been interpreted by the courts to mean received in the office of the County Board of Taxation by April 1. A postmark of a mailed petition is not sufficient.\"",
+      "weekendRollover": "STILL NOT MODELLED in deadline.ts. Handbook 1105.01: if the last day falls on a Saturday, Sunday or legal holiday, the deadline is the first business day thereafter.",
+      "filingFee": "CORRECTED 2026-08-15 to a banded schedule (filingFee.bands, read through filingFeeFor()). N.J.S.A. 54:3-21.3; N.J.A.C. 18:12A-1.6(d) and 1.7: under $150,000 = $5; $150,000 to <$500,000 = $25; $500,000 to <$1,000,000 = $100; $1,000,000 or more = $150. STILL UNENCODED: classification-only appeals $25 per reclassification; appeals other than valuation/classification a flat $25; NO fee for appeals from denial of veteran, surviving-spouse, senior/disabled or disabled-veteran deductions and exemptions. The engine models valuation appeals only, so those cases are out of scope rather than wrong.",
+      "levels": "Direct-to-Tax-Court threshold of $1,000,000 VERIFIED (handbook 1105.01). CAUTION: bergencountynj.gov states $750,000 — that is the ADDED/OMITTED aggregate threshold, not the regular one. Do not adopt the county FAQ's number. Also unencoded: appeal from a county board judgment to the Tax Court is due within 45 days of the judgment's mailing.",
+      "valuationDate": "October 1 of the PRETAX year VERIFIED (handbook 1105.18; N.J.S.A. 54:1-35a, 1-35b, 4-23). Encoded as prose only; not enforced in comps.ts.",
+      "sevenDayEvidence": "PARTIAL. The 7-day rule is confirmed as an obligation ON THE ASSESSOR (handbook 1103.02). The taxpayer-side rule lives in N.J.A.C. 18:12A-1.9 — NOT FETCHED. Confirm before telling a user this is their deadline.",
+      "fiveComparables": "UNRESOLVED — no count found in the handbook or on the county site. The figure appears to derive from the row count on the A-1 Comp. Sale form, which is not a legal limit.",
+      "argumentTypes": "MARKET_VALUE-only is nearly right, but handbook 1105.02(A) recognises 'discrimination appeals ... other than the Common Level'. evidenceStandard was reworded 2026-08-15 to stop claiming relief REQUIRES falling outside the corridor; per North Brunswick Twp. v. Gochal, Chapter 123 is not the exclusive remedy, only the one that governs in all but the most extreme circumstances. The engine models the Chapter 123 route only.",
+      "assessmentLevelPctOfMarket": "UNRESOLVED and wrong as a modelling assumption — UNCHANGED. Every municipality has its own Director's Ratio published annually on 1 April; 100% holds only in a district exactly at the county percentage level. Bergen contains ~70 municipalities. The per-municipality lookup now exists at commonLevelRange.municipalities (empty until values are fetched); this county-level constant remains informational only and is not read by the verdict path.",
+      "estimatedTaxRateOnAssessedBps": "UNRESOLVED. General tax rates are struck per municipality per year. Feeds the user-facing overpayment figure in verdict.ts.",
+      "compsWindowMonths": "UNRESOLVED — no sale-recency window found in any fetched source. Unsourced default."
+    },
+    "staleUrls": "FIXED 2026-08-15. The three dead/stale URLs confirmed by fetch have been replaced: Form A-1 -> https://www.nj.gov/treasury/taxation/pdf/other_forms/lpt/petappl.pdf (HTTP 200, application/pdf, 'Form A-1 (6-26)'); A-1 Comp. Sale -> https://www.nj.gov/treasury/taxation/pdf/other_forms/lpt/a1compsales.pdf (HTTP 200, application/pdf, plural); county board -> https://bergencountynj.gov/faq/tax-appeals/ (co.bergen.nj.us times out). STILL UNRESOLVED: the N.J.S.A. 54:3-21 citation is a bare njleg.state.nj.us site root, not a deep link, and njleg refuses connections from this environment — it does not satisfy the citation invariant and is left flagged unverified.",
+    "recheckCadence": "Chapter 123 average ratios republish EVERY 1 APRIL and must be re-pulled annually. Fee tiers and the Tax Court threshold change only by statute. Form revision codes change without notice — re-verify the PDF URLs each year."
+  },
+  "citations": [
+    {
+      "label": "Bergen County — Tax Appeals FAQ (Bergen County Board of Taxation)",
+      "url": "https://bergencountynj.gov/faq/tax-appeals/",
+      "lastVerified": "2026-08-15",
+      "verified": true
+    },
+    {
+      "label": "NJ Division of Taxation — Handbook for New Jersey Assessors, ch. 11 (Tax Appeals), §§1105.01–1105.20",
+      "url": "https://www.ridgewoodnj.net/DocumentCenter/View/122/NJ-Assessors-Handbook-Chapter-11---Tax-Appeals-PDF",
+      "lastVerified": "2026-08-15",
+      "verified": true
+    },
+    {
+      "label": "NJ Division of Taxation — Local Property Tax: Appealing Your Assessment",
+      "url": "https://www.nj.gov/treasury/taxation/lpt/lpt-appeal.shtml",
+      "lastVerified": "2026-08-15",
+      "verified": true
+    },
+    {
+      "label": "N.J.S.A. 54:3-21 (appeal deadline statute)",
+      "url": "https://www.njleg.state.nj.us/",
+      "lastVerified": "2026-08-08",
+      "verified": false,
+      "_knownGap": [
+        "KNOWN-GAP GAP-015: this is a BARE SITE ROOT, not a deep link to the section, and njleg.state.nj.us refuses connections from the verification environment. It would not satisfy the citation invariant even if reachable. The deadline itself is verified from the NJ Assessors Handbook, so no date is wrong — the citation is. See /KNOWN-GAPS.md."
+      ]
+    },
+    {
+      "label": "NJ Division of Taxation — Form A-1, Petition of Appeal",
+      "url": "https://www.nj.gov/treasury/taxation/pdf/other_forms/lpt/petappl.pdf",
+      "lastVerified": "2026-08-15",
+      "verified": true
+    }
+  ],
+  "appealWindow": {
+    "_knownGap": [
+      "KNOWN-GAP GAP-052: the 45-day bulk-mailing extension cannot be computed. N.J.S.A. 54:3-21 makes the deadline April 1 OR 45 days from the mailing of the Notification of Assessment, whichever is later, extended whenever a municipality has not completed bulk mailing at least 45 days before April 1. The engine has no bulk-mailing date input, so a homeowner in a late-mailing municipality is shown April 1 when they in fact have longer. Rule VERIFIED; input missing.",
+      "KNOWN-GAP GAP-051: weekend/holiday rollover is not modelled in deadline.ts. Handbook §1105.01: if the last day falls on a Saturday, Sunday or legal holiday the deadline is the first business day thereafter. See /KNOWN-GAPS.md."
+    ],
+    "opens": "when the annual assessment notice (postcard) mails, typically by February 1",
+    "deadline": "2027-04-01",
+    "deadlineRule": "April 1, or 45 days after the bulk mailing of assessment notices, whichever is later. May 1 in municipalities undergoing a district-wide revaluation or reassessment. [PARTIALLY VERIFIED — April 1, the 45-day rule and the May 1 revaluation deadline are confirmed; the engine has no bulk-mailing date input, so it cannot compute the extended deadline]",
+    "deadlineKind": "FIXED_ANNUAL",
+    "fixedMonth": 4,
+    "fixedDay": 1,
+    "filingCutoff": "RECEIVED_BY",
+    "filingCutoffNote": "The Bergen County Board of Taxation must have your petition in hand by the deadline. Mailing it that day is not enough — a postmark does not count, and a petition that arrives late is dismissed without a hearing. [VERIFIED — NJ Assessors Handbook §1105.01: \"The word 'filed' has been interpreted by the courts to mean received in the office of the County Board of Taxation by April 1. A postmark of a mailed petition is not sufficient.\"]"
+  },
+  "filingFee": {
+    "amountCents": 2500,
+    "bands": [
+      {
+        "minAssessedValueCents": 0,
+        "maxAssessedValueCentsExclusive": 15000000,
+        "amountCents": 500,
+        "label": "under $150,000"
+      },
+      {
+        "minAssessedValueCents": 15000000,
+        "maxAssessedValueCentsExclusive": 50000000,
+        "amountCents": 2500,
+        "label": "$150,000 to under $500,000"
+      },
+      {
+        "minAssessedValueCents": 50000000,
+        "maxAssessedValueCentsExclusive": 100000000,
+        "amountCents": 10000,
+        "label": "$500,000 to under $1,000,000"
+      },
+      {
+        "minAssessedValueCents": 100000000,
+        "maxAssessedValueCentsExclusive": null,
+        "amountCents": 15000,
+        "label": "$1,000,000 or more"
+      }
+    ],
+    "waiverConditions": "The statutory fee is banded by assessed value: $5 under $150,000; $25 from $150,000 to under $500,000; $100 from $500,000 to under $1,000,000; $150 at $1,000,000 or more. No fee is charged on an appeal from the denial of a veteran, surviving-spouse, senior/disabled or disabled-veteran deduction or exemption. [VERIFIED — N.J.S.A. 54:3-21.3; N.J.A.C. 18:12A-1.6(d) and 1.7, per NJ Assessors Handbook §1105.04. The deduction/exemption waiver is not modelled: the engine handles valuation appeals only.]"
+  },
+  "appealBody": "Bergen County Board of Taxation",
+  "levels": [
+    "Bergen County Board of Taxation (Form A-1)",
+    "New Jersey Tax Court (direct filing available when assessed value exceeds $1,000,000)"
+  ],
+  "forms": [
+    {
+      "id": "A-1",
+      "name": "Petition of Appeal (Form A-1)",
+      "pdfUrl": "https://www.nj.gov/treasury/taxation/pdf/other_forms/lpt/petappl.pdf",
+      "fillable": true
+    },
+    {
+      "id": "A-1-comp-sales",
+      "name": "A-1 Comp. Sale (comparable sales attachment)",
+      "pdfUrl": "https://www.nj.gov/treasury/taxation/pdf/other_forms/lpt/a1compsales.pdf",
+      "fillable": true
+    }
+  ],
+  "evidenceStandard": "Comparable arm's-length sales valued as at October 1 of the pre-tax year. New Jersey then applies the Chapter 123 common level range: the county board compares your assessment-to-true-value ratio against your municipality's average ratio ±15%, and inside that range it may grant no reduction at all. Below the range it must raise the assessment. [PARTIALLY VERIFIED — the October 1 valuation date and the Chapter 123 test are confirmed (Handbook §§1105.18–1105.20). Chapter 123 is the governing but not the exclusive discrimination remedy (North Brunswick Twp. v. Gochal, 27 N.J. Tax 31). The 'up to five comparables' and 24-month recency figures are UNSOURCED and have been dropped from this sentence; the taxpayer-side 7-day evidence rule is UNCONFIRMED (N.J.A.C. 18:12A-1.9 not fetched).]",
+  "argumentTypes": ["MARKET_VALUE"],
+  "primaryArgument": "MARKET_VALUE",
+  "reliefModel": "COMMON_LEVEL_RANGE",
+  "commonLevelRange": {
+    "_knownGap": [
+      "KNOWN-GAP GAP-041: municipalities[] is DELIBERATELY EMPTY. Chapter 123 is fully implemented in common-level-range.ts, but no municipal Director's Ratio has been read from a primary source and none is invented. Consequence, by design: the engine cannot determine a New Jersey verdict without a Director's Ratio, and says so — every Bergen result is CANNOT_DETERMINE naming the missing input, rather than falling back to the generic threshold, which would tell a homeowner inside the corridor they have a STRONG_CASE on an appeal the board is required by statute to deny. Populate from the Division of Taxation Chapter 123 table (confirm the live nj.gov path first); republished every 1 April. See /KNOWN-GAPS.md."
+    ],
+    "statute": "N.J.S.A. 54:1-35a, 54:3-22(c) and 54:51A-6 (\"Chapter 123\"), as set out in the NJ Assessors Handbook §§1105.19–1105.20",
+    "corridorBps": 1500,
+    "countyPercentageLevelBps": 10000,
+    "republishedOn": "04-01",
+    "sourceUrl": "https://www.state.nj.us/treasury/taxation/lpt/chapter123.shtml",
+    "municipalities": [],
+    "unpopulatedNote": "No Director's Ratio has been encoded for any Bergen County municipality. The Division of Taxation's Chapter 123 table has not been fetched from a primary source, and FairParcel does not invent ratios."
+  },
+  "_knownGap": [
+    "KNOWN-GAP GAP-016: the 7-day evidence rule stated in evidenceStandard is confirmed only as an obligation ON THE ASSESSOR (Handbook §1103.02). The taxpayer-side rule lives in N.J.A.C. 18:12A-1.9, which was NOT FETCHED. Confirm before telling a user this is their deadline.",
+    "KNOWN-GAP GAP-037: the 'up to five comparable sales' limit has no legal basis — no count appears in the Handbook or on the county site, and the figure appears to derive from the row count on the A-1 Comp. Sale form. Batch A REMOVED the claim from the user-facing prose rather than leaving it asserted.",
+    "KNOWN-GAP GAP-038: compsWindowMonths 24 is an unsourced default — no sale-recency window found in any fetched New Jersey source. The October 1 pre-tax-year valuation date IS verified and is the rule that actually governs.",
+    "KNOWN-GAP GAP-042: assessmentLevelPctOfMarket 100 is unresolved and wrong as a modelling assumption — every municipality has its own Director's Ratio and Bergen has ~70 of them. No longer load-bearing: the verdict path reads commonLevelRange instead. Superseded by GAP-041.",
+    "KNOWN-GAP GAP-043: estimatedTaxRateOnAssessedBps 230 is a county-average estimate; general tax rates are struck per municipality per year. Feeds the user-facing overpayment figure in verdict.ts. See /KNOWN-GAPS.md."
+  ],
+  "compsWindowMonths": 24,
+  "assessmentLevelPctOfMarket": 100,
+  "estimatedTaxRateOnAssessedBps": 230,
+  "successRateNote": null
+}

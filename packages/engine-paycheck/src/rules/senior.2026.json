@@ -1,0 +1,42 @@
+{
+  "ruleSetVersion": "senior-2026.1",
+  "taxYear": 2026,
+  "effectiveFrom": "2026-01-01",
+  "effectiveTo": "2026-12-31",
+  "verified": false,
+  "_verificationNote": {
+    "taxYearThisFileApplies": 2026,
+    "lastIndependentlyVerified": "2026-08-15",
+    "indexedForInflation": false,
+    "whyNotIndexed": "The deduction sits at IRC 151(d)(5)(C), added by P.L. 119-21 sec. 70103. The statute contains no inflation-adjustment clause, and Rev. Proc. 2025-32 has no section for it. $6,000 / $75,000 / $150,000 / 6% are fixed for tax years 2025 through 2028.",
+    "sunset": "Allowed only for a taxable year beginning before 2029-01-01 (IRC 151(d)(5)(C)(i)). This file must not be cloned forward past tax year 2028.",
+    "distinctFrom": "This is SEPARATE from and ADDITIONAL to the pre-existing IRC 63(f) additional standard deduction for the aged/blind, which for 2026 is $1,650 ($2,050 if unmarried and not a surviving spouse) per Rev. Proc. 2025-32 sec. 4.14(3). The engine does not model the 63(f) amount.",
+    "ageTest": "Qualified individual = the taxpayer if age 65 is attained before the close of the taxable year, plus, on a joint return, the spouse if the spouse attains 65 before the close of the year. BOTH spouses need not be 65. For tax year 2026 this is 'born before January 2, 1962' (the 2025 form states 'born before January 2, 1961').",
+    "howToRecheckAnnually": [
+      "1. Schedule 1-A (Form 1040), Part V — the authoritative computation: https://www.irs.gov/pub/irs-pdf/f1040s1a.pdf",
+      "2. Instructions for Schedule 1-A, Part V, inside the Form 1040 instructions: https://www.irs.gov/pub/irs-pdf/i1040gi.pdf",
+      "3. Statute as enacted, P.L. 119-21 sec. 70103, 139 Stat. 159-160: https://www.govinfo.gov/content/pkg/PLAW-119publ21/pdf/PLAW-119publ21.pdf",
+      "4. The year's IRS inflation-adjustment revenue procedure, section on IRC 63: https://www.irs.gov/pub/irs-drop/rp-25-32.pdf"
+    ],
+    "marriedFilingSeparately": "IRC 151(d)(5)(C)(v): 'If the taxpayer is a married individual (within the meaning of section 7703), this subparagraph shall apply only if the taxpayer and the taxpayer's spouse file a joint return for the taxable year.' Schedule 1-A instructions, Part V: 'If you are married, you must file a joint return with your spouse to claim this deduction.' Encoded as requireJointIfMarried below and honoured in deductions/senior.ts.",
+    "phaseOutIsPerPerson": "Per Schedule 1-A lines 33-37 the 6% reduction is computed against the PER-PERSON $6,000 (line 35 = $6,000 minus line 34) and that reduced figure is then entered once for EACH qualifying spouse (lines 36a and 36b) before being summed on line 37. A two-senior joint return therefore loses 2 x 6% = 12% of the excess. The statute agrees: IRC 151(d)(5)(C)(iii)(I) reduces 'the $6,000 amount in clause (i)', which is the per-individual amount.",
+    "fixedOn": "2026-08-15 — added requireJointIfMarried: true; deductions/senior.ts now gates MARRIED_SEPARATE and applies the phase-out per person before summing (joint, both 65+, MAGI $200,000 now returns $6,000, previously $9,000)."
+  },
+  "citations": [
+    {
+      "label": "P.L. 119-21 (OBBBA) § 70103 — additional deduction for seniors (65+)",
+      "url": "https://www.congress.gov/bill/119th-congress/house-bill/1",
+      "lastVerified": "2026-08-08",
+      "note": "UNVERIFIED — DO NOT SHIP. Placeholder values: $6,000 per qualifying individual 65+, phase-out 6% of MAGI over $75,000 single / $150,000 joint. Verify exact amount, thresholds, rate, and MFS treatment against IRS primary guidance before encoding as final."
+    }
+  ],
+  "qualifyingAge": 65,
+  "amountPerQualifyingPersonCents": 600000,
+  "phaseOut": {
+    "model": "PERCENT_OF_EXCESS",
+    "thresholdSingleCents": 7500000,
+    "thresholdJointCents": 15000000,
+    "percentOfExcessBps": 600
+  },
+  "requireJointIfMarried": true
+}

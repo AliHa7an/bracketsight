@@ -1,0 +1,27 @@
+{
+  "ruleSetVersion": "csr-bands.statutory",
+  "effectiveFrom": "2014-01-01",
+  "effectiveTo": null,
+  "verificationStatus": "VERIFIED_STATUTORY",
+  "_verificationNote": "AUDITED 2026-08-15 — VALUES CONFIRMED CORRECT, no change needed. Applies to: ALL COVERAGE YEARS from 2014 onward, including 2026. These are statutory, not indexed, and were not amended by the OBBBA. Confirmed verbatim against 42 U.S.C. §18071(c)(2), fetched from https://www.govinfo.gov/link/uscode/42/18071?link-type=html on 2026-08-15: (A) 'not less than 100 percent but not more than 150 percent' to 94 percent; (B) 'more than 150 percent but not more than 200 percent' to 87 percent; (C) 'more than 200 percent but not more than 250 percent' to 73 percent. The encoded fromPct values of 151 and 201 are the correct discretization of the statutory 'more than 150 / more than 200' once Form 8962 whole-percent truncation is applied. Silver-only confirmed by §18071(b)(1) ('enrolled in a qualified health plan in the silver level of coverage'); the 250% ceiling confirmed by 45 C.F.R. §155.305(g)(1)(i)(C) and the eligibility categories by §155.305(g)(2)(i)-(iii), both fetched from govinfo. The 94/87/73 actuarial values confirmed by 45 C.F.R. §156.420(a)(1)-(3). TWO NUANCES: (1) §156.420 requires the AVs to be met 'plus or minus the de minimis variation', so a real enrollee's plan is only APPROXIMATELY 94/87/73 — UI copy should say 'approximately' rather than presenting these as exact. (2) §18071(b)(2) says household income must EXCEED 100 percent while §18071(c)(2)(A) says 'not less than 100 percent'; 45 C.F.R. §155.305(g)(2)(i) resolves this operationally as 'greater than or equal to 100 percent', which is what fromPct 100 encodes — do not 'fix' it to 101. Note also that CSR eligibility inherits §36B eligibility via §155.305(g)(1)(i)(B), so the OBBBA §§71301-71304 restrictions on the premium tax credit flow through to cost-sharing reductions. CITATION HYGIENE: the ecfr.gov URL below is bot-blocked and unreliable as evidence; prefer https://www.govinfo.gov/content/pkg/CFR-2025-title45-vol2/xml/CFR-2025-title45-vol2-sec156-420.xml and the govinfo US Code link above. WHERE TO RE-CHECK ANNUALLY: these figures do not drift — check only when legislation amends 42 U.S.C. §18071 or HHS amends 45 C.F.R. §§155.305 / 156.420 (watch the annual HHS Notice of Benefit and Payment Parameters). See VERIFICATION-STATUS.md.",
+  "_verifiedOn": "2026-08-15",
+  "_appliesToCoverageYear": "2014-onward, including 2026",
+  "citations": [
+    {
+      "label": "ACA §1402 / 42 U.S.C. §18071 — cost-sharing reductions",
+      "url": "https://www.law.cornell.edu/uscode/text/42/18071",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "label": "45 C.F.R. §156.420 — plan variations (94/87/73 AV)",
+      "url": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-B/part-156/subpart-C/section-156.420",
+      "lastVerified": "2026-08-08"
+    }
+  ],
+  "note": "CSR applies only when enrolled in a SILVER plan and only at or below 250% FPL. Bands use the Form-8962-truncated FPL percent. 'at least fromPct, at most toPct'.",
+  "bands": [
+    { "fromPct": 100, "toPct": 150, "band": "94", "actuarialValueBps": 9400 },
+    { "fromPct": 151, "toPct": 200, "band": "87", "actuarialValueBps": 8700 },
+    { "fromPct": 201, "toPct": 250, "band": "73", "actuarialValueBps": 7300 }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "ruleSetVersion": "tips-2026.1",
+  "taxYear": 2026,
+  "effectiveFrom": "2026-01-01",
+  "effectiveTo": "2026-12-31",
+  "verified": false,
+  "_verificationNote": {
+    "taxYearThisFileApplies": 2026,
+    "lastIndependentlyVerified": "2026-08-15",
+    "indexedForInflation": false,
+    "whyNotIndexed": "IRC 224 (added by P.L. 119-21 sec. 70201) contains no inflation-adjustment clause. Rev. Proc. 2025-32 (the 2026 inflation adjustments) has NO section for IRC 224, confirming the $25,000 cap and the $150,000/$300,000 thresholds are the same fixed statutory figures for tax years 2025 through 2028.",
+    "sunset": "No deduction for any taxable year beginning after 2028-12-31 (IRC 224(h)). This file must not be cloned forward past tax year 2028.",
+    "howToRecheckAnnually": [
+      "1. Schedule 1-A (Form 1040), Part II — the authoritative computation, including the rounding convention: https://www.irs.gov/pub/irs-pdf/f1040s1a.pdf",
+      "2. Instructions for Schedule 1-A, inside the Form 1040 instructions: https://www.irs.gov/pub/irs-pdf/i1040gi.pdf",
+      "3. The year's IRS inflation-adjustment revenue procedure — check whether an IRC 224 section has appeared (it had not as of Rev. Proc. 2025-32): https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+      "4. Treasury/IRS final regulations TD 10044, 26 CFR 1.224-1 (published 2026-04-13): https://public-inspection.federalregister.gov/2026-07104.pdf"
+    ],
+    "roundingIsDeliberatelyDifferent": "phaseOut.fractionCountsAsFullStep is FALSE here, and that is correct. Schedule 1-A line 11: 'Divide line 10 by $1,000. If the resulting number isn't a whole number, DECREASE the result to the next LOWER whole number. (For example, decrease 1.5 to 1, and decrease 0.05 to 0.)' IRC 224(b)(2)(A) says 'for each $1,000' with NO 'or portion thereof'. This is the OPPOSITE of car-loan.2026.json, where IRC 163(h)(4)(C)(ii)(I) does say 'or portion thereof' and Schedule 1-A line 28 rounds UP. The three flags must never be 'harmonised'.",
+    "fixedOn": "2026-08-15 — fractionCountsAsFullStep flipped true → false, and the false branch of phase-out.ts changed from roundHalfUpToCent to Math.floor. Both changes were required: half-up rounding is not floor."
+  },
+  "citations": [
+    {
+      "label": "P.L. 119-21 (OBBBA) § 70201 — qualified tips deduction, IRC § 224",
+      "url": "https://www.congress.gov/bill/119th-congress/house-bill/1",
+      "lastVerified": "2026-08-08",
+      "note": "Cap and thresholds per statute; PHASE-OUT RATE ($100 per $1,000 of MAGI over threshold) encoded from statute text — RE-VERIFY against final Treasury regulations before ship."
+    },
+    {
+      "label": "IRS Tax Tip 2026-06 — deductions for tips and overtime",
+      "url": "https://www.irs.gov/newsroom",
+      "lastVerified": "2026-08-08",
+      "note": "UNVERIFIED — DO NOT SHIP until re-checked against the published Tax Tip and final regs."
+    }
+  ],
+  "capCents": 2500000,
+  "phaseOut": {
+    "model": "PER_1000_STEP",
+    "thresholdSingleCents": 15000000,
+    "thresholdJointCents": 30000000,
+    "reductionPer1000Cents": 10000,
+    "fractionCountsAsFullStep": false
+  },
+  "requireJointIfMarried": true
+}

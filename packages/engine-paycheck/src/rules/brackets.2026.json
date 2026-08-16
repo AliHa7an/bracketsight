@@ -1,0 +1,71 @@
+{
+  "ruleSetVersion": "brackets-2026.1",
+  "taxYear": 2026,
+  "effectiveFrom": "2026-01-01",
+  "effectiveTo": "2026-12-31",
+  "verified": false,
+  "_verificationNote": {
+    "taxYearThisFileApplies": 2026,
+    "lastIndependentlyVerified": "2026-08-15",
+    "indexedForInflation": true,
+    "authority": "Rev. Proc. 2025-32, 2025-45 I.R.B., issued 2025-10-09. Section 4.01 (Tax Rate Tables, Tables 1-4) and section 4.14 (Standard Deduction). Every bracket boundary and every standard-deduction amount in this file was checked line by line against that document on 2026-08-15 and all matched.",
+    "howToRecheckAnnually": [
+      "1. The IRS inflation-adjustment revenue procedure for the tax year — for 2026 it is Rev. Proc. 2025-32: https://www.irs.gov/pub/irs-drop/rp-25-32.pdf (index of all years: https://www.irs.gov/newsroom/inflation-adjusted-tax-items-by-tax-year)",
+      "2. Cross-check the newsroom summary: https://www.irs.gov/newsroom/irs-releases-tax-inflation-adjustments-for-tax-year-2026-including-amendments-from-the-one-big-beautiful-bill",
+      "3. Read section .01 Tax Rate Tables (Table 1 = MARRIED_JOINT, Table 2 = HEAD_OF_HOUSEHOLD, Table 3 = SINGLE, Table 4 = MARRIED_SEPARATE) and section .14 Standard Deduction. Note MARRIED_SEPARATE shares SINGLE's boundaries except the top bracket ($384,350 vs $640,600 for 2026)."
+    ],
+    "notModelledHere": "The IRC 63(f) additional standard deduction for the aged and the blind is NOT in this file. For 2026 it is $1,650, increased to $2,050 if the individual is also unmarried and not a surviving spouse (Rev. Proc. 2025-32 sec. 4.14(3)). It is separate from, and stacks with, the enhanced senior deduction in senior.2026.json, and it changes the marginal rate applied to every 65+ scenario."
+  },
+  "citations": [
+    {
+      "label": "IRS Rev. Proc. — 2026 inflation adjustments (brackets and standard deduction)",
+      "url": "https://www.irs.gov/newsroom",
+      "lastVerified": "2026-08-08",
+      "note": "UNVERIFIED — DO NOT SHIP. Bracket boundaries and standard deductions are projected 2026 figures, not the published Rev. Proc. values. Replace every number in this file with the official IRS 2026 inflation-adjustment figures before launch."
+    }
+  ],
+  "standardDeductionCents": {
+    "SINGLE": 1610000,
+    "MARRIED_JOINT": 3220000,
+    "MARRIED_SEPARATE": 1610000,
+    "HEAD_OF_HOUSEHOLD": 2415000
+  },
+  "brackets": {
+    "SINGLE": [
+      { "upToCents": 1240000, "rateBps": 1000 },
+      { "upToCents": 5040000, "rateBps": 1200 },
+      { "upToCents": 10570000, "rateBps": 2200 },
+      { "upToCents": 20177500, "rateBps": 2400 },
+      { "upToCents": 25622500, "rateBps": 3200 },
+      { "upToCents": 64060000, "rateBps": 3500 },
+      { "upToCents": null, "rateBps": 3700 }
+    ],
+    "MARRIED_JOINT": [
+      { "upToCents": 2480000, "rateBps": 1000 },
+      { "upToCents": 10080000, "rateBps": 1200 },
+      { "upToCents": 21140000, "rateBps": 2200 },
+      { "upToCents": 40355000, "rateBps": 2400 },
+      { "upToCents": 51245000, "rateBps": 3200 },
+      { "upToCents": 76870000, "rateBps": 3500 },
+      { "upToCents": null, "rateBps": 3700 }
+    ],
+    "MARRIED_SEPARATE": [
+      { "upToCents": 1240000, "rateBps": 1000 },
+      { "upToCents": 5040000, "rateBps": 1200 },
+      { "upToCents": 10570000, "rateBps": 2200 },
+      { "upToCents": 20177500, "rateBps": 2400 },
+      { "upToCents": 25622500, "rateBps": 3200 },
+      { "upToCents": 38435000, "rateBps": 3500 },
+      { "upToCents": null, "rateBps": 3700 }
+    ],
+    "HEAD_OF_HOUSEHOLD": [
+      { "upToCents": 1770000, "rateBps": 1000 },
+      { "upToCents": 6745000, "rateBps": 1200 },
+      { "upToCents": 10570000, "rateBps": 2200 },
+      { "upToCents": 20175000, "rateBps": 2400 },
+      { "upToCents": 25620000, "rateBps": 3200 },
+      { "upToCents": 64060000, "rateBps": 3500 },
+      { "upToCents": null, "rateBps": 3700 }
+    ]
+  }
+}

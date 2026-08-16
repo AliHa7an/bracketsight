@@ -1,0 +1,50 @@
+{
+  "ruleSetVersion": "slcsp-sample-2026.draft-1",
+  "effectiveFrom": "2026-01-01",
+  "effectiveTo": "2026-12-31",
+  "verificationStatus": "SAMPLE_DATA",
+  "verificationNote": "SAMPLE BENCHMARK PREMIUMS — ILLUSTRATIVE ONLY. The age-21 base premiums below are invented, plausible-magnitude figures for a handful of counties so the engine and UI can be built and tested. The real second-lowest-cost-Silver-plan (SLCSP) table is the annual CMS public-use landscape file, county by county — ingesting it is a data-ops task tracked for launch. The UI must label results computed from this table as sample data. See VERIFICATION-NEEDED.md.",
+  "_verificationNote": "AUDITED 2026-08-15 — TWO DIFFERENT THINGS LIVE IN THIS FILE. (A) THE AGE CURVE IS REAL AND VERIFIED EXACTLY. All 65 ageFactorsPermille values were diffed programmatically against Appendix I of the CCIIO Insurance Standards Bulletin 'Guidance Regarding Age Curves and State Reporting' (16 Dec 2016), fetched from https://www.cms.gov/cciio/resources/regulations-and-guidance/downloads/final-guidance-regarding-age-curves-and-state-reporting-12-16-16.pdf on 2026-08-15: ZERO mismatches (0-14 = 0.765, 15 = 0.833, 20 = 0.970, 21-24 = 1.000, 25 = 1.004, ... 63 = 2.952, 64 and older = 3.000). The 3:1 cap and the age-band structure are confirmed by 45 C.F.R. §147.102(a)(1)(iii) and (d), fetched from https://www.govinfo.gov/content/pkg/CFR-2025-title45-vol2/xml/CFR-2025-title45-vol2-sec147-102.xml — single band 0-14, one-year bands 15-20, one-year bands 21-63, single band '64 AND OLDER'. The key '64' therefore means 64-and-older: any code path that can receive age 65+ must clamp to 64 rather than fall through. Per §147.102(e) this is only a DEFAULT, applying where a state has not established its own curve; CMS's State Specific Rating Variations table shows NEW YORK and VERMONT at a 1:1 individual-market age ratio, meaning premiums there do not vary by age AT ALL — applying this curve to a NY or VT enrollee would be materially wrong. That table is stamped 'Updated December 10, 2021' and no newer version exists, so current per-state curves remain UNRESOLVED. (B) THE SIX COUNTY PREMIUMS ARE INVENTED AND WERE NOT VERIFIED — there is nothing to verify. They must be replaced, not checked. PRODUCTION SOURCE LOCATED, PY2026 URLs confirmed live (HTTP 200, application/zip): https://download.cms.gov/marketplace-puf/2026/rate-puf.zip (per-plan premium by rating area and individual age), .../plan-attributes-puf.zip (metal level, on/off-exchange), .../service-area-puf.zip (county FIPS to rating area), landing page https://www.cms.gov/marketplace/resources/data/public-use-files . PIPELINE: join Rate x Plan Attributes x Service Area to get the Silver plans actually available in each county, sort by premium, take the second lowest. FOUR TRAPS: (1) the PUFs cover only HealthCare.gov states — the ~20 State-Based Marketplaces including CALIFORNIA, which is in the sample list below, publish separately or not at all, so a single national ingest fails for roughly a third of the population; (2) do NOT keep the age21Base x ageFactor model — the Rate PUF gives the premium at each age directly, and storing that eliminates the NY/VT problem above entirely; (3) SLCSP is a per-county ranking that can flip when one issuer exits, so it must be re-ingested annually, never patched; (4) a rating area can span multiple counties, so join on rating area and then map to counties, never the reverse. Until this lands, the SAMPLE_DATA status and the UI's sample-data labelling are the only things between a user and a fabricated dollar figure — keep both. CITATION HYGIENE: the ecfr.gov URL below is bot-blocked; prefer the govinfo CFR URL above. WHERE TO RE-CHECK ANNUALLY: new PUFs appear at download.cms.gov/marketplace-puf/{year}/ around October-November for the following plan year. See VERIFICATION-STATUS.md.",
+  "_verifiedOn": "2026-08-15",
+  "_appliesToCoverageYear": 2026,
+  "_ageCurveVerified": true,
+  "_countyPremiumsAreInvented": true,
+  "citations": [
+    {
+      "label": "CMS Marketplace public use files (plan landscape / SLCSP)",
+      "url": "https://www.cms.gov/marketplace/resources/data/public-use-files",
+      "lastVerified": null
+    },
+    {
+      "label": "45 C.F.R. §147.102 — federal default age rating curve (3:1)",
+      "url": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-B/part-147/section-147.102",
+      "lastVerified": "2026-08-08"
+    }
+  ],
+  "note": "Monthly per-member benchmark = age21BaseCents × ageFactorPermille ÷ 1000, rounded half-away-from-zero; household benchmark = sum over covered members; annual = monthly × 12. Age factors are the federal default curve (states may vary — a per-state curve ships with the real CMS data).",
+  "_knownGap": [
+    "KNOWN-GAP GAP-039: the six age21BaseMonthlyCents values in counties[] are INVENTED. There is nothing to verify — they must be REPLACED from the CMS Marketplace PUFs (rate-puf / plan-attributes-puf / service-area-puf, PY2026 URLs confirmed live). Until then SAMPLE_DATA status and the UI's sample-data labelling are the only things between a user and a fabricated dollar figure. Note the PUFs cover only HealthCare.gov states — Los Angeles County, CA is in this list and California is a State-Based Marketplace.",
+    "KNOWN-GAP GAP-040: ageFactorsPermille is the FEDERAL DEFAULT curve and is verified exactly (0/65 mismatches vs CCIIO Appendix I), but 45 C.F.R. § 147.102(e) makes it a default only. CMS's State Specific Rating Variations table is stamped 'Updated December 10, 2021' and shows NEW YORK and VERMONT at a 1:1 age ratio — no age rating at all — so applying this curve there would be materially wrong. Latent while the sample list has no NY/VT county; live the moment real data lands. See /KNOWN-GAPS.md."
+  ],
+  "counties": [
+    { "id": "travis-tx", "label": "Travis County, TX (Austin)", "stateCode": "TX", "age21BaseMonthlyCents": 46000 },
+    { "id": "los-angeles-ca", "label": "Los Angeles County, CA", "stateCode": "CA", "age21BaseMonthlyCents": 41500 },
+    { "id": "cook-il", "label": "Cook County, IL (Chicago)", "stateCode": "IL", "age21BaseMonthlyCents": 38500 },
+    { "id": "maricopa-az", "label": "Maricopa County, AZ (Phoenix)", "stateCode": "AZ", "age21BaseMonthlyCents": 42000 },
+    { "id": "miami-dade-fl", "label": "Miami-Dade County, FL", "stateCode": "FL", "age21BaseMonthlyCents": 47000 },
+    { "id": "denver-co", "label": "Denver County, CO", "stateCode": "CO", "age21BaseMonthlyCents": 40000 }
+  ],
+  "ageFactorsPermille": {
+    "0": 765, "1": 765, "2": 765, "3": 765, "4": 765, "5": 765, "6": 765,
+    "7": 765, "8": 765, "9": 765, "10": 765, "11": 765, "12": 765, "13": 765,
+    "14": 765, "15": 833, "16": 859, "17": 885, "18": 913, "19": 941,
+    "20": 970, "21": 1000, "22": 1000, "23": 1000, "24": 1000, "25": 1004,
+    "26": 1024, "27": 1048, "28": 1087, "29": 1119, "30": 1135, "31": 1159,
+    "32": 1183, "33": 1198, "34": 1214, "35": 1222, "36": 1230, "37": 1238,
+    "38": 1246, "39": 1262, "40": 1278, "41": 1302, "42": 1325, "43": 1357,
+    "44": 1397, "45": 1444, "46": 1500, "47": 1563, "48": 1635, "49": 1706,
+    "50": 1786, "51": 1865, "52": 1952, "53": 2040, "54": 2135, "55": 2230,
+    "56": 2333, "57": 2437, "58": 2548, "59": 2603, "60": 2714, "61": 2810,
+    "62": 2873, "63": 2952, "64": 3000
+  }
+}

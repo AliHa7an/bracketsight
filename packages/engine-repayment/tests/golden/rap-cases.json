@@ -1,0 +1,13 @@
+{
+  "description": "RAP golden payment cases from PRODUCT-SPEC §11.5 worked-examples table. Sources: The College Investor, Fidelity, CRS IF13075 — cross-checked against 34 C.F.R. § 685.209 bracket table.",
+  "cases": [
+    { "name": "$55,000 AGI, 0 dependents (5% bracket)", "agiCents": 5500000, "dependents": 0, "expectedMonthlyCents": 22917, "source": "The College Investor" },
+    { "name": "$75,000 AGI, 2 dependents (7% bracket)", "agiCents": 7500000, "dependents": 2, "expectedMonthlyCents": 33750, "source": "The College Investor" },
+    { "name": "$60,000 AGI, 0 dependents (5% bracket boundary)", "agiCents": 6000000, "dependents": 0, "expectedMonthlyCents": 25000, "source": "The College Investor" },
+    { "name": "$120,000 AGI, 1 dependent (10% cap)", "agiCents": 12000000, "dependents": 1, "expectedMonthlyCents": 95000, "source": "The College Investor" },
+    { "name": "$25,000 AGI, 2 dependents ($10 floor)", "agiCents": 2500000, "dependents": 2, "expectedMonthlyCents": 1000, "source": "The College Investor" },
+    { "name": "$101,000 AGI, 0 dependents (10% cap)", "agiCents": 10100000, "dependents": 0, "expectedMonthlyCents": 84167, "source": "Fidelity" },
+    { "name": "$101,000 AGI, 2 dependents", "agiCents": 10100000, "dependents": 2, "expectedMonthlyCents": 74167, "source": "Fidelity" },
+    { "name": "≤$10,000 AGI, any dependents ($10 floor)", "agiCents": 900000, "dependents": 3, "expectedMonthlyCents": 1000, "source": "CRS IF13075" }
+  ]
+}

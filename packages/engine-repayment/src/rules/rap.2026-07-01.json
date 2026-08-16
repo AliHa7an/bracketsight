@@ -1,0 +1,65 @@
+{
+  "ruleSetVersion": "rap-2026-07-01",
+  "effectiveFrom": "2026-07-01",
+  "effectiveTo": null,
+  "citations": [
+    {
+      "label": "34 C.F.R. § 685.209 as revised by the RISE final rule — full GPO text (published 1 May 2026, FR Doc. 2026-08556, effective 1 Jul 2026)",
+      "url": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+      "fedRegCite": "91 Fed. Reg. 23768",
+      "lastVerified": "2026-08-15"
+    },
+    {
+      "label": "CRS IF13075 — Repayment Assistance Plan (RAP)",
+      "url": "https://www.congress.gov/crs-product/IF13075",
+      "lastVerified": "2026-08-08",
+      "_knownGap": [
+        "KNOWN-GAP GAP-001: this citation was never fetched — congress.gov returns HTTP 403 to every client. Every RAP figure it would support is independently verified against the RISE final rule. See /KNOWN-GAPS.md."
+      ]
+    },
+    {
+      "label": "P.L. 119-21 (One Big Beautiful Bill Act) § 30021",
+      "url": "https://www.congress.gov/bill/119th-congress/house-bill/1",
+      "lastVerified": "2026-08-08",
+      "_knownGap": [
+        "KNOWN-GAP GAP-002: never fetched (congress.gov 403), and the short title is probably wrong — the RISE rule consistently calls P.L. 119-21 the 'Working Families Tax Cuts Act'. Re-check the label when the URL becomes fetchable. See /KNOWN-GAPS.md."
+      ]
+    }
+  ],
+  "_verificationNote": {
+    "appliesTo": "Plan year 2026-07-01 onward (RAP's first year of availability). Not indexed to inflation: the $10,000 bracket steps, the $50 dependent reduction, the $50 principal match and the $10 minimum are fixed dollar amounts in statute, so they do NOT change annually. Re-check only when Congress amends the HEA or ED issues a new rule.",
+    "primarySource": "34 C.F.R. § 685.209 as revised by the RISE final rule, 91 Fed. Reg. 23768 (1 May 2026), FR Doc. 2026-08556, effective 1 Jul 2026. Full text: https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "bracketBoundaryRule": "§ 685.209(b)(2) reads 'More than $X and not more than $Y'. An AGI landing exactly on a $10,000 multiple therefore falls in the LOWER band: $60,000 = 5% = $250/mo; $100,000 = 9%. plans/rap.ts implements this with ceil() and is CORRECT. PRODUCT-SPEC §11.5's floor() pseudocode is wrong. NOTE the opposite convention in tiered-standard-terms.json, whose balance brackets read 'Equal to or greater than $X but less than $Y' — do not harmonise the two.",
+    "whereToRecheck": "govinfo.gov FR text above (federalregister.gov and ecfr.gov bot-block automated fetches); ED rulemaking announcements at ed.gov; annual review each 1 July.",
+    "verifiedOn": "2026-08-15",
+    "openItems": "FIXED 2026-08-15: the § 685.209(b)(6)(ii) carve-out is now modelled — see parentPlusConsolidationTaintException below and Loan.repaidUnderIdrInWindow. Still open: citations[1] (CRS IF13075) and citations[2] (P.L. 119-21) point at congress.gov, which returns HTTP 403 to every client, so neither URL has been fetched. Every figure they would support is independently verified against the RISE rule text cited above. The citations[2] label calls P.L. 119-21 the 'One Big Beautiful Bill Act'; the RISE rule consistently calls it the 'Working Families Tax Cuts Act' — re-check the short title when the URL becomes fetchable.",
+    "seeAlso": "VERIFICATION-STATUS.md (full row-by-row verification, 2026-08-15)"
+  },
+  "minimumMonthlyPaymentCents": 1000,
+  "lowIncomeThresholdCents": 1000000,
+  "lowIncomeAnnualBaseCents": 12000,
+  "bracketStepCents": 1000000,
+  "bracketStartPct": 1.0,
+  "bracketMaxPct": 10.0,
+  "dependentReductionCents": 5000,
+  "forgivenessAfterPayments": 360,
+  "pslfPayments": 120,
+  "interestWaiver": true,
+  "principalMatchCents": 5000,
+  "paymentCappedAtStandard": false,
+  "eligibleLoanTypes": [
+    "DIRECT_SUBSIDIZED",
+    "DIRECT_UNSUBSIDIZED",
+    "DIRECT_GRAD_PLUS",
+    "DIRECT_CONSOLIDATION"
+  ],
+  "excludedLoanTypes": ["DIRECT_PARENT_PLUS", "FFEL", "PERKINS", "HEAL"],
+  "parentPlusConsolidationTaint": true,
+  "parentPlusConsolidationTaintException": {
+    "enabled": true,
+    "windowFrom": "2025-07-04",
+    "windowThrough": "2028-06-30",
+    "qualifyingPlans": ["ICR", "PAYE", "IBR_OLD", "IBR_NEW"],
+    "note": "§ 685.209(b)(6)(ii): a consolidation loan that repaid a Parent PLUS loan is NOT an 'excepted consolidation loan' — and therefore IS eligible for RAP — if it 'was being repaid under the ICR, PAYE, or IBR plans on any date on or after July 4, 2025, through and including June 30, 2028'. The borrower asserts this per loan via Loan.repaidUnderIdrInWindow, which defaults to false so the taint applies unless the borrower affirms the condition."
+  }
+}

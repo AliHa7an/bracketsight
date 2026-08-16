@@ -1,0 +1,59 @@
+{
+  "ruleSetVersion": "aca-applicable-pct-2026.draft-1",
+  "effectiveFrom": "2026-01-01",
+  "effectiveTo": "2026-12-31",
+  "verificationStatus": "UNVERIFIED",
+  "verificationNote": "PLACEHOLDER 2026 TABLE. Encoded as a plausible post-ARPA-expiry table rising to 9.96% at the top band, per the shape of pre-2021 §36B(b)(3)(A) indexing. The controlling values are in Rev. Proc. 2025-25, which could not be verified at build time. Replace every bps value from the primary source before launch. See VERIFICATION-NEEDED.md.",
+  "_verificationNote": "AUDITED 2026-08-15 — VALUES CONFIRMED CORRECT, no change needed. Applies to: TAX YEAR 2026 / COVERAGE YEAR 2026. Every band boundary and basis-point value below matches Rev. Proc. 2025-25 §3.01 exactly, read verbatim from https://www.irs.gov/pub/irs-drop/rp-25-25.pdf on 2026-08-15. The sibling 'verificationNote' key predates this audit and is now stale: these are not placeholders. Also confirmed by the same document: the 2026 Required Contribution Percentage (§36B(c)(2)(C)(i)(II) employer-coverage affordability) is 9.96% — not encoded here because the engine does not yet model employer coverage. The top band terminating at 400% is the 400% cliff: for 2026 the ARPA/IRA enhancement has expired and there is no applicable percentage above 400% FPL. WHERE TO RE-CHECK ANNUALLY: the IRS publishes the §36B indexing revenue procedure around July–August for the following calendar year, at https://www.irs.gov/pub/irs-drop/rp-YY-NN.pdf . Extract the PDF text and read the table directly; do not trust a summarizer, which during this audit fabricated an entirely different table. Also watch govinfo PLAW-* for legislation amending §36B(b)(3)(A). See VERIFICATION-STATUS.md.",
+  "_verifiedOn": "2026-08-15",
+  "_appliesToTaxYear": 2026,
+  "citations": [
+    {
+      "label": "IRC §36B(b)(3)(A) — applicable percentage",
+      "url": "https://www.law.cornell.edu/uscode/text/26/36B",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "label": "Rev. Proc. 2025-25 (2026 indexing) — VALUES NOT YET VERIFIED",
+      "url": "https://www.irs.gov/pub/irs-drop/rp-25-25.pdf",
+      "lastVerified": null
+    },
+    {
+      "label": "Form 8962 instructions — applicable figure table method",
+      "url": "https://www.irs.gov/instructions/i8962",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "label": "Form 8962 instructions, Worksheet 2 step 4 — the 'more than 4.0 × FPL' test is applied BEFORE the line 5 truncation; if yes, enter 401 and stop",
+      "url": "https://www.irs.gov/pub/irs-pdf/i8962.pdf",
+      "lastVerified": "2026-08-15"
+    },
+    {
+      "label": "Form 8962 instructions, 2020 (last pre-ARPA edition, i.e. the law that returns for 2026) — Worksheet 2 identical; line 6: 'If the amount on line 5 is 401%, you are not eligible for the PTC.'",
+      "url": "https://www.irs.gov/pub/irs-prior/i8962--2020.pdf",
+      "lastVerified": "2026-08-15"
+    },
+    {
+      "label": "IRC §36B(c)(1)(A) — applicable taxpayer: household income not exceeding 400% of the poverty line",
+      "url": "https://www.govinfo.gov/link/uscode/26/36B?link-type=html",
+      "lastVerified": "2026-08-15"
+    }
+  ],
+  "note": "Bands are 'at least fromPct but less than toPct' except the final band, which includes 400 exactly. Within a band the applicable percentage is linearly interpolated on the truncated whole-percent FPL figure, then rounded to the nearest hundredth of a percent (whole basis point), matching the Form 8962 applicable-figure method.",
+  "eligibilityCeiling": {
+    "note": "The 400% ceiling of IRC §36B(c)(1)(A), encoded the way Form 8962 Worksheet 2 actually applies it. Step 4 asks FIRST whether household income is MORE THAN the poverty line × ceilingMultipleBps (4.0). If yes, you enter ineligibleSentinelPct (401) on line 5 and stop — the whole-percent truncation is reached only in the 'No' branch. Consequence, and the reason this is data and not a constant: there is NO sub-1% grace band above 400%. Income of 400.9% of FPL is 401, not 400. The last eligible MAGI is exactly 4.0 × the poverty line, not ceil(401 × FPL / 100) − 1. Truncation still governs every INTERIOR boundary (133, 150, 200, 250, 300 and the 250% CSR ledge) — only the ceiling is a strict multiple test. A future year that restores a phase-out above 400% (as ARPA/IRA did for 2021–2025) changes this ceiling: express it in a NEW dated ruleset rather than editing this one.",
+    "_knownGap": [
+      "KNOWN-GAP GAP-033: the 2026 Form 8962 and its instructions are NOT YET PUBLISHED (due ~Jan 2027). ceilingMultipleBps and ineligibleSentinelPct are established from the 2025 and 2020 editions of Worksheet 2, which agree word-for-word across the ARPA boundary — strong, but not the 2026 document. Re-confirm Worksheet 2 and Line 6 after Jan 2027. See /KNOWN-GAPS.md."
+    ],
+    "ceilingMultipleBps": 40000,
+    "ineligibleSentinelPct": 401
+  },
+  "bands": [
+    { "fromPct": 100, "toPct": 133, "lowBps": 210, "highBps": 210 },
+    { "fromPct": 133, "toPct": 150, "lowBps": 314, "highBps": 419 },
+    { "fromPct": 150, "toPct": 200, "lowBps": 419, "highBps": 660 },
+    { "fromPct": 200, "toPct": 250, "lowBps": 660, "highBps": 844 },
+    { "fromPct": 250, "toPct": 300, "lowBps": 844, "highBps": 996 },
+    { "fromPct": 300, "toPct": 400, "lowBps": 996, "highBps": 996 }
+  ]
+}

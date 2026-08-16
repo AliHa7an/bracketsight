@@ -1,0 +1,30 @@
+/*
+ * The one orchestrated moment in the paycheck section: the deduction lines
+ * settling onto the sheet on the first results render.
+ *
+ * It lives in CSS rather than a layout effect so it cannot re-fire on
+ * recalculation and there is no flash of the finished sheet before the reveal.
+ * A CSS module rather than globals.css because it belongs to exactly one
+ * component in one section — the shared stylesheet holds only what every
+ * section uses.
+ *
+ * No colour, no length of its own: the duration and easing are the shared
+ * tokens, so `prefers-reduced-motion` zeroes `--dur-signature` in globals.css
+ * and the whole sequence collapses to nothing with no media query here.
+ */
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.settle {
+  animation: settle calc(var(--dur-signature) / 4) var(--ease) both;
+  animation-delay: calc(var(--dur-signature) / 4 * var(--settle-index, 0));
+}

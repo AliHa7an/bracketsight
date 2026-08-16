@@ -1,0 +1,40 @@
+{
+  "ruleSetVersion": "aptc-repayment-limits-2026.repealed-1",
+  "effectiveFrom": "2026-01-01",
+  "effectiveTo": "2026-12-31",
+  "verificationStatus": "VERIFIED_STATUTORY",
+  "verificationNote": "The advance-credit repayment limitation of IRC §36B(f)(2)(B) DOES NOT EXIST for tax year 2026. OBBBA (Pub. L. 119-21) §71305 struck subparagraph (B) outright, effective for taxable years beginning after 31 December 2025. There is therefore no cap at ANY income level: every filer repays the full excess advance credit. `limitation.inEffect` is false and `limitation.bands` is empty for exactly that reason — the empty array is the encoded rule, not missing data.",
+  "_verificationNote": "AUDITED 2026-08-15, CORRECTED 2026-08-15. Applies to: TAX YEAR 2026. Primary source read verbatim from https://www.govinfo.gov/content/pkg/PLAW-119publ21/html/PLAW-119publ21.htm : 'SEC. 71305. ELIMINATING LIMITATION ON RECAPTURE OF ADVANCE PAYMENT OF PREMIUM TAX CREDIT. (a) In General.—Section 36B(f)(2) is amended by striking subparagraph (B). ... (c) Effective Date.—The amendments made by this section shall apply to taxable years beginning after December 31, 2025.' §71305(b) also rewrites §36B(f)(2) to remove the subparagraph split and conforms §35(g)(12)(B)(ii), so the repeal is total, not a re-lettering. Corroborated independently by Rev. Proc. 2025-32 §2.04: 'Section 71305 of the OBBBA removes §36B(f)(2)(B), which limited the tax increase from excess advance payments for certain households, effective for taxable years beginning after December 31, 2025. Accordingly, the inflation adjustment to §36B(f)(2)(B) is removed from this revenue procedure.' That is why no 2026 indexed repayment table exists anywhere: the IRS deliberately stopped publishing one. WHAT CHANGED IN THIS PASS: the three bands ($400/$800 under 200% FPL, $1,000/$2,000 at 200-300%, $1,650/$3,300 at 300-400%) were REMOVED — they encoded a repealed statute and the old `note` told a household at 250% FPL that its clawback was capped at $1,000, which is false and is exactly the sort of number a user would act on. The citation to 'Rev. Proc. 2025-25 indexed repayment limits' was also REMOVED: Rev. Proc. 2025-25 covers only the applicable-percentage table and the required contribution percentage and contains no repayment table at all. The historic limitation is preserved below under `_repealedStructure` for provenance and so a future reinstatement has a shape to copy. WHERE TO RE-CHECK ANNUALLY: watch govinfo PLAW-* for any statute restoring a limitation; if one is enacted, add a NEW dated ruleset (limitation.inEffect true, bands populated) rather than editing this file. See VERIFICATION-STATUS.md.",
+  "_verifiedOn": "2026-08-15",
+  "_appliesToTaxYear": 2026,
+  "citations": [
+    {
+      "label": "OBBBA, Pub. L. 119-21 §71305 — 'Section 36B(f)(2) is amended by striking subparagraph (B)', applicable to taxable years beginning after 31 Dec 2025",
+      "url": "https://www.govinfo.gov/content/pkg/PLAW-119publ21/html/PLAW-119publ21.htm",
+      "lastVerified": "2026-08-15"
+    },
+    {
+      "label": "Rev. Proc. 2025-32 §2.04 — the §36B(f)(2)(B) inflation adjustment is removed because the provision was repealed",
+      "url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf",
+      "lastVerified": "2026-08-15"
+    },
+    {
+      "label": "IRC §36B(f)(2) — reconciliation of advance payments (post-OBBBA text, no subparagraph (B))",
+      "url": "https://www.govinfo.gov/link/uscode/26/36B?link-type=html",
+      "lastVerified": "2026-08-15"
+    }
+  ],
+  "note": "For 2026 there is no limitation on the repayment of excess advance premium tax credit at any income level. A household at 250% of the poverty line repays every excess dollar, exactly as a household at 405% does.",
+  "limitation": {
+    "inEffect": false,
+    "bands": []
+  },
+  "_repealedStructure": {
+    "note": "PROVENANCE ONLY — NOT READ BY THE ENGINE. The shape the limitation had while §36B(f)(2)(B) existed, kept so a future reinstatement can be expressed by setting limitation.inEffect true and moving bands like these into limitation.bands. Bands used the Form-8962-truncated FPL percent, 'at least fromPct but less than toPct'; singleCents applied to SINGLE filing status and otherCents to every other status; income at or above 400% FPL was never capped. The cents values below are the engine's unverified pre-audit 2026 placeholders and must NOT be reused as if they were sourced figures — the last IRS-published amounts were the 2025 ones ($375/$750, $950/$1,900, $1,575/$3,150).",
+    "bands": [
+      { "fromPct": 0, "toPct": 200, "singleCents": 40000, "otherCents": 80000 },
+      { "fromPct": 200, "toPct": 300, "singleCents": 100000, "otherCents": 200000 },
+      { "fromPct": 300, "toPct": 400, "singleCents": 165000, "otherCents": 330000 }
+    ]
+  }
+}

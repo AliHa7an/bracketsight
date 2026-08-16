@@ -1,0 +1,26 @@
+{
+  "ruleSetVersion": "poverty-guidelines-2026",
+  "effectiveFrom": "2026-01-01",
+  "effectiveTo": null,
+  "citations": [
+    {
+      "label": "HHS Poverty Guidelines (ASPE) — 2026 table, published in the Federal Register 15 Jan 2026",
+      "url": "https://aspe.hhs.gov/topics/poverty-economic-mobility/poverty-guidelines",
+      "lastVerified": "2026-08-15"
+    }
+  ],
+  "note": "IBR/PAYE/ICR discretionary-income floor. Values below are the 2026 HHS guidelines, verified against ASPE on 2026-08-15. Student-loan IDR uses the guidelines CURRENTLY IN EFFECT (34 C.F.R. § 685.209(b)(14) / 42 U.S.C. 9902(2)) — unlike the ACA, which uses the prior year's table. Update this file when ASPE publishes the 2027 table.",
+  "_verificationNote": {
+    "appliesTo": "Calendar/guideline year 2026. HHS publishes a new table EVERY January — this file has a hard annual expiry and must be updated each year.",
+    "recheckAnnually": "Each January, at https://aspe.hhs.gov/topics/poverty-economic-mobility/poverty-guidelines (the 2026 table was published in the Federal Register on 15 Jan 2026). Bump ruleSetVersion and create a new dated file rather than editing this one in place.",
+    "regulatoryHook": "34 C.F.R. § 685.209(b)(14) defines 'poverty guideline' as the HHS figures published annually under 42 U.S.C. 9902(2), and directs borrowers not resident in a listed State to use the 48-contiguous-States figure — hence the three regions modelled here.",
+    "verifiedOn": "2026-08-15",
+    "status": "CORRECTED 2026-08-15. The six values below were the STALE 2025 guidelines (contiguous 48 $15,650/$5,500; Alaska $19,550/$6,880; Hawaii $17,990/$6,325) and have been replaced with the 2026 table verified against ASPE: contiguous 48 + DC $15,960 first person / $5,680 each additional; Alaska $19,950 / $7,100; Hawaii $18,360 / $6,530. Raising the guideline RAISES protected income and therefore LOWERS every IBR/PAYE/ICR payment. RAP is unaffected — it uses gross AGI with no poverty offset (§ 685.209(f)(5); preamble at 23841: 'there is no exempted income under the Repayment Assistance Plan').",
+    "seeAlso": "VERIFICATION-STATUS.md (full row-by-row verification, 2026-08-15)"
+  },
+  "guidelines": {
+    "CONTIGUOUS_48": { "firstPersonCents": 1596000, "additionalPersonCents": 568000 },
+    "ALASKA": { "firstPersonCents": 1995000, "additionalPersonCents": 710000 },
+    "HAWAII": { "firstPersonCents": 1836000, "additionalPersonCents": 653000 }
+  }
+}

@@ -1,0 +1,131 @@
+/* ============================================================================
+ * Trades section — the layout, touch and print rules the Takeoff Sheet needs.
+ *
+ * This is NOT a theme file. It defines no colour values and no tokens: every
+ * declaration below reads the six semantic tokens the `data-section="trades"`
+ * wrapper already supplies, so the section's identity still comes from
+ * `globals.css` and nothing else. What lives here is the behaviour that could
+ * not survive the port any other way — the phone-sized touch targets, the
+ * ruled sheet row, the staggered line-in of the signature moment, and the
+ * print stylesheet that turns the screen into the document the customer gets.
+ *
+ * Everything is scoped under `[data-section="trades"]` so it cannot reach a
+ * page in another section. If the shell later absorbs these rules into
+ * `globals.css` beside the section token blocks, delete this file and the
+ * import in `layout.tsx` — nothing else has to change.
+ * ==========================================================================*/
+
+/* ---- Screen ------------------------------------------------------------- */
+
+/* A ruled row. The rule IS the sheet — it is the line the item is written on,
+   not a decoration. */
+[data-section="trades"] .takeoff-row {
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Primary actions on the job screens. 44px is the portfolio floor; this tool
+   is operated with one thumb, standing up, sometimes in gloves, so it clears
+   the floor deliberately. */
+[data-section="trades"] .touch-lg {
+  min-height: 48px;
+}
+
+/* An assumption pinned to its line. Small, ruled to the left, never a badge. */
+[data-section="trades"] .pinned-note {
+  display: block;
+  font-size: var(--text-step--2);
+  color: var(--dim);
+  border-left: 2px solid var(--rule);
+  padding-left: 8px;
+}
+
+/* THE SIGNATURE MOMENT — line items materialising on the sheet. Fired once, on
+   the first estimate render only, orchestrated across --dur-signature (700ms)
+   by per-row delays set in JS. Never on a recalculation, where it would be
+   noise. The JS gate checks prefers-reduced-motion itself and skips straight to
+   the end state; the media query below is the belt to that braces. */
+@keyframes takeoff-line-in {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-section="trades"] [style*="takeoff-line-in"] {
+    animation: none !important;
+  }
+}
+
+/* ---- Print --------------------------------------------------------------
+ * The sheet on screen IS the document the client receives. Nothing is
+ * re-laid-out for print: chrome is removed and the editable fields shed their
+ * control dressing so the estimate prints as a typed document.
+ * ------------------------------------------------------------------------ */
+
+@media print {
+  [data-section="trades"] .no-print {
+    display: none !important;
+  }
+
+  [data-section="trades"] .print-sheet {
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+  }
+
+  /* A scroll container must not clip the document it holds. */
+  [data-section="trades"] .print-sheet [class*="overflow-x-auto"],
+  [data-section="trades"] .print-sheet .overflow-x-auto {
+    overflow: visible !important;
+  }
+  [data-section="trades"] .print-sheet table {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Inputs print as the values they hold, not as boxes. */
+  [data-section="trades"] .print-sheet input,
+  [data-section="trades"] .print-sheet select {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    appearance: none !important;
+    color: var(--ink) !important;
+    font-weight: 500;
+  }
+
+  [data-section="trades"] a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* The builder is a two-track grid on screen. Hiding the form track does NOT
+     remove it, so the sheet would auto-place into the 240px column and print
+     as a sliver. Collapse the grid instead. */
+  [data-section="trades"] .takeoff-grid {
+    display: block !important;
+  }
+
+  /* The phone layout is a reading aid, not the document. Paper prints the
+     ruled table, at every paper width. */
+  [data-section="trades"] .sheet-stack {
+    display: none !important;
+  }
+  [data-section="trades"] .sheet-table {
+    display: block !important;
+  }
+
+  /* Never break a line item across pages. */
+  [data-section="trades"] tr,
+  [data-section="trades"] li {
+    break-inside: avoid;
+  }
+}

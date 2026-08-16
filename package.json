@@ -1,0 +1,19 @@
+{
+  "name": "fineprint",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@11.21.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "test": "turbo run test"
+  },
+  "devDependencies": {
+    "turbo": "2.5.8",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  },
+  "engines": { "node": ">=22" }
+}

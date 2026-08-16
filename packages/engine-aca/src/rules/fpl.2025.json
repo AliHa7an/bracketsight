@@ -1,0 +1,29 @@
+{
+  "ruleSetVersion": "hhs-fpl-2025.draft-1",
+  "effectiveFrom": "2025-01-15",
+  "effectiveTo": null,
+  "verificationStatus": "UNVERIFIED",
+  "verificationNote": "2026 marketplace coverage uses the 2025 HHS poverty guidelines (the guidelines in effect at the start of open enrollment). Values below match the published 2025 guidelines to the best of build-time knowledge but MUST be re-verified against the Federal Register notice before launch. See VERIFICATION-NEEDED.md.",
+  "_verificationNote": "AUDITED 2026-08-15 — ONE CORRECTION IDENTIFIED, not yet applied (awaiting review). Applies to: the 2025 HHS poverty guidelines, which are the ones COVERAGE YEAR 2026 must use. THE FILE NAME IS CORRECT BY DESIGN — do not 'upgrade' it to the 2026 guidelines. ACA eligibility for a coverage year uses the guidelines in effect at the start of that year's open-enrollment period, i.e. those published in the PRIOR calendar year: 2026 coverage uses the 2025 guidelines; 2027 coverage will use the 2026 guidelines (contiguous-48 $15,960 + $5,680, Alaska $19,950 + $7,100, Hawaii $18,360 + $6,530, published 15 Jan 2026) in a future fpl.2026.json. Verified against the Federal Register notice, 90 Fed. Reg. 5917 (Jan. 17, 2025), FR Doc. 2025-01377, fetched from https://www.govinfo.gov/content/pkg/FR-2025-01-17/pdf/2025-01377.pdf on 2026-08-15. CORRECT: contiguous-48 $15,650 + $5,500; Alaska $19,550 + $6,880; Hawaii first person $17,990. CORRECTED 2026-08-15: HAWAII additionalPersonCents was 632500 ($6,325); the notice says 'add $6,330 for each additional person' and its printed table increments by exactly $6,330 (24,320 − 17,990; 30,650 − 24,320), so it is now 633000. The old value understated the Hawaii poverty line for every multi-person household, which understated the credit and overstated how close the household was to the cliff, compounding with family size. The placeholder Federal Register citation (bare federalregister.gov, bot-blocked) was replaced with the durable govinfo PDF URL for FR Doc. 2025-01377. WHERE TO RE-CHECK ANNUALLY: ASPE publishes mid-January at https://aspe.hhs.gov/topics/poverty-economic-mobility/poverty-guidelines ; take the citable version from the Federal Register notice on govinfo, not from federalregister.gov (bot-blocked). See VERIFICATION-STATUS.md.",
+  "_verifiedOn": "2026-08-15",
+  "_guidelineYear": 2025,
+  "_appliesToCoverageYear": 2026,
+  "citations": [
+    {
+      "label": "HHS Poverty Guidelines for 2025 (ASPE)",
+      "url": "https://aspe.hhs.gov/topics/poverty-economic-mobility/poverty-guidelines",
+      "lastVerified": null
+    },
+    {
+      "label": "90 Fed. Reg. 5917 (Jan. 17, 2025), FR Doc. 2025-01377 — Annual Update of the HHS Poverty Guidelines (the 2025 guidelines, which govern 2026 marketplace coverage)",
+      "url": "https://www.govinfo.gov/content/pkg/FR-2025-01-17/pdf/2025-01377.pdf",
+      "lastVerified": "2026-08-15"
+    }
+  ],
+  "note": "Guidelines are linear in family size: fpl = firstPersonCents + (familySize − 1) × additionalPersonCents. All amounts are annual, in integer cents.",
+  "groups": {
+    "CONTIGUOUS_48": { "firstPersonCents": 1565000, "additionalPersonCents": 550000 },
+    "ALASKA": { "firstPersonCents": 1955000, "additionalPersonCents": 688000 },
+    "HAWAII": { "firstPersonCents": 1799000, "additionalPersonCents": 633000 }
+  }
+}

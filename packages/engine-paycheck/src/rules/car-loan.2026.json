@@ -1,0 +1,43 @@
+{
+  "ruleSetVersion": "car-loan-2026.1",
+  "taxYear": 2026,
+  "effectiveFrom": "2026-01-01",
+  "effectiveTo": "2026-12-31",
+  "verified": false,
+  "_verificationNote": {
+    "taxYearThisFileApplies": 2026,
+    "lastIndependentlyVerified": "2026-08-15",
+    "indexedForInflation": false,
+    "whyNotIndexed": "The deduction sits at IRC 163(h)(4), added by P.L. 119-21 sec. 70203. The statute contains no inflation-adjustment clause, and Rev. Proc. 2025-32 has no section for it. $10,000 / $100,000 / $200,000 / $200-per-$1,000 are fixed for tax years 2025 through 2028.",
+    "sunset": "Applies only to taxable years beginning after 2024-12-31 and before 2029-01-01 (IRC 163(h)(4)(A)). This file must not be cloned forward past tax year 2028.",
+    "roundingIsDeliberatelyDifferent": "IRC 163(h)(4)(C)(ii)(I) says '$200 for each $1,000 (or portion thereof)' and Schedule 1-A line 28 says to INCREASE a partial step to the next HIGHER whole number. This is the opposite of the tips and overtime phase-outs, which round DOWN. fractionCountsAsFullStep=true is correct here and must not be 'harmonised' with the other two.",
+    "howToRecheckAnnually": [
+      "1. Schedule 1-A (Form 1040), Part IV — the authoritative computation: https://www.irs.gov/pub/irs-pdf/f1040s1a.pdf",
+      "2. Instructions for Schedule 1-A, Part IV, inside the Form 1040 instructions: https://www.irs.gov/pub/irs-pdf/i1040gi.pdf",
+      "3. Statute as enacted, P.L. 119-21 sec. 70203, 139 Stat. 176-178: https://www.govinfo.gov/content/pkg/PLAW-119publ21/pdf/PLAW-119publ21.pdf",
+      "4. Proposed regulations 26 CFR 1.163-16 (cited throughout the Schedule 1-A instructions) — check for a final rule."
+    ],
+    "eligibilityCriteriaNotModelled": "Verified statutory criteria this file does NOT encode: gross vehicle weight rating under 14,000 lbs; vehicle class limited to car, minivan, van, SUV, pickup truck or motorcycle with at least 2 wheels; loan must be secured by a FIRST LIEN on the vehicle; lease financing, fleet-sale loans, salvage-title vehicles, scrap/parts vehicles, non-personal commercial vehicles and related-party loans are all excluded; refinancing qualifies only up to the outstanding balance of the refinanced loan and only if first-lien secured; the VIN of every applicable vehicle must be reported on the return. Negative equity rolled into the loan does not qualify.",
+    "unlikeTheOtherThree": "IRC 163(h)(4) imposes NO joint-filing requirement and NO SSN requirement, so the absence of requireJointIfMarried in this file is correct."
+  },
+  "citations": [
+    {
+      "label": "P.L. 119-21 (OBBBA) § 70203 — qualified passenger vehicle loan interest deduction",
+      "url": "https://www.congress.gov/bill/119th-congress/house-bill/1",
+      "lastVerified": "2026-08-08",
+      "note": "UNVERIFIED — DO NOT SHIP. Placeholder values: $10,000 cap; phase-out $200 per $1,000 of MAGI over $100,000 single / $200,000 joint; new personal-use vehicle with final assembly in the United States; loan originated after 2024-12-31. Verify amount, vehicle criteria, thresholds, and rate against IRS primary guidance before encoding as final."
+    }
+  ],
+  "capCents": 1000000,
+  "phaseOut": {
+    "model": "PER_1000_STEP",
+    "thresholdSingleCents": 10000000,
+    "thresholdJointCents": 20000000,
+    "reductionPer1000Cents": 20000,
+    "fractionCountsAsFullStep": true
+  },
+  "loanOriginatedOnOrAfter": "2025-01-01",
+  "requiresNewVehicle": true,
+  "requiresFinalAssemblyInUS": true,
+  "requiresPersonalUse": true
+}

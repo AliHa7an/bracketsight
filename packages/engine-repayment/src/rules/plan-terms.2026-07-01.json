@@ -1,0 +1,89 @@
+{
+  "ruleSetVersion": "plan-terms-2026-07-01",
+  "effectiveFrom": "2026-07-01",
+  "effectiveTo": null,
+  "citations": [
+    {
+      "label": "34 C.F.R. § 685.209 — income-driven repayment plans, as revised by the RISE final rule (full GPO text, published 1 May 2026)",
+      "url": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+      "fedRegCite": "91 Fed. Reg. 23768",
+      "lastVerified": "2026-08-15"
+    },
+    {
+      "label": "34 C.F.R. § 685.208 — repayment plans (Standard, Graduated, Extended), as revised by the RISE final rule (full GPO text, published 1 May 2026)",
+      "url": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+      "fedRegCite": "91 Fed. Reg. 23768",
+      "lastVerified": "2026-08-15"
+    },
+    {
+      "label": "P.L. 119-21 § 30021 — PAYE/ICR sunset and post-2026 plan restriction",
+      "url": "https://www.congress.gov/bill/119th-congress/house-bill/1",
+      "lastVerified": "2026-08-08",
+      "_knownGap": [
+        "KNOWN-GAP GAP-003: never fetched (congress.gov 403). Every plan term in this file is independently verified against 34 C.F.R. §§ 685.208-685.209 via govinfo. See /KNOWN-GAPS.md."
+      ]
+    }
+  ],
+  "_verificationNote": {
+    "appliesTo": "Plan year 2026-07-01 onward. Percentages, poverty multipliers, forgiveness counts and plan terms are statutory/regulatory and not inflation-indexed — no annual update. The ONE annual dependency is the ICR income-percentage factor (see openItems).",
+    "primarySource": "34 C.F.R. §§ 685.208, 685.209, 685.219 as revised by the RISE final rule, 91 Fed. Reg. 23768 (1 May 2026), FR Doc. 2026-08556. Full text: https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "verifiedOn": "2026-08-15",
+    "verifiedFigures": "Payment formulas from § 685.209(f): old IBR 15% (f)(3), new IBR and PAYE 10% (f)(2), ICR 20% and 12-year alternative (f)(4)(i). Poverty multipliers from § 685.209(b)(4): IBR/PAYE 150%, ICR 100%. Forgiveness from § 685.209(k): 300 payments/25 yr for old IBR and ICR, 240/20 yr for new IBR and PAYE. Fixed plans from § 685.208(b): Standard 10 yr (b)(1), Graduated 10 yr with no payment more than 3x any other (b)(6), Extended 25 yr for more than $30,000 (b)(4). PSLF 120 payments from § 685.219(e)(1). IBR new-borrower date 1 Jul 2014 from § 685.209(b)(13)(ii). PAYE/ICR sunset 1 Jul 2028 from § 685.209(c)(7).",
+    "openItems": "1) FIXED 2026-08-15: the sunset destination now follows § 685.209(c)(7)(iii)(A) — RAP for RAP-eligible loans, else IBR — implemented in plans/sunset.ts. 2) FIXED 2026-08-15: payment credit is now asymmetric per idrCreditCarries() in plans/sunset.ts — § 685.209(k)(4)(i)(A) excludes RAP payments from IBR/PAYE/ICR forgiveness credit, and § 685.209(k)(8)(i)(C)(5) counts pre-2028 IDR payments toward RAP's 360 only if at least the required amount. 3) newBorrowerProxyDate 2011-10-01 covers only limb (B) of the two-part PAYE test in § 685.209(b)(13)(i); limb (A) is no outstanding balance as of 1 Oct 2007. 4) ibrNew.firstLoanOnOrAfter omits the second limb of § 685.209(b)(13)(ii) — new-borrower status is lost by taking any loan on/after 1 Jul 2026. 5) graduated.stepMonths 24 has NO regulatory basis; § 685.208(b)(6)(i) says only 'two or more levels'. It is a servicer convention and unverifiable. 6) The ICR income-percentage factor (fixed at 1.0 in plans/icr.ts) comes from a Federal Register notice ED publishes ANNUALLY per § 685.209(f)(4)(i)(A) — this is the one figure in this file needing a yearly re-check, and the 2026 notice has not yet been located. 7) extended.minimumBalanceCents is exclusive: the regulation says 'more than $30,000' — confirm the engine uses > not >=.",
+    "whereToRecheck": "govinfo.gov FR text above (ecfr.gov and federalregister.gov bot-block automated fetches; congress.gov returns 403). For the ICR factor, search govinfo.gov/federalregister for ED's annual income-contingent repayment notice each year.",
+    "seeAlso": "VERIFICATION-STATUS.md (full row-by-row verification, 2026-08-15)"
+  },
+  "ibrOld": {
+    "discretionaryPct": 15,
+    "povertyMultiplierPct": 150,
+    "forgivenessAfterPayments": 300,
+    "paymentCappedAtStandard": true
+  },
+  "ibrNew": {
+    "_knownGap": [
+      "KNOWN-GAP GAP-049: firstLoanOnOrAfter models only the first limb of § 685.209(b)(13)(ii). The second limb — new-borrower status is LOST by taking any loan on/after 1 Jul 2026 — is not modelled and needs a new input. See /KNOWN-GAPS.md."
+    ],
+    "discretionaryPct": 10,
+    "povertyMultiplierPct": 150,
+    "forgivenessAfterPayments": 240,
+    "paymentCappedAtStandard": true,
+    "firstLoanOnOrAfter": "2014-07-01"
+  },
+  "paye": {
+    "_knownGap": [
+      "KNOWN-GAP GAP-048: newBorrowerProxyDate tests only limb (B) of the two-part test in § 685.209(b)(13)(i). Limb (A) — no outstanding Direct/FFEL balance as of 1 Oct 2007 — is not modelled, so the engine over-admits borrowers to PAYE. See /KNOWN-GAPS.md."
+    ],
+    "discretionaryPct": 10,
+    "povertyMultiplierPct": 150,
+    "forgivenessAfterPayments": 240,
+    "paymentCappedAtStandard": true,
+    "newBorrowerProxyDate": "2011-10-01",
+    "sunsetDate": "2028-07-01"
+  },
+  "icr": {
+    "_knownGap": [
+      "KNOWN-GAP GAP-034: the income-percentage factor that § 685.209(f)(4)(i)(A) applies to alternativeAmortisationMonths is hardcoded to 1.0 in plans/icr.ts. ED publishes it in an annual Federal Register notice which could not be located. See /KNOWN-GAPS.md."
+    ],
+    "discretionaryPct": 20,
+    "povertyMultiplierPct": 100,
+    "forgivenessAfterPayments": 300,
+    "alternativeAmortisationMonths": 144,
+    "sunsetDate": "2028-07-01"
+  },
+  "standard10": { "termMonths": 120 },
+  "graduated": {
+    "_knownGap": [
+      "KNOWN-GAP GAP-045: stepMonths 24 has NO regulatory basis. § 685.208(b)(6)(i) prescribes only 'payments at two or more levels'; 24 months is a servicer convention and is unverifiable in principle. termMonths and maxFinalToFirstRatio ARE verified. See /KNOWN-GAPS.md."
+    ],
+    "termMonths": 120,
+    "stepMonths": 24,
+    "maxFinalToFirstRatio": 3
+  },
+  "extended": {
+    "termMonths": 300,
+    "minimumBalanceCents": 3000000
+  },
+  "pslfPayments": 120,
+  "post2026RestrictionDate": "2026-07-01",
+  "note": "Loans first disbursed on or after post2026RestrictionDate may only use RAP or the Tiered Standard plan. PAYE and ICR sunset on 2028-07-01; a borrower who does not elect a new plan by that date is placed, per § 685.209(c)(7)(iii)(A), into (1) RAP for loans eligible for RAP, or (2) IBR for loans not eligible for RAP. Simulations crossing the date model that migration for BOTH plans. Payment credit across the migration is asymmetric: pre-2028 income-contingent payments count toward RAP's 360-payment clock only where each was at least the amount required under the applicable plan (§ 685.209(k)(8)(i)(C)(5)), while payments made under RAP never count toward IBR/PAYE/ICR forgiveness (§ 685.209(k)(4)(i)(A)). A borrower eligible for neither RAP nor IBR (e.g. a Parent PLUS consolidation outside the § 685.209(b)(6)(ii) carve-out) falls back to a Standard amortisation of the remaining balance — a modelling residual with no direct regulatory basis, since the regulation contemplates only the two destinations. Graduated step ratio and ICR alternative formula are documented simplifications — see VERIFICATION-NEEDED.md."
+}

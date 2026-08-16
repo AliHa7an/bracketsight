@@ -1,0 +1,36 @@
+{
+  "ruleSetVersion": "tiered-standard-2026-07-01",
+  "effectiveFrom": "2026-07-01",
+  "effectiveTo": null,
+  "citations": [
+    {
+      "label": "34 C.F.R. § 685.208(c)(1)(iii) — Tiered Standard balance brackets for loans made on/after 1 Jul 2026, as revised by the RISE final rule (full GPO text, published 1 May 2026)",
+      "url": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+      "fedRegCite": "91 Fed. Reg. 23768",
+      "lastVerified": "2026-08-15"
+    },
+    {
+      "label": "34 C.F.R. § 685.208(b)(8)(iii) — identically worded brackets for borrowers holding both pre- and post-2026 loans (same GPO text)",
+      "url": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+      "fedRegCite": "91 Fed. Reg. 23768",
+      "lastVerified": "2026-08-15"
+    }
+  ],
+  "note": "Term scales with total balance at entry. All four brackets verified verbatim against 34 C.F.R. § 685.208(c)(1)(iii) on 2026-08-15.",
+  "_verificationNote": {
+    "appliesTo": "Plan year 2026-07-01 onward. Balance brackets are fixed statutory dollar amounts, not inflation-indexed — no annual update required.",
+    "primarySource": "34 C.F.R. § 685.208(c)(1)(iii) (loans made on/after 1 Jul 2026) and the identically-worded § 685.208(b)(8)(iii) (borrowers holding both pre- and post-2026 loans), as revised by the RISE final rule, 91 Fed. Reg. 23768 (1 May 2026). Full text: https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "status": "ALL FOUR TIERS VERIFIED VERBATIM on 2026-08-15. The regulation reads: less than $25,000 within 10 years; equal to or greater than $25,000 but less than $50,000 within 15 years; equal to or greater than $50,000 but less than $100,000 within 20 years; equal to or greater than $100,000 within 25 years.",
+    "boundaryRule": "'Equal to or greater than $X but less than $Y' — a balance landing exactly on a boundary takes the HIGHER tier (exactly $25,000 => 180 months). plans/tiered-standard.ts uses a strict `balance < tier.maxBalanceCents`, which is correct. NOTE this is the OPPOSITE convention to the RAP AGI brackets in rap.2026-07-01.json, where an exact boundary falls in the LOWER band. Do not harmonise the two.",
+    "whereToRecheck": "govinfo.gov FR text above (ecfr.gov and federalregister.gov bot-block automated fetches; studentaid.gov returns 403). Re-check on any HEA amendment.",
+    "verifiedOn": "2026-08-15",
+    "seeAlso": "VERIFICATION-STATUS.md (full row-by-row verification, 2026-08-15)"
+  },
+  "tiers": [
+    { "maxBalanceCents": 2500000, "termMonths": 120 },
+    { "maxBalanceCents": 5000000, "termMonths": 180 },
+    { "maxBalanceCents": 10000000, "termMonths": 240 },
+    { "maxBalanceCents": null, "termMonths": 300 }
+  ],
+  "excludedLoanTypes": ["FFEL", "PERKINS", "HEAL"]
+}

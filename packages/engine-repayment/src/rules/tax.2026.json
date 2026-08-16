@@ -1,0 +1,36 @@
+{
+  "ruleSetVersion": "tax-2026",
+  "effectiveFrom": "2026-01-01",
+  "effectiveTo": null,
+  "citations": [
+    {
+      "label": "26 U.S.C. § 108(f)(5) — ARPA exclusion for discharged student debt expired 31 Dec 2025",
+      "url": "https://www.law.cornell.edu/uscode/text/26/108",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "label": "IRS Topic — cancellation of debt income",
+      "url": "https://www.irs.gov/taxtopics/tc431",
+      "lastVerified": "2026-08-08"
+    }
+  ],
+  "note": "Non-PSLF forgiveness is taxable as cancellation-of-debt income under current federal law (post-2025). PSLF discharge is excluded under 26 U.S.C. § 108(f)(1). The marginal rate below is a deliberate flat ESTIMATE for ranking purposes — the UI must label it as such. State treatment diverges and is not modelled in v1.",
+  "_verificationNote": {
+    "appliesTo": "TAX YEAR 2026. Federal tax treatment must be re-checked EVERY tax year — Congress can restore the lapsed exclusion retroactively, and the assumed marginal rate depends on annually-indexed brackets.",
+    "primarySource": "26 U.S.C. § 108(f). Text fetched from https://www.govinfo.gov/content/pkg/USCODE-2024-title26/html/USCODE-2024-title26-subtitleA-chap1-subchapB-partIII-sec108.htm and corroborated against IRS Topic 431, https://www.irs.gov/taxtopics/tc431",
+    "verifiedOn": "2026-08-15",
+    "verifiedFigures": "nonPslfForgivenessTaxable=true: § 108(f)(5) excludes discharges only 'after December 31, 2020, and before January 1, 2026'. That window has closed, so 2026+ IDR forgiveness is cancellation-of-debt income. IRS Topic 431 (live) still states the same closing date, indicating no extension. pslfForgivenessTaxable=false: § 108(f)(1) permanently excludes discharge conditioned on working a period of time in certain professions for a broad class of employers — the PSLF basis, with no sunset.",
+    "caveat": "The statutory text obtained is the 2024 U.S. Code edition; uscode.house.gov refused connection, so a post-2024 amendment to § 108(f) could not be ruled out from an official primary source. RE-VERIFY against a current U.S. Code edition before launch.",
+    "assumedMarginalRateIsNotVerified": "assumedMarginalRatePct is NOT a regulatory figure and cannot be verified as one. It is a flat modelling estimate; the true rate is borrower-specific because the forgiven amount stacks on top of other income. The UI must label it an assumption and should let the user override it. To make it defensible, cite the IRS Revenue Procedure setting the tax-year brackets and state the filing status and income assumed.",
+    "recheckAnnually": "Each January: (1) confirm § 108(f) is unamended at uscode.house.gov or govinfo.gov; (2) re-read https://www.irs.gov/taxtopics/tc431; (3) refresh the bracket assumption from that year's IRS Revenue Procedure. State treatment remains out of scope and must stay disclosed in the UI.",
+    "seeAlso": "VERIFICATION-STATUS.md (full row-by-row verification, 2026-08-15)"
+  },
+  "_knownGap": [
+    "KNOWN-GAP GAP-004: nonPslfForgivenessTaxable rests on the 2024 U.S. Code edition of 26 U.S.C. § 108(f). uscode.house.gov refused connection, so a 2025-26 amendment cannot be ruled out from a primary source. Re-check before launch.",
+    "KNOWN-GAP GAP-046: assumedMarginalRatePct is NOT a regulatory figure and cannot be verified as one — it is a flat modelling estimate. The UI must label it an assumption and should let the user override it. See /KNOWN-GAPS.md."
+  ],
+  "nonPslfForgivenessTaxable": true,
+  "pslfForgivenessTaxable": false,
+  "assumedMarginalRatePct": 22,
+  "stateTreatmentModelled": false
+}

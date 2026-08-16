@@ -1,0 +1,141 @@
+{
+  "stateId": "CA",
+  "stateName": "California",
+  "ruleSetVersion": "states-ca-2026-08.2",
+  "effectiveFrom": "2026-08-01",
+  "effectiveTo": null,
+  "_verificationNote": {
+    "lastPass": "2026-08-15",
+    "status": "VERIFIED against the state's own site — see /VERIFICATION-STATUS.md. Batch A remediation applied 2026-08-15 (ruleSetVersion bumped to .2): prescribed-but-untranscribed clause text removed and marked, missing clauses added, cites corrected. Contract generation now FAILS CLOSED for this state where any clause is untranscribed.",
+    "sourceFetched": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=7159 and .../sectionNum=7030.5 (both fetched 2026-08-15, official CA source)",
+    "VERBATIM_MANDATED": "FIXED (structurally) 2026-08-15: all FOUR paraphrases have been EMPTIED and marked VERBATIM_REQUIRED_NOT_TRANSCRIBED, and the engine now refuses to generate any CA contract until they are transcribed. A paraphrase is not a weaker clause — it is a non-compliant contract. Transcribe each character-for-character from the statute; do NOT reconstruct from memory. (1) requiredClauses[mechanics-lien-warning] — B&P 7159(e)(4), verbatim; the statutory warning continues past where the removed placeholder stopped, into prescribed language on preliminary notices and joint checks. (2) requiredClauses[right-to-cancel] — 7159(e)(6)(B)(i), verbatim, AT LEAST 12-POINT BOLDFACE; the removed placeholder's '(five business days if you are 65 or older)' belongs to the separate senior-citizen variant and must not be merged into the standard notice. (3) requiredClauses[cslb-notice] — 7159(e)(5), verbatim, AT LEAST 12-POINT TYPEFACE; the removed placeholder's hard-coded PO Box must not be carried forward without confirming it against current statutory text. (4) requiredClauses[downpayment-cap] — 7159(d)(8) prescribes a single capitalised sentence in AT LEAST 12-POINT BOLDFACE, not the multi-sentence prose that was encoded here. NOTE the down-payment RULE itself (lesser of $1,000 or 10%) was verified correct and is unchanged; only the text is missing.",
+    "dependsOn": {
+      "homeImprovementThresholdCents": "VERIFIED at $500. Statute reads 'exceeds five hundred dollars ($500)', so the trigger 'total >= threshold' is off by one — should be strictly greater than.",
+      "downpaymentCapRule": "VERIFIED. B&P 7159(d)(8): lesser of $1,000 or 10 percent of the contract price. The RULE as encoded is correct; only the TEXT is non-compliant.",
+      "writtenContractClause": "7159(d) enumerates THIRTEEN required elements; the placeholder covers roughly two. The cite at requiredClauses[written-contract].statute says 7159(c) — that is the writing requirement; the contents obligation is 7159(d).",
+      "licenseDisplayRequired": "VERIFIED true, but the authority is B&P 7030.5, which is NOT currently in citations[]. Add it. 7030.5 requires the licence number in all construction contracts, subcontracts and calls for bid, and all forms of advertising.",
+      "typographyRequirements": "FIXED (recorded) 2026-08-15: the clause schema now carries a `formatting` object and all four CA typography requirements are recorded there (12-point boldface / 12-point typeface). RECORDING IS NOT RENDERING — no contract surface yet sets type size or weight per clause, so this remains a blocker for generation even once the text is transcribed."
+    },
+    "recheckCadence": "Re-verify annually and after any legislative session amending B&P div. 3 ch. 9. The CSLB mailing address in the 7159(e)(5) notice can change without a statutory amendment."
+  },
+  "citations": [
+    {
+      "label": "CA Bus. & Prof. Code §7159 (home improvement contracts)",
+      "url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=7159",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "label": "Contractors State License Board — contract requirements overview",
+      "url": "https://www.cslb.ca.gov/",
+      "lastVerified": "2026-08-08"
+    }
+  ],
+  "homeImprovementThresholdCents": 50000,
+  "_knownGap": [
+    "KNOWN-GAP GAP-023: four §7159 notices carry prescribed wording and none is transcribed, so engine-trades FAILS CLOSED for California at any job size. Transcribe character-for-character from leginfo; do NOT reconstruct from memory.",
+    "KNOWN-GAP GAP-029: the formatting block RECORDS the statute's typography and placement; nothing downstream can RENDER it. No per-clause point size, no separate signed-and-dated notice page, no detachable duplicate. This state stays blocked even after its text is transcribed.",
+    "KNOWN-GAP GAP-030: written-contract lists roughly two of the THIRTEEN elements §7159(d) enumerates, and cites §7159(c), which is the writing requirement rather than the contents obligation. No verbatim wording is prescribed, so it may be drafted — it is simply incomplete.",
+    "KNOWN-GAP GAP-053: §7159 says the price must EXCEED $500; the trigger uses 'total >= threshold', so a contract at exactly $500 fires a clause the statute does not require.",
+    "KNOWN-GAP GAP-054: the string 'UNVERIFIED — ATTORNEY REVIEW REQUIRED' still sits inside the text field of DRAFTED clauses — the field that gets rendered into a contract. Move it out and confirm it can never reach a generated document. See /KNOWN-GAPS.md."
+  ],
+  "requiredClauses": [
+    {
+      "id": "written-contract",
+      "title": "Written contract required",
+      "text": "UNVERIFIED — ATTORNEY REVIEW REQUIRED. [Template] This agreement for home improvement work over $500 is set out in writing and signed by both parties before any work begins, as California law requires. The contract price is stated on the face of this agreement, and no work outside this scope will be performed without a signed change order.",
+      "trigger": "total >= threshold",
+      "statute": "Bus. & Prof. Code §7159(c)",
+      "textStatus": "DRAFTED"
+    },
+    {
+      "id": "right-to-cancel",
+      "_knownGap": [
+        "KNOWN-GAP GAP-023: §7159(e)(6)(B)(i), verbatim, at least 12-point BOLDFACE. Untranscribed. See /KNOWN-GAPS.md."
+      ],
+      "title": "Three-day right to cancel",
+      "text": "",
+      "trigger": "always",
+      "statute": "Bus. & Prof. Code §7159(e)(6)(B)(i)",
+      "textStatus": "VERBATIM_REQUIRED_NOT_TRANSCRIBED",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=7159",
+      "formatting": {
+        "minPointSize": 12,
+        "boldface": true,
+        "notes": [
+          "The removed placeholder merged '(five business days if you are 65 or older)' into the standard notice. That five-day window belongs to the SEPARATE senior-citizen variant and must not appear in the standard text.",
+          "The senior-citizen variant is a distinct prescribed notice and is not yet modelled as its own clause."
+        ]
+      }
+    },
+    {
+      "id": "downpayment-cap",
+      "_knownGap": [
+        "KNOWN-GAP GAP-023: §7159(d)(8) prescribes a single capitalised sentence in at least 12-point boldface. Untranscribed. The down-payment RULE itself (lesser of $1,000 or 10%) is VERIFIED and unchanged. See /KNOWN-GAPS.md."
+      ],
+      "title": "Down payment limit notice",
+      "text": "",
+      "trigger": "downpayment > min($1000, 10%)",
+      "statute": "Bus. & Prof. Code §7159(d)(8)",
+      "textStatus": "VERBATIM_REQUIRED_NOT_TRANSCRIBED",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=7159",
+      "formatting": {
+        "minPointSize": 12,
+        "boldface": true,
+        "capitalized": true,
+        "notes": [
+          "§7159(d)(8) prescribes a SINGLE capitalised sentence. The removed placeholder was multi-sentence prose.",
+          "The underlying RULE — down payment may not exceed the lesser of $1,000 or 10 percent of the contract price — is verified and is what `trigger` encodes. Only the notice wording is missing."
+        ]
+      }
+    },
+    {
+      "id": "mechanics-lien-warning",
+      "_knownGap": [
+        "KNOWN-GAP GAP-023: §7159(e)(4), verbatim. The deleted placeholder stopped short of the prescribed language on preliminary notices and joint checks. Untranscribed. See /KNOWN-GAPS.md."
+      ],
+      "title": "Mechanics lien warning",
+      "text": "",
+      "trigger": "always",
+      "statute": "Bus. & Prof. Code §7159(e)(4)",
+      "textStatus": "VERBATIM_REQUIRED_NOT_TRANSCRIBED",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=7159",
+      "formatting": {
+        "notes": [
+          "The statutory warning continues past where the removed placeholder stopped, into prescribed language on preliminary notices and joint checks.",
+          "§7159(e)(4) states no minimum point size; check the subdivision's own placement requirements when transcribing."
+        ]
+      }
+    },
+    {
+      "id": "cslb-notice",
+      "_knownGap": [
+        "KNOWN-GAP GAP-023: §7159(e)(5), verbatim, at least 12-point typeface. Untranscribed. Do NOT carry the deleted placeholder's hard-coded PO Box forward without confirming it against the current statutory text. See /KNOWN-GAPS.md."
+      ],
+      "title": "CSLB information notice",
+      "text": "",
+      "trigger": "always",
+      "statute": "Bus. & Prof. Code §7159(e)(5)",
+      "textStatus": "VERBATIM_REQUIRED_NOT_TRANSCRIBED",
+      "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=7159",
+      "formatting": {
+        "minPointSize": 12,
+        "notes": [
+          "At least 12-point typeface. The statute does not require boldface for this notice.",
+          "The removed placeholder carried a hard-coded CSLB PO Box. Do not carry any mailing address forward without confirming it against the current statutory text — the address can change without a statutory amendment."
+        ]
+      }
+    }
+  ],
+  "licenseDisplay": {
+    "statewide": true,
+    "statute": "Bus. & Prof. Code §7030.5",
+    "sourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=7030.5",
+    "note": "§7030.5 requires every licensee to include the licence number in all construction contracts, in subcontracts and calls for bid, and in all forms of advertising.",
+    "jurisdictions": []
+  },
+  "prohibitedTerms": [
+    "Any waiver of the buyer's right to cancel",
+    "Confession of judgment or waiver of legal rights",
+    "Payment schedule that exceeds the value of work performed and materials delivered"
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "ruleSetVersion": "overtime-2026.1",
+  "taxYear": 2026,
+  "effectiveFrom": "2026-01-01",
+  "effectiveTo": "2026-12-31",
+  "verified": false,
+  "_verificationNote": {
+    "taxYearThisFileApplies": 2026,
+    "lastIndependentlyVerified": "2026-08-15",
+    "indexedForInflation": false,
+    "whyNotIndexed": "IRC 225 (added by P.L. 119-21 sec. 70202) contains no inflation-adjustment clause. Rev. Proc. 2025-32 (the 2026 inflation adjustments) has NO section for IRC 225, confirming the $12,500/$25,000 caps and the $150,000/$300,000 thresholds are the same fixed statutory figures for tax years 2025 through 2028.",
+    "sunset": "No deduction for any taxable year beginning after 2028-12-31 (IRC 225(g)). This file must not be cloned forward past tax year 2028.",
+    "howToRecheckAnnually": [
+      "1. Schedule 1-A (Form 1040), Part III — the authoritative computation, including the rounding convention: https://www.irs.gov/pub/irs-pdf/f1040s1a.pdf",
+      "2. IRS FAQ fact sheet on the qualified overtime deduction (currently FS-2026-13, Aug 2026): https://www.irs.gov/pub/taxpros/fs-2026-13.pdf",
+      "3. IRS Notice 2025-69 — definition of the FLSA overtime premium: https://www.irs.gov/pub/irs-drop/n-25-69.pdf",
+      "4. The year's IRS inflation-adjustment revenue procedure — check whether an IRC 225 section has appeared: https://www.irs.gov/pub/irs-drop/rp-25-32.pdf"
+    ],
+    "roundingIsDeliberatelyDifferent": "phaseOut.fractionCountsAsFullStep is FALSE here, and that is correct. Schedule 1-A line 19: 'Divide line 18 by $1,000. If the resulting number isn't a whole number, DECREASE the result to the next LOWER whole number. (For example, decrease 1.5 to 1, and decrease 0.05 to 0.)' IRC 225(b)(2)(A) says 'for each $1,000' with NO 'or portion thereof'. This is the OPPOSITE of car-loan.2026.json, where IRC 163(h)(4)(C)(ii)(I) does say 'or portion thereof' and Schedule 1-A line 28 rounds UP. The three flags must never be 'harmonised'.",
+    "fixedOn": "2026-08-15 — fractionCountsAsFullStep flipped true → false, and the false branch of phase-out.ts changed from roundHalfUpToCent to Math.floor. Both changes were required: half-up rounding is not floor.",
+    "scopeNote": "premiumShareOfRegularRateBps=5000 is correct ONLY for FLSA-required time-and-a-half. Per Notice 2025-69, pay above the FLSA-required premium (e.g. contractual double time) is NOT qualified overtime, and overtime owed only under state law or a CBA to an FLSA-exempt employee is NOT qualified at all."
+  },
+  "citations": [
+    {
+      "label": "P.L. 119-21 (OBBBA) § 70202 — qualified overtime compensation deduction, IRC § 225",
+      "url": "https://www.congress.gov/bill/119th-congress/house-bill/1",
+      "lastVerified": "2026-08-08",
+      "note": "Only the FLSA § 7 overtime PREMIUM (the 0.5× in time-and-a-half) qualifies. Caps $12,500 single / $25,000 joint per statute. PHASE-OUT RATE ($100 per $1,000 over threshold) — RE-VERIFY against final Treasury regulations before ship."
+    },
+    {
+      "label": "29 U.S.C. § 207 (FLSA overtime premium definition)",
+      "url": "https://www.law.cornell.edu/uscode/text/29/207",
+      "lastVerified": "2026-08-08"
+    }
+  ],
+  "_knownGap": [
+    "KNOWN-GAP GAP-005: no Treasury regulation implementing IRC § 225 was located, and its ABSENCE IS NOT ESTABLISHED — federalregister.gov bot-blocks every path, so the search could not be run. Operative guidance is Notice 2025-69 and FS-2026-13 only. Contrast tips, where TD 10044 was read in full. A final § 225 regulation could narrow 'qualified overtime' further than the engine models. See /KNOWN-GAPS.md."
+  ],
+  "capSingleCents": 1250000,
+  "capJointCents": 2500000,
+  "premiumShareOfRegularRateBps": 5000,
+  "payMultiplierBps": 15000,
+  "phaseOut": {
+    "model": "PER_1000_STEP",
+    "thresholdSingleCents": 15000000,
+    "thresholdJointCents": 30000000,
+    "reductionPer1000Cents": 10000,
+    "fractionCountsAsFullStep": false
+  },
+  "requireJointIfMarried": true
+}

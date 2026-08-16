@@ -1,0 +1,101 @@
+{
+  "countyId": "il-cook",
+  "state": "IL",
+  "stateName": "Illinois",
+  "countyName": "Cook County",
+  "ruleSetVersion": "2026-08",
+  "_verificationNote": {
+    "lastPass": "2026-08-15",
+    "status": "PARTIALLY VERIFIED — see /VERIFICATION-STATUS.md. No values changed in this pass.",
+    "blockingGap": "The Cook County Assessor's own site (cookcountyassessoril.gov) is bot-blocked and could not be read. Every Assessor-side value below is either unresolved or corroborated only from the Board of Review.",
+    "dependsOn": {
+      "appealWindow": "The real rule is a per-township CLOSE DATE published by each body each session, NOT a fixed interval after notice. 'daysAfterNotice: 30' is a MINIMUM, not the rule — Board of Review FAQ: 'All townships are opened a minimum of 30 days.' Confirmed against the 2026 calendar: Group 1 opened 2026-08-03 and closed 2026-09-01 (a 29-day span), so counting 30 days forward overshoots the real deadline. Re-check EVERY SESSION at https://www.cookcountyboardofreview.com/dates-and-deadlines and the Assessor's calendar at https://www.cookcountyassessoril.gov/assessment-calendar-and-deadlines",
+      "evidenceDeadline": "NOT MODELLED. There is a separate evidence-submission deadline AFTER the filing deadline (2026 Group 1: filing closed 2026-09-01, evidence due 2026-09-11). A user can file on time and still lose on evidence. Source: https://www.cookcountyboardofreview.com/sites/g/files/ywwepo261/files/document/file/2026-08/2026TOWNSHIPOPEN-CLOSE.pdf",
+      "filingFee": "$0 VERIFIED for the Board of Review only ('At the Board of Review filing is free') at https://www.cookcountyboardofreview.com/about/frequently-asked-questions — the Assessor's Office half of waiverConditions is UNVERIFIED.",
+      "levels": "VERIFIED that PTAB and Circuit Court are ALTERNATIVES, not sequential steps, per the Board of Review FAQ.",
+      "argumentTypes": "UNRESOLVED. The Board of Review Official Rules do not enumerate permissible grounds, and the BOR frames its role as appeals of 'over-valuation' — which does not confirm UNIFORMITY as the primary residential ground. primaryArgument selects the entire ratio model in ratio.ts, so this is high-stakes. Re-check https://www.cookcountyboardofreview.com/board-review-official-rules",
+      "assessmentLevelPctOfMarket": "UNRESOLVED. The Cook County Classification Ordinance could not be reached from any official host (ilga.gov, tax.illinois.gov, illinois.gov, cookcountyassessoril.gov all unreachable). Only secondary summaries support 10%. Do NOT set citations[].verified on this value until the ordinance itself is read.",
+      "estimatedTaxRateOnAssessedBps": "UNRESOLVED, and it is multiplied directly into the user-facing 'estimated annual overpayment' in verdict.ts. Cook's real burden is assessment level x STATE EQUALIZATION FACTOR x composite local rate; the equalizer is re-struck annually by the Illinois Dept of Revenue. Model the factors explicitly rather than collapsing them into one constant.",
+      "compsWindowMonths": "UNRESOLVED — no published standard found in any reachable source. Unsourced default.",
+      "reliefModel": "Added 2026-08-15 as a schema field only, no Cook value changed. GAP means 'no statutory ratio corridor constrains the board', which is the engine's default and matches how Cook outcomes were already being decided. If Illinois turns out to apply a median-level test comparable to New Jersey's Chapter 123, this must be revisited — it was NOT verified, because the Assessor's site is bot-blocked."
+    },
+    "staleUrls": "citations[0] (cookcountyassessor.com) returns HTTP 301 to cookcountyassessoril.gov. forms[bor-complaint].pdfUrl is a site root, not a form — filing is via https://appeals.cookcountyboardofreview.com/SubmitAppeal/AppealPage1",
+    "recheckCadence": "Township calendars are republished EVERY SESSION. Re-verify before each tax year opens."
+  },
+  "citations": [
+    {
+      "label": "Cook County Assessor's Office — Appeals",
+      "url": "https://www.cookcountyassessor.com/appeals",
+      "lastVerified": "2026-08-08",
+      "verified": false
+    },
+    {
+      "label": "Cook County Board of Review — Residential Appeals",
+      "url": "https://www.cookcountyboardofreview.com/",
+      "lastVerified": "2026-08-08",
+      "verified": false
+    },
+    {
+      "label": "Illinois Property Tax Appeal Board (PTAB)",
+      "url": "https://www.ptab.illinois.gov/",
+      "lastVerified": "2026-08-08",
+      "verified": false,
+      "_knownGap": [
+        "KNOWN-GAP GAP-006: never resolved — ptab.illinois.gov returns DNS ENOTFOUND from the verification environment. Not confirmed dead, just unreachable. Confirm from a different network. See /KNOWN-GAPS.md."
+      ]
+    }
+  ],
+  "appealWindow": {
+    "_knownGap": [
+      "KNOWN-GAP GAP-008: deadlineKind NOTICE_RELATIVE / daysAfterNotice 30 is the WRONG MODEL. The operative deadline is a per-township CLOSE DATE published by each body each session; 30 days is a stated MINIMUM. 2026 Group 1 opened 2026-08-03 and closed 2026-09-01 — a 29-day span — so counting 30 days forward overshoots and a user files late. Needs a TOWNSHIP_CALENDAR kind plus a per-township date table; neither exists and no calendar was invented.",
+      "KNOWN-GAP GAP-009: there is a SEPARATE EVIDENCE-SUBMISSION DEADLINE after the filing deadline (2026 Group 1: filing closed 2026-09-01, evidence due 2026-09-11) and the engine has no concept of one. A user can file on time and still lose. See /KNOWN-GAPS.md."
+    ],
+    "opens": "when your township's reassessment notices mail — Cook County's 38 townships open for appeal on a rolling calendar through the year",
+    "deadline": "rule",
+    "deadlineRule": "About 30 days after your township opens for appeals at the Assessor's Office. The Board of Review opens a separate, later window for each township. Check your township's dates on the Assessor's appeal calendar. [UNVERIFIED — confirm the current-year township calendar]",
+    "deadlineKind": "NOTICE_RELATIVE",
+    "daysAfterNotice": 30
+  },
+  "filingFee": {
+    "_knownGap": [
+      "KNOWN-GAP GAP-007: $0 is VERIFIED for the Board of Review only. The waiverConditions sentence also claims $0 at the ASSESSOR'S OFFICE, which is unverified — cookcountyassessoril.gov is 403 bot-blocked. verdict.ts compares estimated savings against this fee, so if the Assessor charges, a 'worth it' verdict may not be. See /KNOWN-GAPS.md."
+    ],
+    "amountCents": 0,
+    "waiverConditions": "No fee to file a residential appeal with the Assessor's Office or the Board of Review. [UNVERIFIED]"
+  },
+  "appealBody": "Cook County Assessor's Office, then the Cook County Board of Review",
+  "levels": [
+    "Assessor's Office appeal (first level, online filing)",
+    "Cook County Board of Review",
+    "Illinois Property Tax Appeal Board (PTAB) or Circuit Court of Cook County"
+  ],
+  "forms": [
+    {
+      "id": "ccao-online",
+      "name": "Online residential appeal (Assessor's portal)",
+      "pdfUrl": "https://www.cookcountyassessor.com/online-appeals",
+      "fillable": true
+    },
+    {
+      "id": "bor-complaint",
+      "name": "Board of Review residential complaint",
+      "pdfUrl": "https://www.cookcountyboardofreview.com/",
+      "fillable": true
+    }
+  ],
+  "evidenceStandard": "Residential appeals commonly rest on lack of uniformity — comparable homes in the same neighborhood and class assessed at lower values per square foot — or on recent sale evidence and characteristics errors. Photographs and comparable assessment printouts are accepted. [UNVERIFIED — confirm current evidence rules]",
+  "_knownGap": [
+    "KNOWN-GAP GAP-010: evidenceStandard asserts comparable-count and photograph rules that no reachable source states. The Board of Review Official Rules set no quota and the FAQ calls photographs 'strongly encouraged'. Assessor-side rules are 403-blocked.",
+    "KNOWN-GAP GAP-011: primaryArgument UNIFORMITY is UNCONFIRMED — the BOR frames its role as appeals of 'over-valuation', which supports MARKET_VALUE and does not establish UNIFORMITY. This field selects the entire ratio model in ratio.ts, so if it is wrong every Cook verdict is computed on the wrong basis. Highest-stakes Cook row.",
+    "KNOWN-GAP GAP-012: compsWindowMonths 18 is an unsourced default — no published standard found in any reachable source.",
+    "KNOWN-GAP GAP-013: assessmentLevelPctOfMarket 10 rests only on SECONDARY summaries. The Cook County Classification Ordinance could not be reached from any official host (ilga.gov, tax.illinois.gov, illinois.gov, cookcountyassessoril.gov). It converts market value to assessed value in every Cook computation. Do NOT set citations[].verified on this value until the ordinance itself is read.",
+    "KNOWN-GAP GAP-014: estimatedTaxRateOnAssessedBps 2000 is a rough estimate collapsing three separately-published factors — assessment level x the Illinois state equalization factor (re-struck annually) x the composite local rate — into one constant, and it is multiplied directly into the user-facing 'estimated annual overpayment' in verdict.ts. See /KNOWN-GAPS.md."
+  ],
+  "argumentTypes": ["UNIFORMITY", "MARKET_VALUE"],
+  "primaryArgument": "UNIFORMITY",
+  "reliefModel": "GAP",
+  "compsWindowMonths": 18,
+  "assessmentLevelPctOfMarket": 10,
+  "estimatedTaxRateOnAssessedBps": 2000,
+  "successRateNote": null
+}

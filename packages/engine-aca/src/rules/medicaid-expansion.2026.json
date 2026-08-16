@@ -1,0 +1,37 @@
+{
+  "ruleSetVersion": "medicaid-expansion-2026.draft-1",
+  "effectiveFrom": "2026-01-01",
+  "effectiveTo": null,
+  "verificationStatus": "UNVERIFIED",
+  "verificationNote": "Expansion status as of build-time knowledge (10 non-expansion states). Status can change by state action at any time — re-verify against KFF's tracker and state authority before launch and quarterly after. See VERIFICATION-NEEDED.md.",
+  "_verificationNote": "AUDITED 2026-08-15 — ALL 51 FLAGS CONFIRMED CORRECT, no change needed. Applies to: COVERAGE YEAR 2026, status as of the most recent CMS reporting. Verified against a CMS PRIMARY dataset rather than a narrative page: the CMS-64 VIII Group Break Out Report ('Medicaid Enrollment - New Adult Group'), downloaded from https://download.medicaid.gov/data/medicaid-enrollment-new-adult-group-02052026.csv on 2026-08-15 (file dated 5 Feb 2026, 7,854 rows, all 50 states + DC + territories). CMS's own dataset description supplies the decision rule: 'The VIII Group is only applicable for states that have expanded their Medicaid programs by adopting the VIII Group. VIII Group enrollment information for the states that have not expanded their Medicaid program is noted as N/A.' Taking each state's most recent reporting period, exactly ten report no VIII Group enrollment: AL, FL, GA, KS, MS, SC, TN, TX, WI, WY — identical to the set encoded false below. CURRENCY CAVEAT: the file's newest enrollment period is June 2025, so it cannot by itself rule out a change since. Cross-checked against KFF's tracker (SECONDARY SOURCE, explicitly labelled as such), page-dated 21 May 2026, which still reports 41 adopting jurisdictions and 10 non-adopting; since no state has ever rescinded expansion, an unchanged count of 10 closes the gap. THREE THINGS THIS BOOLEAN CANNOT EXPRESS, all of which affect advice: (1) GEORGIA runs 'Pathways to Coverage', a partial program covering adults to 100% FPL conditioned on 80 hours/month of work — a Georgia user at 90% FPL may be Medicaid-eligible despite the false flag. (2) WISCONSIN correctly never adopted the VIII Group but covers childless adults to 100% FPL under a waiver, so it has NO coverage gap; CMS renders its adult column as 'No/95%'. (3) Several expansion states cover well above 138% (CMS: DC 210%, MN 200%, NY 200%), so copy saying 'Medicaid up to 138% in your state' understates those. Also note CMS's eligibility table lists expansion states at 133% because the operative 138% includes the 5% FPL disregard — worth stating on the methodology page so users who look up '133%' do not think the engine is wrong. WHERE TO RE-CHECK QUARTERLY: re-download the New Adult Group CSV via the data.medicaid.gov DKAN API (https://data.medicaid.gov/api/1/search/?fulltext=expansion) and re-derive; use KFF only as a currency cross-check, never as the primary. See VERIFICATION-STATUS.md.",
+  "_verifiedOn": "2026-08-15",
+  "_appliesToCoverageYear": 2026,
+  "_dataAsOfEnrollmentPeriod": "2025-06",
+  "citations": [
+    {
+      "label": "KFF — Status of State Medicaid Expansion Decisions",
+      "url": "https://www.kff.org/status-of-state-medicaid-expansion-decisions/",
+      "lastVerified": null
+    },
+    {
+      "label": "42 U.S.C. §1396a(a)(10)(A)(i)(VIII) — 138% FPL expansion group",
+      "url": "https://www.law.cornell.edu/uscode/text/42/1396a",
+      "lastVerified": "2026-08-08"
+    }
+  ],
+  "note": "expanded=true means adults to 138% FPL qualify for Medicaid, so marketplace PTC below 138% generally does not apply. expanded=false states have a coverage gap below 100% FPL; 100–138% remains PTC-eligible.",
+  "states": {
+    "AL": false, "AK": true, "AZ": true, "AR": true, "CA": true,
+    "CO": true, "CT": true, "DE": true, "DC": true, "FL": false,
+    "GA": false, "HI": true, "ID": true, "IL": true, "IN": true,
+    "IA": true, "KS": false, "KY": true, "LA": true, "ME": true,
+    "MD": true, "MA": true, "MI": true, "MN": true, "MS": false,
+    "MO": true, "MT": true, "NE": true, "NV": true, "NH": true,
+    "NJ": true, "NM": true, "NY": true, "NC": true, "ND": true,
+    "OH": true, "OK": true, "OR": true, "PA": true, "RI": true,
+    "SC": false, "SD": true, "TN": false, "TX": false, "UT": true,
+    "VT": true, "VA": true, "WA": true, "WV": true, "WI": false,
+    "WY": false
+  }
+}

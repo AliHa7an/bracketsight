@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Fineprint">
+  <!--
+    The mark: a ruled document with one line picked out — the line in the fine
+    print that decides the money. Same drawing as components/layout/Logo.tsx,
+    which reads the six colour tokens and so re-themes per section. A standalone
+    SVG file has no page to inherit from, so this copy carries the default
+    (loans) palette: ledger navy ground, ledger green on the line that matters.
+  -->
+  <rect width="32" height="32" rx="3" fill="#14213A"/>
+  <g stroke="#F5F7FA" stroke-opacity="0.28" stroke-width="2" stroke-linecap="round">
+    <path d="M7 9h18"/>
+    <path d="M7 14h18"/>
+    <path d="M7 24h12"/>
+  </g>
+  <path d="M7 19h13" stroke="#0F6E5C" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="25" cy="19" r="2.5" fill="#0F6E5C"/>
+</svg>
