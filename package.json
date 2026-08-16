@@ -1,17 +1,32 @@
 {
   "name": "fineprint",
-  "private": true,
   "version": "0.1.0",
-  "packageManager": "pnpm@11.21.0",
+  "private": true,
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "typecheck": "turbo run typecheck",
-    "lint": "turbo run lint",
-    "test": "turbo run test"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "next typegen && tsc --noEmit",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "5.7.1",
+    "d3-scale": "4.0.2",
+    "next": "16.3.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-hook-form": "7.85.0",
+    "zod": "4.4.3"
   },
   "devDependencies": {
-    "turbo": "2.5.8",
+    "@tailwindcss/postcss": "4.1.18",
+    "@types/d3-scale": "4.0.9",
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.8",
+    "@types/react-dom": "19.2.4",
+    "tailwindcss": "4.1.18",
     "typescript": "5.9.3",
     "vitest": "4.1.10"
   },

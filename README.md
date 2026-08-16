@@ -15,21 +15,22 @@ which of them cannot be undone".
 ## Layout
 
 ```
-apps/web                  the single Next.js app; five section routes
-packages/engine-repayment  \
-packages/engine-paycheck    |  pure TypeScript. zero dependencies,
-packages/engine-aca         |  zero AI, zero network. integer cents.
-packages/engine-property    |  rules in versioned, cited JSON.
-packages/engine-trades     /
-packages/ui               the design system: one system, five identities
-docs/                     the specs the build answers to
+src/app             all routes; five sections under /loans /paycheck /aca /property /trades
+src/engines/*       the five calculation engines. pure TypeScript, no dependencies,
+                    no AI, no network. integer cents. rules in versioned, cited JSON.
+src/components/ui   the design system: one system, five identities
+src/components/*    per-section components
+tests/engines/*     399 engine tests; the app's own 69 sit beside their modules
+docs/               the specs the build answers to
 ```
 
+One Next.js app, one `package.json`, no workspace. npm, yarn or pnpm all work.
+
 ```bash
-pnpm install
-pnpm dev            # http://localhost:3000
-pnpm test           # 468 tests
-pnpm typecheck && pnpm build
+npm install
+npm run dev         # http://localhost:3000
+npm test            # 468 tests
+npm run typecheck && npm run build
 ```
 
 ## How five identities share one system
