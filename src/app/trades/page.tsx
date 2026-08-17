@@ -7,6 +7,7 @@ import TakeoffBuilder from "@/components/trades/TakeoffBuilder";
 import { LastVerified } from "@/components/ui";
 import { formatDate } from "@/components/ui/format";
 import { absoluteUrl } from "@/lib/site";
+import { renderableCitation } from "@/lib/trades/citation";
 
 export const metadata: Metadata = {
   title: "Free Estimate Builder for Trades — Itemised, With Ranges",
@@ -34,7 +35,10 @@ const jsonLd = {
 };
 
 export default function HomePage() {
-  const citation = TRADE_RULES.decks.citations[0];
+  // Rendered through `renderableCitation` because the pricing rulesets cite a
+  // reserved `.invalid` host by design — see src/lib/trades/citation.ts.
+  const rawCitation = TRADE_RULES.decks.citations[0];
+  const citation = rawCitation ? renderableCitation(rawCitation) : undefined;
 
   return (
     <div className="space-y-8">

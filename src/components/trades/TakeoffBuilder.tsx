@@ -60,6 +60,7 @@ import {
 import { formatCents, formatDate, formatPct, usd } from "@/components/ui/format";
 import { DUR_BASE, DUR_SIGNATURE, prefersReducedMotion } from "@/components/ui/motion";
 import { saveEstimate } from "@/lib/trades/store";
+import { renderableCitation } from "@/lib/trades/citation";
 
 /* ── labels ─────────────────────────────────────────────────────────────── */
 
@@ -248,7 +249,10 @@ export default function TakeoffBuilder() {
 
   /* ── line rendering ───────────────────────────────────────────────────── */
 
-  const primaryCitation = rules.citations[0];
+  // The pricing rulesets cite a reserved `.invalid` host by design; every
+  // per-line trace linked straight at a DNS failure. See src/lib/trades/citation.ts.
+  const rawCitation = rules.citations[0];
+  const primaryCitation = rawCitation ? renderableCitation(rawCitation) : undefined;
 
   function lineTrace(li: LineItem) {
     if (!primaryCitation) return null;

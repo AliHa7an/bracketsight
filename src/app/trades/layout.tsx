@@ -1,5 +1,8 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+
+import { TRADE_IDS, TRADE_RULES } from "@/engines/trades";
 
 /* Layout, touch and print behaviour only — no tokens, no colour values. The
    section's identity still comes entirely from `data-section` + globals.css.
@@ -38,8 +41,63 @@ export default function TradesSectionLayout({ children }: { children: ReactNode 
      * that job belonged to `<main>` — so it is supplied here rather than added
      * to nine page files.
      */
-    <div data-section="trades" className="flex-1">
-      <div className="mx-auto w-full max-w-6xl px-4 py-6">{children}</div>
+    <div data-section="trades" className="flex min-h-full flex-1 flex-col">
+      <div className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">{children}</div>
+
+      {/*
+        Every page in this section carries the pricing warning, not just the
+        tool. Every unit cost, labour hour, waste factor and regional multiplier
+        in the three rulesets is placeholder reference data, and the staleness
+        window each file sets for itself has already run out — so the honest
+        statement is stronger than "prices may vary", and it belongs on the
+        changelog and the contract pages too, not only where the estimate is
+        built. The dates and the trade count are read from the rule files.
+      */}
+      <div className="hairline-t mt-16">
+        <div
+          className="mx-auto max-w-6xl space-y-3 px-4 py-6 text-dim"
+          style={{ fontSize: "var(--text-step--1)" }}
+        >
+          <p style={{ maxWidth: "var(--measure)" }}>
+            This is an independent estimating and paperwork tool. It is not a quote, not a
+            contract until you and your customer sign one, and not legal advice — a state&rsquo;s
+            required clauses change, and a contract that matters is worth an hour of a
+            construction attorney&rsquo;s time. Nothing you enter leaves your browser.
+          </p>
+
+          <p className="hairline-t pt-3" style={{ maxWidth: "var(--measure)" }}>
+            Pre-launch build, and the prices are the part to be careful with. Every unit cost,
+            labour hour, labour rate, waste factor, access multiplier and regional multiplier in
+            all <span className="num">{TRADE_IDS.length}</span> rulesets is{" "}
+            <strong className="text-ink">placeholder reference data</strong>, modelled rather
+            than licensed, and none has been sanity-checked by a working contractor. Each file
+            also sets its own staleness window of{" "}
+            <span className="num">{TRADE_RULES.decks.staleAfterDays}</span> days from{" "}
+            <span className="num">
+              <time dateTime={TRADE_RULES.decks.effectiveFrom}>
+                {TRADE_RULES.decks.effectiveFrom}
+              </time>
+            </span>
+            , which has already elapsed. Use the structure — the takeoff, the assemblies, the
+            ranges, the clause list — and put your own numbers over the top. The state contract
+            requirements are a different matter: those are cited to statute, and where a
+            statutory notice has not been transcribed word for word the generator refuses to
+            produce the document rather than paraphrase it. What is settled and what is not is
+            on{" "}
+            <Link href="/trades/sources" className="underline underline-offset-4 hover:text-ink">
+              sources
+            </Link>{" "}
+            and{" "}
+            <Link
+              href="/trades/pricing-methodology"
+              className="underline underline-offset-4 hover:text-ink"
+            >
+              pricing methodology
+            </Link>
+            .
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

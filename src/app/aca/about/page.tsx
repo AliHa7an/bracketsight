@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <article className="density-reading mx-auto px-4 py-10">
-      <h1>About Bracketsight</h1>
+      <h1>About the ACA cliff planner</h1>
       <p className="text-ink">
         Bracketsight is a planning tool for the households the{" "}
         <span className="num">2026</span> ACA subsidy cliff actually hits:

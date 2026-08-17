@@ -1,0 +1,152 @@
+---
+title: The 400% subsidy cliff, and what one dollar costs
+description: Above 400% of the poverty line the premium tax credit does not taper — it stops. One dollar of extra income can cost a household thousands.
+slug: aca-subsidy-cliff-400-percent
+tool: aca
+cluster: subsidy-cliff
+primaryKeyword: 400% FPL subsidy cliff
+secondaryKeywords:
+  - premium tax credit income limit
+  - ACA subsidy cliff 2026
+  - advance premium tax credit repayment
+intent: decision
+publishedAt: "2026-08-18"
+updatedAt: "2026-08-18"
+author: Bracketsight editorial
+reviewedBy: UNREVIEWED
+sources:
+  - label: Rev. Proc. 2025-25 § 3.01 — the 2026 applicable percentage table
+    url: https://www.irs.gov/pub/irs-drop/rp-25-25.pdf
+    lastVerified: "2026-08-15"
+  - label: Form 8962 instructions, Worksheet 2 — the ceiling test and the line 5 entry
+    url: https://www.irs.gov/pub/irs-pdf/i8962.pdf
+    lastVerified: "2026-08-15"
+  - label: HHS Poverty Guidelines for 2025, 90 Fed. Reg. 5917 (17 Jan 2025) — the table 2026 coverage uses
+    url: https://www.govinfo.gov/content/pkg/FR-2025-01-17/pdf/2025-01377.pdf
+    lastVerified: "2026-08-15"
+  - label: P.L. 119-21 § 71305 — repeal of the advance credit repayment limitation
+    url: https://www.govinfo.gov/content/pkg/PLAW-119publ21/html/PLAW-119publ21.htm
+    lastVerified: "2026-08-15"
+---
+
+import { figureText } from "@/lib/content";
+
+Most tax thresholds taper. You cross one, and a benefit shrinks by a few cents
+on the dollar. The premium tax credit ceiling is not one of those. Cross it by
+a single dollar and the entire credit is gone — not reduced, gone — and if you
+took it in advance during the year, you pay all of it back.
+
+<KeyFigure id="aca.cliff.ceilingMultiple" variant="block" />
+
+## Why there is no grace band
+
+The natural assumption is that a rule expressed in whole percentages must have
+a little slack in it: if the limit is 400%, surely 400.4% rounds down. It does
+not, and the reason is the order of operations on Form 8962.
+
+Worksheet 2 asks first whether household income is **more than** the poverty
+line multiplied by 4.0. If the answer is yes, you enter
+<KeyFigure id="aca.cliff.ineligibleSentinel" /> on line 5 and stop. The
+whole-percent truncation that governs every interior boundary — 133%, 150%,
+200%, 250%, 300% — is only reached in the "no" branch. So the last eligible
+household income is exactly four times the poverty line, to the dollar.
+
+For a single-person household in the 48 contiguous states, the poverty figure
+the 2026 coverage year uses is <KeyFigure id="aca.fpl.firstPerson" />, plus
+<KeyFigure id="aca.fpl.additionalPerson" /> for each additional person. Note
+which year that is: marketplace eligibility for a coverage year uses the
+guidelines in effect when open enrolment began, which is the **previous**
+calendar year's table. Using the current year's figures moves the cliff by
+several hundred dollars and puts households on the wrong side of it.
+
+## What the credit is worth right up to the edge
+
+Below the ceiling, the credit is the gap between the benchmark plan's premium
+and what the law says your household should be able to afford. That expected
+contribution rises with income across six bands.
+
+<FigureTable id="aca.applicablePercentage.bands" />
+
+At the top of the range a household is expected to pay
+<KeyFigure id="aca.applicablePercentage.top" /> of its income toward the
+benchmark plan, and the credit covers everything above that. One dollar later
+the expected contribution is 100% of the premium. Nothing in the table
+describes that step, because the step is not in the table — it is the table
+ending.
+
+## The part that catches people after the fact
+
+The credit is usually taken in advance, paid straight to the insurer month by
+month, based on the income you estimated at enrolment. Reconciliation happens
+on the following year's return. Estimate low and you owe the difference.
+
+<KeyFigure id="aca.clawback.capped" variant="block" />
+
+Until tax year 2025 there was a repayment limitation: a household under 400%
+of the poverty line that had underestimated its income repaid at most a capped
+amount. P.L. 119-21 § 71305 struck that provision for tax years beginning after
+31 December 2025. There is now no cap at any income. A household that took
+$9,000 of advance credit and finished the year one dollar over the ceiling
+repays the whole $9,000.
+
+That change is why the cliff is worth more attention than it used to be. The
+edge was always there; the airbag underneath it was removed.
+
+## What can still be done about it
+
+The credit is computed on modified adjusted gross income, and MAGI is not a
+number handed to you — it is the result of decisions, several of which are
+still open after the year has ended. A deductible traditional IRA contribution,
+an HSA contribution, a self-employed retirement plan contribution: each reduces
+MAGI directly, and near the ceiling each dollar of reduction is worth far more
+than its marginal tax value, because it is buying back a credit that is
+all-or-nothing.
+
+The arithmetic that matters is not "how much tax does this save" but "does this
+land the household under four times its poverty figure". Those are different
+questions with different answers.
+
+<ToolCTA tool="aca" label="Measure your distance to the cliff">
+  The planner computes your household&rsquo;s exact distance to the ceiling in
+  dollars, what one more dollar of income costs at your position, and which
+  levers move you back under it. Nothing you type leaves your browser.
+</ToolCTA>
+
+## Cost-sharing reductions fall off a different ledge
+
+The premium tax credit is not the only thing income decides. Silver-plan
+cost-sharing reductions — lower deductibles and out-of-pocket maximums, not
+lower premiums — end at 250% of the poverty line, and they are worth a great
+deal at the bottom of the range.
+
+<FigureTable id="aca.csr.bands" />
+
+A household between 250% and 400% has premium help and no cost-sharing help.
+One between 150% and 200% has both, and its silver plan behaves approximately
+like a platinum one. Two ledges, at different heights, and the second is the
+one people are usually unaware of.
+
+<FAQ
+  items={[
+    {
+      question: "What is the income limit for the premium tax credit in 2026?",
+      answer: `${figureText("aca.cliff.ceilingMultiple")}. For 2026 coverage the poverty figure is ${figureText("aca.fpl.firstPerson")} for one person, plus ${figureText("aca.fpl.additionalPerson")} for each additional person, so a single-person household's ceiling is four times that first figure.`,
+    },
+    {
+      question: "Is there a grace band just above 400%?",
+      answer: `No. Form 8962 Worksheet 2 applies a strict "more than four times the poverty line" test before any rounding, and a household that fails it enters ${figureText("aca.cliff.ineligibleSentinel")} on line 5 and stops. The whole-percent truncation applies to the interior boundaries only.`,
+    },
+    {
+      question: "How much of my income am I expected to pay at the top of the range?",
+      answer: `${figureText("aca.applicablePercentage.top")} toward the benchmark plan. The credit covers the premium above that. Above the ceiling the expected contribution is the entire premium.`,
+    },
+    {
+      question: "If I underestimated my income, is the repayment capped?",
+      answer: `No — advance credit repayment is ${figureText("aca.clawback.capped")}. P.L. 119-21 § 71305 struck the repayment limitation of IRC § 36B(f)(2)(B) for tax years beginning after 31 December 2025, so the full excess is repaid at every income level.`,
+    },
+    {
+      question: "Which poverty guidelines does 2026 coverage use?",
+      answer: `The 2025 table, not the 2026 one. Eligibility for a coverage year uses the guidelines in effect when that year's open enrolment began, which are published in the previous January. Using the current year's figures moves the cliff and can put a household on the wrong side of it.`,
+    },
+  ]}
+/>

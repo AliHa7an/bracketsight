@@ -2,10 +2,12 @@ import type { MetadataRoute } from "next";
 
 import { counties } from "@/engines/property";
 import { STATE_IDS } from "@/engines/trades";
+import { listPosts, toolGuidesHref, toolsWithPosts } from "@/lib/content";
 
 import {
   SECTIONS,
   SECTION_PAGES,
+  SITE_URL,
   TRUST_PAGES,
   absoluteUrl,
   sectionHref,
@@ -50,8 +52,12 @@ import {
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
+  // `SITE_URL` rather than `absoluteUrl("/")`: the hub's own canonical tag
+  // resolves to the bare origin with no trailing slash, and a sitemap that
+  // declares a URL the page then canonicalises away is a self-inflicted
+  // duplicate-content signal. One string, both places.
   const hub: MetadataRoute.Sitemap = [
-    { url: absoluteUrl("/"), lastModified, changeFrequency: "weekly", priority: 1 },
+    { url: SITE_URL, lastModified, changeFrequency: "weekly", priority: 1 },
   ];
 
   const sections: MetadataRoute.Sitemap = SECTIONS.flatMap((section) => [
@@ -98,5 +104,46 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...hub, ...sections, ...trust, ...countyPages, ...contractPages];
+  /*
+   * Guides and the glossary.
+   *
+   * Enumerated from `listPosts()` and `toolsWithPosts()` — the same functions
+   * `generateStaticParams` reads — so the sitemap cannot claim an article that
+   * was not built, or miss one that was. A draft is excluded by `listPosts()`
+   * itself and therefore never reaches here.
+   *
+   * An article's `lastModified` is its own `updatedAt`, not the deployment
+   * time. It is the one date on this site that means something specific: the
+   * day the page was last reviewed against its sources. Stamping a redeploy on
+   * it would be the fake freshness the rest of this file refuses to emit.
+   */
+  const guideIndex: MetadataRoute.Sitemap = [
+    { url: absoluteUrl("/guides"), lastModified, changeFrequency: "weekly", priority: 0.8 },
+    { url: absoluteUrl("/glossary"), lastModified, changeFrequency: "monthly", priority: 0.6 },
+  ];
+
+  const guideClusters: MetadataRoute.Sitemap = toolsWithPosts().map((tool) => ({
+    url: absoluteUrl(toolGuidesHref(tool)),
+    lastModified,
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  const guides: MetadataRoute.Sitemap = listPosts().map((post) => ({
+    url: absoluteUrl(post.href),
+    lastModified: new Date(post.updatedAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  return [
+    ...hub,
+    ...sections,
+    ...trust,
+    ...countyPages,
+    ...contractPages,
+    ...guideIndex,
+    ...guideClusters,
+    ...guides,
+  ];
 }

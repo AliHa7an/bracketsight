@@ -3,16 +3,16 @@ import Link from "next/link";
 import { CONTACT_EMAIL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Privacy — Nothing You Enter Leaves Your Browser",
+  title: "Privacy and cookies — nothing you enter leaves your browser",
   description:
-    "Every calculation runs in your browser. No account, no database, no server-side storage of what you type. What that means in practice, and the two exceptions.",
+    "Every calculation runs in your browser: no account, no database, no server-side storage of what you type. What is stored, what advertising would change, and how to refuse it.",
   alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
-      <h1>Privacy</h1>
+      <h1>Privacy and cookies</h1>
 
       <div className="density-reading mt-6">
         <p>
@@ -41,29 +41,91 @@ export default function PrivacyPage() {
 
         <h2>Do you use cookies?</h2>
         <p>
-          We set no cookies of our own and run no analytics that identify you. No
-          advertising runs on this site today, and no ad network&rsquo;s script is loaded
-          on any page &mdash; you can confirm that by viewing the page source. The section
-          below sets out what changes if advertising is switched on, so it is on the
-          record before it happens rather than after.
+          No cookies of our own, and no analytics that identify you. No advertising runs on
+          this site today and no ad network&rsquo;s script is loaded on any page — you can
+          confirm that by viewing the source of any page and searching it for the word{" "}
+          <code className="num">googlesyndication</code>. Nothing will be found.
+        </p>
+        <p>
+          What the site does store, it stores on your own device, and there are only two
+          things:
+        </p>
+        <ul>
+          <li>
+            <strong>Your work in a tool.</strong> Written to{" "}
+            <code className="num">localStorage</code> under a key belonging to that tool, so
+            you can close the tab and come back. It is your own input, it is read by nothing
+            except the tool that wrote it, and it is never transmitted. This is storage you
+            asked for by using the calculator, so it is not gated behind a consent prompt —
+            gating it would break the tool for the sake of a banner.
+          </li>
+          <li>
+            <strong>Your cookie choice.</strong> One entry recording whether you accepted or
+            refused advertising cookies, and when. Storing a refusal is the only way to stop
+            asking you.
+          </li>
+        </ul>
+        <p>
+          Clearing your browser&rsquo;s site data deletes both. Neither reaches a server,
+          because there is no server to reach.
+        </p>
+
+        <h2>How the consent banner works</h2>
+        <p>
+          On a first visit a banner appears at the foot of the page with two choices,{" "}
+          <strong>Reject</strong> and <strong>Accept</strong>, in that order, the same size
+          and the same weight. Nothing is pre-selected and nothing is hidden behind a
+          &ldquo;manage preferences&rdquo; screen. Every page, every tool and every figure on
+          this site works identically whichever you choose, because no content here depends on
+          advertising.
+        </p>
+        <p>
+          Until you accept, advertising storage is refused: that is the default, and closing
+          the banner with the Escape key or ignoring it leaves the refusal in place. Silence
+          is not consent. The banner is served from this site — there is no consent-management
+          vendor, no third-party script and no request to anyone else in order to ask you the
+          question.
+        </p>
+        <p>
+          You can change or withdraw the choice at any time from the{" "}
+          <strong>Cookie choices</strong> control in the footer of every page, which also shows
+          what you currently have set. Withdrawing takes the same single click as giving.
         </p>
 
         <h2>What happens when advertising is enabled?</h2>
         <p>
-          The intended provider is Google AdSense. When it is switched on, Google and its
-          partners will serve ads on this site and, like any ad network, they use cookies
-          and similar identifiers to do it. This page will be updated to say that
-          advertising is live on the day it goes live, rather than describing it in the
-          future tense as it does now.
+          The intended provider is Google AdSense, under publisher account{" "}
+          <span className="num">pub-1973018352310576</span>. When it is switched on, Google
+          and its partners will serve ads here and, like any ad network, will use cookies and
+          similar identifiers to do it. This page will be rewritten to say that advertising is
+          live on the day it goes live, rather than describing it in the future tense as it
+          does now.
         </p>
         <p>
           Third-party vendors, Google included, use cookies to serve ads based on a
           user&rsquo;s prior visits to this and other websites. Google&rsquo;s use of
-          advertising cookies lets it and its partners serve ads based on your visits to
-          this site and other sites on the internet.
+          advertising cookies enables it and its partners to serve ads to you based on your
+          visit to this site and other sites on the internet. How Google uses the information
+          it collects from sites that use its services is set out at{" "}
+          <a
+            className="text-ink underline underline-offset-2"
+            href="https://policies.google.com/technologies/partner-sites"
+            rel="noopener"
+          >
+            policies.google.com/technologies/partner-sites
+          </a>
+          , and its advertising practices at{" "}
+          <a
+            className="text-ink underline underline-offset-2"
+            href="https://policies.google.com/technologies/ads"
+            rel="noopener"
+          >
+            policies.google.com/technologies/ads
+          </a>
+          .
         </p>
         <p>
-          You can turn off personalised advertising for Google at{" "}
+          You can opt out of personalised advertising by Google at{" "}
           <a
             className="text-ink underline underline-offset-2"
             href="https://www.google.com/settings/ads"
@@ -71,7 +133,7 @@ export default function PrivacyPage() {
           >
             google.com/settings/ads
           </a>
-          , and opt out of a third-party vendor&rsquo;s use of cookies for personalised
+          , and out of a third-party vendor&rsquo;s use of cookies for personalised
           advertising at{" "}
           <a
             className="text-ink underline underline-offset-2"
@@ -79,17 +141,43 @@ export default function PrivacyPage() {
             rel="noopener"
           >
             aboutads.info/choices
+          </a>{" "}
+          or, in Europe, at{" "}
+          <a
+            className="text-ink underline underline-offset-2"
+            href="https://www.youronlinechoices.eu/"
+            rel="noopener"
+          >
+            youronlinechoices.eu
           </a>
-          . Ads that are not personalised still appear; they are chosen from the page
-          content and your general location rather than from a profile.
+          . Refusing personalisation does not remove the ads; it means they are chosen from
+          the content of the page and your approximate location rather than from a profile of
+          you.
         </p>
         <p>
-          One thing will not change: an ad network never receives what you type into a
-          tool. Your income, balances, assessed values and job costs are computed in your
-          own browser and are never sent anywhere, so there is nothing for an advertiser to
-          be given. No result, ranking or recommendation changes because of an advertiser,
-          and no ad slot sits inside a calculator where it could be mistaken for part of
-          the tool.
+          One thing will not change: an ad network never receives what you type into a tool.
+          Your income, balances, assessed values and job costs are computed in your own
+          browser and are never sent anywhere, so there is nothing for an advertiser to be
+          given. No result, ranking or recommendation changes because of an advertiser, and no
+          ad can be placed inside a calculator — the component that reserves ad space refuses
+          to render inside a tool panel and throws in development if anyone tries.
+        </p>
+
+        <h2>If you are in the UK or the EU</h2>
+        <p>
+          The lawful basis for the advertising storage described above is your consent, given
+          through the banner, and you may withdraw it at any time from the footer without
+          giving a reason and without losing access to anything. The lawful basis for storing
+          your work in a tool is that it is necessary to provide the calculator you asked to
+          use.
+        </p>
+        <p>
+          The site holds no account and no profile, so the rights of access, rectification,
+          erasure and portability have very little to operate on. The only thing recorded
+          server-side is the ordinary web request log described below, which contains an IP
+          address and no financial input of any kind; everything else lives on your own device,
+          and clearing your site data erases it. If you want to know what a log holds for a
+          given date, or want it purged, write to the address below and say so.
         </p>
 
         <h2>Will you ever process a document I upload?</h2>

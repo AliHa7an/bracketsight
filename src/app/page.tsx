@@ -62,11 +62,11 @@ const TRUST_POINTS: readonly { heading: string; body: string }[] = [
   },
   {
     heading: "No AI touches the arithmetic",
-    body: "The five engines are plain TypeScript with zero dependencies and no network access. AI reads uploaded documents and explains results in plain language; it never computes a number you are shown, and any figure it writes is checked against the engine output before it renders.",
+    body: "The five engines are plain TypeScript with zero dependencies and no network access, so there is nothing for a model call to be made through. Two AI features are planned and neither is live: reading an uploaded document to fill a form in, and explaining a result in words. Neither would ever compute a figure you are shown.",
   },
   {
     heading: "Nothing you enter is stored",
-    body: "No account, no signup wall, no database. Figures stay in your browser, and an uploaded document is read in memory and discarded — it is never written to disk.",
+    body: "No account, no signup wall, no database. What you type stays in your own browser and is never sent to a server, because there is no server to send it to. A shared scenario link carries its numbers in the URL fragment, which browsers never transmit.",
   },
   {
     heading: "Estimates, not promises",
@@ -186,11 +186,19 @@ export default function HubPage() {
       </ul>
 
       <p className="mt-4 max-w-[68ch] text-step--1 text-dim">
-        For how a rule gets from a regulation into a number on this site, who stands behind it,
-        how it is funded, and the{" "}
-        <span className="num">55</span> items still recorded as unverified, read{" "}
+        For how a rule gets from a regulation into a number on this site, how it is funded, and
+        the <span className="num">55</span> items still recorded as unverified, read{" "}
         <Link href="/about" className="rounded-atlas underline underline-offset-4 hover:text-ink">
           about Bracketsight
+        </Link>
+        . For what verification means here, what a pass over{" "}
+        <span className="num">315</span> individual figures found, and which professional reviews
+        have not happened yet, read{" "}
+        <Link
+          href="/authors"
+          className="rounded-atlas underline underline-offset-4 hover:text-ink"
+        >
+          who writes and checks this
         </Link>
         .
       </p>

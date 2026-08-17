@@ -94,7 +94,30 @@ export default function ContactPage() {
         <Link href="/about" className="rounded-atlas underline underline-offset-4 hover:text-ink">
           about page
         </Link>
+        , and the verification process itself — including the reviews that have not happened yet
+        — on{" "}
+        <Link href="/authors" className="rounded-atlas underline underline-offset-4 hover:text-ink">
+          who writes and checks this
+        </Link>
         .
+      </p>
+
+      <h2 className="mt-12">What happens after you send it</h2>
+
+      <p className="mt-4 max-w-[68ch] text-dim">
+        A report about a figure is reproduced first: the inputs you sent are run through the same
+        engine you used, and the result is compared with what you saw. If they differ, the bug is
+        in the application; if they match, the question moves to the rule file behind the figure
+        and the document that rule cites. Either way the answer names the document that was read
+        and what it said, so a report that turns out to be wrong still tells you why.
+      </p>
+
+      <p className="mt-4 max-w-[68ch] text-dim">
+        A confirmed rule change is a smaller job than it sounds, and deliberately so. The value
+        lives in one versioned file with its citation and its verification date; editing that file
+        moves every page that depends on it at the next build, and the change is written into the
+        relevant changelog with the date and the source. Nothing has to be hunted through prose,
+        which is the reason corrections here are measured in hours rather than release cycles.
       </p>
 
       <p className="hairline-t mt-8 max-w-[68ch] pt-6 text-step--1 text-dim">{DISCLAIMER}</p>

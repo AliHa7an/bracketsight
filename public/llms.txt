@@ -1,0 +1,85 @@
+# Bracketsight
+
+> Five decision engines for US money rules that turn on a threshold: federal
+> student loan repayment, the 2026 OBBBA paycheck deductions, ACA premium tax
+> credits, residential property tax assessment appeals, and residential trade
+> contracts. Every rate, bracket, threshold and term is held in versioned JSON
+> rule files with primary-source citations and a last-verified date, and is
+> read from those files at build time rather than written into prose.
+
+## How the site computes
+
+- All arithmetic is deterministic and runs client-side. No language model
+  computes, estimates, adjusts or checks any number anywhere on this site.
+- Money is integer cents; rates are integer basis points. No floating-point
+  currency.
+- Rules live in dated, cited JSON. A figure shown to a reader carries the rule
+  set version it came from and the date its citation was last read.
+- There are no accounts, no database and no server-side storage. State lives in
+  the browser (`localStorage`) and in the URL. Nothing a visitor enters is
+  transmitted or retained.
+- Open verification items are published rather than hidden. `KNOWN-GAPS.md` in
+  the repository records 55 unresolved items across the five engines, and a
+  figure resting on one discloses it at the point of use.
+
+## Sections
+
+- [/loans](/loans): Simulates all nine federal repayment plans month by month
+  for up to 30 years and ranks them by total lifetime cost, including tax on a
+  forgiven balance. Covers RAP, Tiered Standard, old and new IBR, PAYE, ICR,
+  Standard, Graduated and Extended. Models the RAP interest waiver and $50
+  principal match, the absence of a RAP payment cap, the PAYE and ICR sunset on
+  1 July 2028, Parent PLUS consolidation eligibility, and the forfeiture of
+  prior IBR/PAYE/ICR payment credit on switching to RAP. Rules from 34 C.F.R.
+  §§ 685.208–685.209 as revised by the RISE final rule, 91 Fed. Reg. 23768.
+- [/paycheck](/paycheck): Computes the four deductions added by P.L. 119-21 —
+  qualified tips (IRC § 224), qualified overtime compensation (IRC § 225), the
+  additional deduction for filers 65 and over, and qualified passenger vehicle
+  loan interest — with their caps, occupation eligibility tests and MAGI
+  phase-outs. Includes a W-2 checker for whether an employer reported the
+  amounts the deductions depend on.
+- [/aca](/aca): Computes the premium tax credit from household MAGI, family
+  size and county, measures the exact distance in dollars to the 400% federal
+  poverty line eligibility ceiling, prices what one additional dollar of income
+  costs at that point, models cost-sharing reduction bands and the repayment of
+  excess advance credit, and lists the MAGI reductions that move a household
+  back under a threshold.
+- [/property](/property): Assesses whether a residential property tax
+  assessment is worth appealing, using comparable sales, the county's
+  assessment level and its statutory relief model. Covers Cook County, Illinois
+  and Bergen County, New Jersey, including New Jersey's Chapter 123 common
+  level range. Returns "cannot determine" rather than an estimate where a
+  required input, such as a municipal Director's Ratio, has not been sourced.
+- [/trades](/trades): Produces a line-item estimate, an invoice and a
+  residential contract for decks, interior painting and bathroom remodels, and
+  states which clauses and prescribed notices a contract must carry in
+  California, Texas, Florida, New York and Pennsylvania. The pricing dataset is
+  placeholder reference data, not surveyed market pricing, and is labelled as
+  such throughout; the contract-law requirements are cited to statute.
+
+## Reference
+
+- [/guides](/guides): Articles, grouped by tool. Every figure in a guide is
+  read from the same rule file the corresponding tool runs on, so a guide and
+  its tool cannot state different numbers.
+- [/glossary](/glossary): Definitions of the terms these rules are written in —
+  MAGI, FPL, discretionary income, applicable percentage, common level range,
+  mechanic's lien and others — each with what it decides and a primary source.
+  Individual anchors, e.g. `/glossary#common-level-range`.
+- Each section carries its own methodology, sources, editorial policy,
+  changelog and about pages, e.g. [/loans/methodology](/loans/methodology) and
+  [/loans/sources](/loans/sources). The sources pages list every citation
+  behind that engine with the date each was last verified.
+
+## Limits
+
+- Estimates under stated rules, not advice. Not a servicer, employer, insurer,
+  county assessor or law firm.
+- Figures are current as of the rule set version shown beside them. Several
+  rule families expire annually — the HHS poverty guidelines each January, the
+  IRS § 36B indexing revenue procedure each summer, New Jersey Director's
+  Ratios each April.
+- Where a figure rests on an assumption rather than a rule — the flat marginal
+  tax rate applied to a forgiven balance, for example — it is labelled an
+  assumption at the point it is shown.
+- Contact for corrections: info@bracketsight.com

@@ -12,7 +12,7 @@ export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 space-y-8">
       <h1>
-        About Bracketsight
+        About the property assessment check
       </h1>
       <p>
         Homeowners are routinely over-assessed and almost never appeal,

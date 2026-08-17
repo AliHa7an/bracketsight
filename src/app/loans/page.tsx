@@ -65,28 +65,38 @@ const faqJsonLd = {
   ],
 };
 
-const SOURCES = [
-  {
-    label: "34 C.F.R. § 685.209 (RISE final rule) — RAP brackets, waiver and match",
-    url: "https://www.federalregister.gov/documents/2026/07/01/rise-final-rule",
-    lastVerified: "2026-08-08",
-  },
-  {
-    label: "P.L. 119-21 § 30021 — PAYE/ICR sunset and the post-2026 plan restriction",
-    url: "https://www.congress.gov/bill/119th-congress/house-bill/1",
-    lastVerified: "2026-08-08",
-  },
-  {
-    label: "26 U.S.C. § 108(f) — tax treatment of discharged student debt",
-    url: "https://www.law.cornell.edu/uscode/text/26/108",
-    lastVerified: "2026-08-08",
-  },
-];
+/**
+ * The three sources this page's prose rests on, read from the rule files
+ * themselves rather than transcribed.
+ *
+ * They were transcribed once, and the first of them rotted: the RAP citation
+ * carried `federalregister.gov/documents/2026/07/01/rise-final-rule`, a
+ * placeholder slug built from the rule's *effective* date. The rule published
+ * on 1 May 2026, federalregister.gov bot-blocks every path, and the URL
+ * resolved to nothing for a reader who clicked it. The rule file had already
+ * been corrected to the GPO text; the page had not, because it held its own
+ * copy. It no longer holds one.
+ *
+ * `lastVerified` comes across with the URL, so a citation cannot claim a
+ * verification date the rule file does not have.
+ */
+type PageSource = { label: string; url: string; lastVerified: string };
+
+function pageSources(rules: ReturnType<typeof resolveRules>): PageSource[] {
+  const rap = rules.rap.citations[0];
+  const sunset = rules.planTerms.citations.find((citation) =>
+    citation.label.includes("P.L. 119-21"),
+  );
+  const tax = rules.tax.citations[0];
+
+  return [rap, sunset, tax].filter((citation): citation is PageSource => Boolean(citation));
+}
 
 export default function HomePage() {
   const asOf = new Date().toISOString().slice(0, 10);
   const rules = resolveRules(asOf);
   const primaryCitation = rules.rap.citations[0];
+  const SOURCES = pageSources(rules);
 
   const facts = [
     {

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { ConsentChoicesLink } from "./ConsentBanner";
 import {
   CONTACT_EMAIL,
   DISCLAIMER,
@@ -110,6 +111,16 @@ export function SiteFooter() {
                   </Link>
                 </li>
               ))}
+              {/*
+                Withdrawing consent has to be as easy as giving it, from any
+                page. This reopens the banner and reports the current state in
+                words, so a reader can see what they chose without opening
+                developer tools. Renders nothing until mounted — see the
+                component.
+              */}
+              <li>
+                <ConsentChoicesLink />
+              </li>
             </ul>
           </nav>
 

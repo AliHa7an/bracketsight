@@ -1,0 +1,883 @@
+/* ===========================================================================
+ * DIRECTION B — "The Terminal"
+ *
+ * Thesis: the borrower is at an instrument, not on a website. Authority comes
+ * from density — nine plans, seven measures each, all on screen at once, all
+ * aligned, all in the same monospaced figure. Nothing is explained that the
+ * numbers can state themselves.
+ *
+ * The trap this direction has to avoid is "light mode with the colours
+ * inverted". Four things keep it out of that:
+ *   1. Four real surface levels, each a genuine step, not an opacity trick:
+ *      #080A0E base · #0D1117 panel · #131922 raised · #1A222C row-emphasis.
+ *   2. Panels lit from above — a 1px inset white highlight on the top edge
+ *      and a soft dark shadow beneath — so they sit *on* the base rather than
+ *      being cut out of it.
+ *   3. Hairlines at #1D2733, warmer and lighter than the panel but far below
+ *      text contrast, so structure reads without competing with figures.
+ *   4. Chromatic ink: text is #E8EEF5, a cool blue-white, never pure #FFF.
+ *      Pure white on near-black is the tell of an inverted light theme.
+ *
+ * Teal #3FD9BC is the signal and appears only on the recommended plan, its
+ * figures and its bar. Amber #E8B15C marks caution. Coral #FF7A5C marks the
+ * one irreversible fact. Everything else is grey.
+ *
+ * Contrast, computed on each surface it is actually used on:
+ *   #E8EEF5 primary   base 16.96 · panel 16.20 · raised 15.11 · row 13.73
+ *   #9AA9BA secondary base  8.26 · panel  7.89 · raised  7.36 · row  6.69
+ *   #7C8B9C tertiary  base  5.69 · panel  5.43 · raised  5.07 · row  4.61
+ *   #3FD9BC teal      base 11.19 · panel 10.69 · raised  9.97 · row  9.06
+ *   #E8B15C amber     base 10.26 · panel  9.80 · raised  9.14 · row  8.31
+ *   #FF7A5C coral     base  7.73 · panel  7.38 · raised  6.88 · row  6.26
+ *   control border #5B6775 on panel 3.28 · on raised 3.06 (AA non-text 3:1)
+ *   #080A0E on the teal button 11.19
+ * The tertiary grey is the tightest at 4.61:1 on the row-emphasis surface and
+ * is not used for anything smaller than 11px. Do not lighten the surfaces.
+ * ======================================================================== */
+
+.root {
+  --base: #080a0e;
+  --panel: #0d1117;
+  --raised: #131922;
+  --row: #1a222c;
+  --hair: #1d2733;
+  --hair-soft: rgba(232, 238, 245, 0.07);
+  --control: #5b6775;
+
+  --fg: #e8eef5;
+  --fg2: #9aa9ba;
+  --fg3: #7c8b9c;
+  --teal: #3fd9bc;
+  --amber: #e8b15c;
+  --coral: #ff7a5c;
+
+  --sans: var(--font-geist), system-ui, sans-serif;
+  --mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --ease: cubic-bezier(0.2, 0, 0.13, 1);
+  --dur: 160ms;
+
+  background: var(--base);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.root :focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ---- top bar ----------------------------------------------------------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 38px;
+  padding: 0 16px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--hair);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+.brandMark {
+  width: 7px;
+  height: 7px;
+  background: var(--teal);
+  border-radius: 1px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg3);
+  white-space: nowrap;
+}
+
+.chips b {
+  font-weight: 400;
+  color: var(--fg2);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* ---- frame ------------------------------------------------------------- */
+
+.frame {
+  display: grid;
+  grid-template-columns: 214px minmax(0, 1fr);
+  align-items: start;
+}
+
+.rail {
+  background: var(--panel);
+  border-right: 1px solid var(--hair);
+  min-height: calc(100dvh - 38px);
+  padding: 14px 0 20px;
+}
+
+.railLabel {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg3);
+  margin: 0 0 8px;
+  padding: 0 14px;
+}
+
+.railList {
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
+}
+
+.railItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 34px;
+  padding: 0 14px 0 12px;
+  border-left: 2px solid transparent;
+  color: var(--fg2);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.railItem:hover {
+  background: var(--raised);
+  color: var(--fg);
+}
+
+.railItemActive {
+  background: var(--raised);
+  border-left-color: var(--teal);
+  color: var(--fg);
+}
+
+.railValue {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg3);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.railItemActive .railValue {
+  color: var(--teal);
+}
+
+.railFoot {
+  margin: 0 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hair);
+}
+
+.railFoot dl {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.railFoot div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.railFoot dt {
+  color: var(--fg3);
+}
+
+.railFoot dd {
+  margin: 0;
+  color: var(--fg2);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.main {
+  padding: 16px 16px 56px;
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* ---- panels ------------------------------------------------------------ */
+
+.panel {
+  background: linear-gradient(180deg, #10161f 0%, var(--panel) 44%);
+  border: 1px solid var(--hair);
+  border-radius: 4px;
+  box-shadow:
+    inset 0 1px 0 rgba(232, 238, 245, 0.045),
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    0 10px 28px -16px rgba(0, 0, 0, 0.9);
+  min-width: 0;
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 34px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.panelTitle {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fg2);
+  margin: 0;
+}
+
+.panelNote {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg3);
+}
+
+/* ---- hero instrument --------------------------------------------------- */
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+}
+
+.heroMain {
+  padding: 22px 24px 24px;
+  border-right: 1px solid var(--hair);
+  min-width: 0;
+}
+
+.heroTag {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg3);
+  margin: 0;
+}
+
+.heroPlan {
+  color: var(--teal);
+}
+
+.heroFigure {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 16px 0 0;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: clamp(46px, 5.6vw, 74px);
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  color: var(--fg);
+}
+
+.heroCurrency {
+  font-size: 0.3em;
+  letter-spacing: 0.02em;
+  color: var(--fg3);
+  padding-top: 0.32em;
+}
+
+.heroUnit {
+  margin: 12px 0 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg3);
+}
+
+.delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 5px 10px;
+  border: 1px solid rgba(63, 217, 188, 0.4);
+  border-radius: 2px;
+  background: rgba(63, 217, 188, 0.09);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.heroStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.stat {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--hair);
+  min-width: 0;
+}
+
+.stat:nth-child(odd) {
+  border-right: 1px solid var(--hair);
+}
+
+.stat:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.statLabel {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg3);
+}
+
+.statValue {
+  display: block;
+  margin-top: 7px;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  color: var(--fg);
+}
+
+.statSub {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg3);
+}
+
+/* ---- lower grid -------------------------------------------------------- */
+
+/* The inputs panel is ~715px tall and the ranked table ~500px, so a plain
+   two-column split left a quarter of the screen as dead black to the right of
+   the inputs. The warnings live in the right column instead, which balances
+   the two stacks and puts the irreversible warning directly under the row it
+   is about. */
+.columns {
+  display: grid;
+  grid-template-columns: 318px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  min-width: 0;
+}
+
+.stack {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* ---- input instrument -------------------------------------------------- */
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--hair-soft);
+}
+
+.inputRow label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg2);
+}
+
+.field,
+.selectField {
+  width: 118px;
+  min-height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--control);
+  border-radius: 2px;
+  background: #060809;
+  color: var(--fg);
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 12px;
+  text-align: right;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+  transition: border-color var(--dur) var(--ease);
+}
+
+.selectField {
+  width: 150px;
+  text-align: left;
+  font-size: 11.5px;
+}
+
+.field:hover,
+.selectField:hover {
+  border-color: var(--teal);
+}
+
+.loanLine {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--hair-soft);
+  min-width: 0;
+}
+
+.loanType {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg2);
+}
+
+.loanBalance {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 13px;
+  color: var(--fg);
+  text-align: right;
+}
+
+.loanMeta {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg3);
+}
+
+.loanRate {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 10.5px;
+  color: var(--fg3);
+  text-align: right;
+}
+
+.runRow {
+  padding: 12px 14px 14px;
+}
+
+.run {
+  display: flex;
+  width: 100%;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--teal);
+  color: var(--base);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: filter var(--dur) var(--ease);
+}
+
+.run:hover {
+  filter: brightness(1.12);
+}
+
+.runNote {
+  margin: 10px 0 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fg3);
+}
+
+/* ---- the ranked instrument table --------------------------------------- */
+
+.tableHead,
+.tableRow {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1.4fr) 84px 62px 84px 76px 96px minmax(74px, 0.7fr);
+  gap: 12px;
+  align-items: center;
+  padding: 0 14px;
+}
+
+.tableHead {
+  height: 26px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.tableHead span {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--fg3);
+}
+
+.right {
+  text-align: right;
+}
+
+.tableRow {
+  min-height: 34px;
+  border-bottom: 1px solid var(--hair-soft);
+  border-left: 2px solid transparent;
+  padding-left: 12px;
+  transition: background var(--dur) var(--ease);
+}
+
+.tableRow:hover {
+  background: var(--raised);
+}
+
+.tableRow:last-child {
+  border-bottom: 0;
+}
+
+.rowWin {
+  background: var(--row);
+  border-left-color: var(--teal);
+}
+
+.rowWin:hover {
+  background: var(--row);
+}
+
+.rowFlag {
+  border-left-color: var(--coral);
+}
+
+.idx {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 10.5px;
+  color: var(--fg3);
+}
+
+.rowWin .idx {
+  color: var(--teal);
+}
+
+.planName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag {
+  flex: none;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 5px;
+  border-radius: 2px;
+  border: 1px solid currentColor;
+}
+
+.tagFlag {
+  color: var(--coral);
+}
+
+.tagWin {
+  color: var(--teal);
+}
+
+.num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 12px;
+  text-align: right;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+.numDim {
+  color: var(--fg3);
+}
+
+.numTotal {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+  letter-spacing: -0.015em;
+  color: var(--fg);
+}
+
+.rowWin .numTotal {
+  color: var(--teal);
+}
+
+/* `display: block` is load-bearing: as an inline span the track ignored its
+   own height and the whole relative-cost column rendered as nothing at all. */
+.barCell {
+  display: block;
+  min-width: 0;
+}
+
+.bar {
+  display: block;
+  height: 4px;
+  background: rgba(232, 238, 245, 0.08);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  background: #4a5a6b;
+}
+
+.rowWin .barFill {
+  background: var(--teal);
+}
+
+.rowFlag .barFill {
+  background: #7a5c48;
+}
+
+/* ---- warnings ---------------------------------------------------------- */
+
+.alerts {
+  display: grid;
+}
+
+.alert {
+  display: grid;
+  grid-template-columns: 116px 92px minmax(0, 1fr);
+  gap: 14px;
+  align-items: baseline;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--hair-soft);
+}
+
+.alert:last-child {
+  border-bottom: 0;
+}
+
+.sev {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.sevIrreversible {
+  color: var(--coral);
+}
+
+.alertPlan {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg3);
+}
+
+.alertBody {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--fg2);
+}
+
+.alertIrreversible .alertBody {
+  color: var(--fg);
+}
+
+.foot {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+  color: var(--fg3);
+  margin: 0;
+  padding: 0 2px;
+}
+
+.cellLabel {
+  display: none;
+}
+
+/* ---- narrow ------------------------------------------------------------ */
+
+@media (max-width: 1180px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tableHead,
+  .tableRow {
+    grid-template-columns:
+      26px minmax(0, 1.4fr)
+      80px 58px 80px 74px 92px minmax(60px, 0.6fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .frame {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rail {
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--hair);
+    padding-bottom: 14px;
+  }
+  .railList {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: 14px;
+  }
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .heroMain {
+    border-right: 0;
+    border-bottom: 1px solid var(--hair);
+  }
+}
+
+@media (max-width: 700px) {
+  .main {
+    padding: 12px 12px 48px;
+  }
+  .tableHead {
+    display: none;
+  }
+  .tableRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 12px;
+    padding: 12px;
+    align-items: start;
+  }
+  .tableRow .idx,
+  .tableRow .planName {
+    grid-column: 1 / -1;
+  }
+  .tableRow .totalCell {
+    grid-column: 1 / -1;
+  }
+  .tableRow .barCell {
+    grid-column: 1 / -1;
+  }
+  .tableRow .num,
+  .tableRow .numTotal {
+    text-align: left;
+  }
+  .cellLabel {
+    display: block;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg3);
+    margin-bottom: 3px;
+  }
+  .alert {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  .stat:nth-child(odd) {
+    border-right: 0;
+  }
+  .heroStats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .stat:nth-last-child(-n + 2) {
+    border-bottom: 1px solid var(--hair);
+  }
+  .stat:last-child {
+    border-bottom: 0;
+  }
+  .railList {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .field,
+  .selectField {
+    width: 130px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root * {
+    transition-duration: 0ms !important;
+    animation: none !important;
+  }
+}

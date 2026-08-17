@@ -1,5 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import {
+  CONFIDENCE_HIGH_MIN,
+  CONFIDENCE_MEDIUM_MIN,
+  DEFAULT_CRITERIA,
+  MIN_COMPS,
+  NOT_WORTH_IT_MAX_PCT,
+  STRONG_CASE_MIN_ANNUAL_OVERPAYMENT_CENTS,
+  STRONG_CASE_MIN_PCT,
+  counties,
+} from "@/engines/property";
+import { formatCents, formatNumber, formatPct } from "@/lib/property/format";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/property/methodology" },
@@ -33,19 +44,36 @@ export default function MethodologyPage() {
             coordinates are available).
           </li>
           <li>
-            Living area within ±20% of the subject&apos;s square footage.
+            Living area within ±
+            <span className="num">{formatNumber(DEFAULT_CRITERIA.sizeTolerancePct)}%</span> of the
+            subject&apos;s square footage.
           </li>
           <li>
             Sold — or assessed, for uniformity arguments — within the
-            county&apos;s evidence window (18–24 months for the launch
-            counties).
+            county&apos;s evidence window (
+            {counties
+              .map((c) => `${formatNumber(c.compsWindowMonths)}`)
+              .sort()
+              .join("–")}{" "}
+            months for the launch counties).
           </li>
         </ol>
         <p>
           Survivors are ranked by similarity (square footage first, then year
-          built, beds, baths, lot) and the 8 most similar are kept. Fewer than
-          3 survivors means no verdict: we refuse to compute a number from a
-          sample that thin.
+          built, beds, baths, lot) and the{" "}
+          <span className="num">{formatNumber(DEFAULT_CRITERIA.maxComps)}</span> most similar are
+          kept. Fewer than <span className="num">{formatNumber(MIN_COMPS)}</span> survivors means
+          no verdict: we refuse to compute a number from a sample that thin.
+        </p>
+        <p>
+          A rejected comparable is not discarded quietly. Each one is returned with the reason it
+          failed — it is the subject itself, a different property class, outside the area, outside
+          the size window, no recorded sale where a sale was required, or evidence older than the
+          window — and the check displays them. That list is the part a hearing officer will push
+          on hardest, because the fastest way to attack a comparables set is to show which homes
+          were left out of it. A list dominated by wrong-class rejections says something different
+          about your sample than a list dominated by homes that missed the recency window by a
+          month, and a bare median tells you neither.
         </p>
       </section>
 
@@ -96,8 +124,10 @@ export default function MethodologyPage() {
         <p>Three components, summing to 0–100:</p>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
-            <strong>Comparable count (0–40):</strong> 3 comps score 15, each
-            additional comp adds 5, full marks at 8.
+            <strong>Comparable count (0–40):</strong>{" "}
+            <span className="num">{formatNumber(MIN_COMPS)}</span> comps score 15, each
+            additional comp adds 5, full marks at{" "}
+            <span className="num">{formatNumber(DEFAULT_CRITERIA.maxComps)}</span>.
           </li>
           <li>
             <strong>Dispersion (0–40):</strong> COD ≤ 5% scores 40, minus 2.5
@@ -108,7 +138,20 @@ export default function MethodologyPage() {
             scores 20, tapering to 0 at the county&apos;s window edge.
           </li>
         </ul>
-        <p>HIGH is 70+, MEDIUM 45–69, LOW below 45.</p>
+        <p>
+          HIGH is <span className="num">{formatNumber(CONFIDENCE_HIGH_MIN)}</span>+, MEDIUM{" "}
+          <span className="num">{formatNumber(CONFIDENCE_MEDIUM_MIN)}</span>–
+          <span className="num">{formatNumber(CONFIDENCE_HIGH_MIN - 1)}</span>, LOW below{" "}
+          <span className="num">{formatNumber(CONFIDENCE_MEDIUM_MIN)}</span>.
+        </p>
+        <p>
+          The recency taper is scored against the county&apos;s own window rather than a fixed
+          calendar, so the same eighteen-month-old sale is worth more in a county with a
+          two-year window than in one with an eighteen-month window. That is deliberate: an
+          evidence age only means something relative to what the jurisdiction will look at. It
+          also means the confidence score inherits any weakness in the window itself, and the
+          window is a modelling default in both launch counties rather than a published standard.
+        </p>
       </section>
 
       <section className="space-y-3">
@@ -116,13 +159,26 @@ export default function MethodologyPage() {
           When do we say &ldquo;not worth it&rdquo;?
         </h2>
         <p>
-          A gap under 5% of the implied fair assessment is inside normal
-          appraisal noise — boards rarely adjust it. LOW confidence blocks a
-          filing recommendation no matter the gap. Estimated first-year
-          savings that don&apos;t clear the filing fee block it too.
-          &ldquo;Strong case&rdquo; requires all three: a gap of 10%+, HIGH
-          confidence, and estimated annual overpayment of at least twice the
-          filing fee (minimum $200).
+          A gap under <span className="num">{formatPct(NOT_WORTH_IT_MAX_PCT)}</span> of the
+          implied fair assessment is inside normal appraisal noise — boards rarely adjust it. LOW
+          confidence blocks a filing recommendation no matter the gap. Estimated first-year
+          savings that don&apos;t clear the filing fee block it too. &ldquo;Strong case&rdquo;
+          requires all three: a gap of{" "}
+          <span className="num">{formatPct(STRONG_CASE_MIN_PCT)}</span> or more, HIGH confidence,
+          and estimated annual overpayment of at least twice the filing fee (minimum{" "}
+          <span className="num">{formatCents(STRONG_CASE_MIN_ANNUAL_OVERPAYMENT_CENTS)}</span>).
+        </p>
+        <p>
+          The fee in that comparison is the fee <em>you</em> would pay, not a headline figure.
+          Where a county charges a statutory schedule banded by assessed value, the band is
+          selected from your assessment before the comparison runs — quoting a middle band as
+          though it were the whole schedule understates the fee at the top of the range and lets
+          through a recommendation the fee should have stopped. Each county&apos;s schedule is on
+          its{" "}
+          <Link href="/property/counties" className="underline underline-offset-2">
+            county page
+          </Link>
+          .
         </p>
         <p>
           We expect most homes to come back &ldquo;looks fair.&rdquo; A tool
@@ -171,6 +227,92 @@ export default function MethodologyPage() {
           &ldquo;cannot determine&rdquo; with the reason, rather than falling
           back to the 5%/10% thresholds above — thresholds that bear no
           relationship to the test the county board actually applies.
+        </p>
+      </section>
+
+      <section className="space-y-3">
+        <h2>The dollar figure is the softest number on the page</h2>
+        <p>
+          Everything above produces an <em>assessment</em> gap. Turning that into the figure
+          people actually care about — money off next year&apos;s bill — takes one more step, and
+          it is the step with the least support behind it. The estimated annual overpayment is the
+          relief multiplied by a single county-level effective rate applied to assessed value:
+          {counties.map((c, i) => (
+            <span key={c.countyId}>
+              {i === 0 ? " " : ", "}
+              <span className="num">{formatPct(c.estimatedTaxRateOnAssessedBps / 100)}</span> in{" "}
+              {c.countyName}
+            </span>
+          ))}
+          . Neither has been verified against a primary source, and neither is really one number.
+        </p>
+        <p>
+          Cook County&apos;s burden is the assessment level multiplied by the state equalization
+          factor the Illinois Department of Revenue re-strikes every year, multiplied again by
+          the composite rate of every taxing district your parcel sits in. Three
+          separately-published factors are collapsed into one constant here. New Jersey&apos;s
+          general tax rates are struck per municipality, per year, and Bergen County contains
+          roughly <span className="num">70</span> municipalities. Both figures are labelled
+          unresolved in the rules files that carry them, and they are the direct multiplier
+          behind the &ldquo;not worth it&rdquo; comparison against the filing fee. Read the dollar
+          estimate as an order of magnitude. The gap itself, and the ratio arithmetic behind it,
+          are exact.
+        </p>
+      </section>
+
+      <section className="space-y-3">
+        <h2>Money is integer cents, and rounding happens once</h2>
+        <p>
+          Every currency value in the engine is an integer number of cents, and every rate is
+          basis points — <span className="num">2.30%</span> is stored as{" "}
+          <span className="num">230</span>, never as <span className="num">0.023</span>. A float
+          multiplication is rounded to a whole cent at the moment it becomes money and never
+          before, half away from zero, through a single shared rounding function. Ratios in basis
+          points go through the same function, which is why the common level range limits come out
+          as the two-decimal percentages the Director publishes rather than as something ending in
+          a trail of digits. One rounding rule, applied once per derived figure, is what makes a
+          hearing officer&apos;s hand-arithmetic agree with ours instead of landing a cent or two
+          away and inviting an argument about which of you is wrong.
+        </p>
+      </section>
+
+      <section className="space-y-3">
+        <h2>Four places the engine refuses to guess</h2>
+        <p>
+          A refusal is a result. Each of these returns nothing rather than something plausible:
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <strong>Fewer than <span className="num">{formatNumber(MIN_COMPS)}</span> surviving
+            comparables.</strong> The analysis throws rather than producing a median from one or
+            two homes, and the page shows the rejections instead of a verdict.
+          </li>
+          <li>
+            <strong>A missing Director&apos;s Ratio.</strong> In a county whose relief runs on a
+            statutory corridor, no ratio means no verdict — not a fallback to the gap thresholds
+            above, which would recommend appeals the board is required by statute to deny.
+          </li>
+          <li>
+            <strong>A corridor test with no true value.</strong> A uniformity analysis compares
+            assessments to floor area and never produces a market value, so it cannot feed a test
+            that divides assessment by true value. Where the two are mismatched the answer is
+            &ldquo;cannot determine&rdquo;, not an approximation.
+          </li>
+          <li>
+            <strong>Today&apos;s date.</strong> The engine never reads the wall clock. The as-of
+            date is passed in, which is what makes a check reproducible — the same inputs and the
+            same date always produce the same verdict, including a year from now when the
+            deadline countdown would otherwise have changed the answer.
+          </li>
+        </ul>
+        <p>
+          The engine has no dependencies and makes no network calls, so there is nowhere inside a
+          calculation for a model, a service or an estimate to sit. You can re-run any of it by
+          hand from the numbers shown on the{" "}
+          <Link href="/property/check" className="underline underline-offset-2">
+            check
+          </Link>
+          .
         </p>
       </section>
 

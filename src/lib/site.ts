@@ -209,8 +209,9 @@ export type StaticPage = { readonly href: string; readonly label: string };
  */
 export const TRUST_PAGES: readonly StaticPage[] = [
   { href: "/about", label: "About" },
+  { href: "/authors", label: "Who writes and checks this" },
   { href: "/contact", label: "Contact" },
-  { href: "/privacy", label: "Privacy" },
+  { href: "/privacy", label: "Privacy and cookies" },
   { href: "/terms", label: "Terms and disclaimer" },
 ] as const;
 
@@ -306,3 +307,88 @@ export function sectionFromPath(pathname: string): Section | null {
  */
 export const DISCLAIMER =
   "Bracketsight is an independent estimate engine. It is not financial, tax or legal advice, and it is not your servicer, your employer, your insurer or your county. Every figure is an estimate under current rules — confirm anything irreversible before you act on it.";
+
+/* ---- Breadcrumbs --------------------------------------------------------
+ * One derived trail, used for both the visible breadcrumb nav and the
+ * BreadcrumbList markup, so the two can never disagree — which is the whole
+ * reason structured data gets flagged as misleading.
+ *
+ * The trail is built by walking the path's prefixes and keeping only the ones
+ * that are real routes. A segment that is not a page of its own (`/trades/
+ * contracts`, `/property/counties/il`) is dropped rather than rendered as a
+ * dead crumb: an intermediate breadcrumb that 404s is worse than a shorter
+ * trail, and Google's guidance expects every non-final crumb to resolve.
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Labels for routes the config cannot name on its own — the two prerendered
+ * dynamic families. SECTION OWNERS: add an entry when you ship a county or a
+ * state, or its breadcrumb falls back to the raw URL segment.
+ */
+const DYNAMIC_PAGE_LABELS: Readonly<Record<string, string>> = {
+  "/property/counties/il/cook": "Cook County, Illinois",
+  "/property/counties/nj/bergen": "Bergen County, New Jersey",
+  "/trades/contracts/CA": "California",
+  "/trades/contracts/FL": "Florida",
+  "/trades/contracts/NY": "New York",
+  "/trades/contracts/PA": "Pennsylvania",
+  "/trades/contracts/TX": "Texas",
+};
+
+/** Every static route the shell knows about, path → label. */
+function knownRoutes(): Map<string, string> {
+  const map = new Map<string, string>([["/", "Home"]]);
+  for (const page of TRUST_PAGES) map.set(page.href, page.label);
+  for (const section of SECTIONS) {
+    map.set(sectionHref(section), section.name);
+    for (const page of SECTION_PAGES[section.slug]) {
+      map.set(sectionPageHref(section, page), page.label);
+    }
+  }
+  for (const [href, label] of Object.entries(DYNAMIC_PAGE_LABELS)) map.set(href, label);
+  return map;
+}
+
+export type Crumb = { readonly href: string; readonly label: string };
+
+/**
+ * The breadcrumb trail for a path, starting at Home and ending at the page
+ * itself. Returns an empty array for the hub, which is its own root and gets
+ * no breadcrumbs.
+ *
+ * Unknown leaf paths (a route added without a config entry) still get a trail:
+ * the last segment is humanised rather than dropped, so a new page is never
+ * silently left without navigation.
+ */
+export function breadcrumbTrail(pathname: string): readonly Crumb[] {
+  const clean = pathname.replace(/\/+$/, "");
+  if (clean === "" || clean === "/") return [];
+
+  const routes = knownRoutes();
+  const segments = clean.split("/").filter(Boolean);
+
+  const trail: Crumb[] = [{ href: "/", label: "Home" }];
+  let prefix = "";
+  for (const segment of segments) {
+    prefix += `/${segment}`;
+    const label = routes.get(prefix);
+    if (label) trail.push({ href: prefix, label });
+  }
+
+  // A leaf with no config entry: name it from its own last segment rather than
+  // leaving the reader on a page the trail does not reach.
+  const last = trail[trail.length - 1];
+  if (!last || last.href !== clean) {
+    const tail = segments[segments.length - 1] ?? "";
+    trail.push({ href: clean, label: humaniseSegment(tail) });
+  }
+
+  return trail;
+}
+
+/** `pricing-methodology` → `Pricing methodology`; `CA` → `CA`. */
+function humaniseSegment(segment: string): string {
+  const spaced = segment.replace(/-/g, " ");
+  if (/^[a-z]{2}$/.test(segment)) return segment.toUpperCase();
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}

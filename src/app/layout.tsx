@@ -3,6 +3,8 @@ import { Bricolage_Grotesque, IBM_Plex_Mono, Public_Sans } from "next/font/googl
 
 import "@/styles/globals.css";
 
+import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { ConsentBanner } from "@/components/layout/ConsentBanner";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
@@ -104,8 +106,14 @@ const organizationJsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
+    /*
+      `en-US` rather than `en`: every rule on this site is a US federal, state
+      or county rule, every figure is USD and every date is read in the US
+      calendar. The regional subtag is what tells a browser, a screen reader
+      and a translation layer which English this is.
+    */
     <html
-      lang="en"
+      lang="en-US"
       className={`${bricolage.variable} ${publicSans.variable} ${plexMono.variable}`}
     >
       <body className="flex min-h-screen flex-col antialiased">
@@ -129,10 +137,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
 
         <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
+          <Breadcrumbs />
           {children}
         </main>
 
         <SiteFooter />
+
+        {/*
+          The consent banner is fixed to the bottom of the viewport and is
+          therefore outside the layout flow: it cannot move a pixel of the page,
+          whatever it decides to render. It also renders nothing at all on the
+          server and nothing on the first client paint — see the component.
+        */}
+        <ConsentBanner />
       </body>
     </html>
   );

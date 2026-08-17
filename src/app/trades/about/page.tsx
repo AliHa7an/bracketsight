@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <article className="density-reading mx-auto">
-      <h1>About Bracketsight</h1>
+      <h1>About the trades document engine</h1>
       <p>
         Bracketsight exists because solo and small-crew contractors quote jobs in text
         messages, underprice from guesswork, and sign contracts missing clauses their state

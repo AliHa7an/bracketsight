@@ -185,6 +185,16 @@ export default function AboutPage() {
       ) : null}
 
       <p className="mt-4 max-w-[68ch] text-dim">
+        The verification process that stands behind every figure — what a primary source is
+        allowed to be, what a pass over <span className="num">315</span> individual values found,
+        and which professional reviews have not yet happened — is set out on{" "}
+        <Link href="/authors" className={`${link} text-ink`}>
+          who writes and checks this
+        </Link>
+        .
+      </p>
+
+      <p className="mt-4 max-w-[68ch] text-dim">
         {SITE_NAME} is independent. It is not a lender, a servicer, an insurer, a marketplace, a
         payroll provider, a county assessor or a contractor, and none of those pays for placement,
         ranking or mention anywhere on it. No tool recommends a named commercial product, and no

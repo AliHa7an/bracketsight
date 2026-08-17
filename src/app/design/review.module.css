@@ -1,0 +1,49 @@
+/* Chrome for the review pages themselves — deliberately plain, so it reads as
+   the harness and never as part of any direction. Sits below the canvas so it
+   stays out of the first screenful and out of the way of a screenshot. */
+
+.switcher {
+  border-top: 1px solid #d8dde5;
+  background: #ffffff;
+  color: #0e1626;
+  padding: 20px 24px 32px;
+  font-family: var(--font-geist), system-ui, sans-serif;
+}
+
+.switcherLabel {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #55617a;
+  margin: 0;
+}
+
+.switcherList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.switcherLink {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: #0e1626;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.switcherLink:hover {
+  text-decoration-thickness: 2px;
+}
+
+.switcher :focus-visible {
+  outline: 2px solid #0e1626;
+  outline-offset: 3px;
+  border-radius: 2px;
+}

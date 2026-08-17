@@ -68,6 +68,22 @@ export default function InvoicePage() {
           credited, not merely see a smaller number than they were quoted.
         </p>
 
+        <h2>Why overhead and profit arrive as one line</h2>
+
+        <p className="text-dim" style={{ maxWidth: "var(--measure)" }}>
+          The line items on an invoice are the takeoff&rsquo;s line items, and they sum to the
+          takeoff&rsquo;s subtotal. Everything above that — your overhead percentage and your
+          profit percentage — is carried as a single &ldquo;Overhead &amp; profit&rdquo; row,
+          and that row is computed as the difference between the estimate total and the line
+          subtotal rather than by re-running the percentages. It is a subtraction, not a
+          second calculation, which is what makes the equality structural: there is no
+          arrangement of rounding that lets the invoice total drift from the estimate total,
+          because the margin line absorbs whatever the difference is. The trade is
+          visibility: your margin arrives as one figure on the customer&rsquo;s copy instead
+          of being spread thinly across the line items, which is the honest way round and
+          occasionally an uncomfortable one.
+        </p>
+
         <h2>When is it due?</h2>
 
         <p className="text-dim" style={{ maxWidth: "var(--measure)" }}>
@@ -76,6 +92,29 @@ export default function InvoicePage() {
           nothing in a dispute. The default is net 14. Nothing here calculates interest, a late fee
           or a lien deadline: those are set by your state and your contract, and this tool will not
           guess at them.
+        </p>
+
+        <h2>What is missing from this invoice on purpose</h2>
+
+        <p className="text-dim" style={{ maxWidth: "var(--measure)" }}>
+          There is no sales-tax line, no retainage line and no late-fee line, and none of
+          them is an oversight. The invoice engine has no tax field at all: what is taxable,
+          at what rate, and whether labor is treated differently from materials is not
+          something this tool knows about your job, and a tax line that is wrong is worse
+          than no tax line, because it looks authoritative. The same goes for retainage held
+          back against completion, and for anything you charge on a balance that goes past
+          due. Add them where your accounting already handles them.
+        </p>
+
+        <h2>The invoice number is yours to keep track of</h2>
+
+        <p className="text-dim" style={{ maxWidth: "var(--measure)" }}>
+          It is a free-text field that starts at INV-001 and is never checked against
+          anything. Nothing is stored on a server, so the tool has no way of knowing what you
+          numbered the last one — it cannot warn you about a duplicate and will not
+          auto-increment behind your back. If you invoice from a book or a ledger, carry your
+          own sequence across; if two customers ever hold the same number, the argument that
+          follows is about which one you meant.
         </p>
 
         <h2>Does it print?</h2>

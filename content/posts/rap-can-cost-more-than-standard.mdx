@@ -1,0 +1,167 @@
+---
+title: When RAP costs more than the Standard plan
+description: RAP has no payment cap, so a high income against a moderate balance can make the newest income-driven plan the most expensive one available.
+slug: rap-can-cost-more-than-standard
+tool: loans
+cluster: rap-vs-idr
+primaryKeyword: RAP payment cap
+secondaryKeywords:
+  - RAP vs Standard repayment
+  - repayment assistance plan cost
+  - does RAP have a payment cap
+intent: comparison
+publishedAt: "2026-08-18"
+updatedAt: "2026-08-18"
+author: Bracketsight editorial
+reviewedBy: UNREVIEWED
+sources:
+  - label: 34 C.F.R. § 685.209 as revised by the RISE final rule, 91 Fed. Reg. 23768 (1 May 2026)
+    url: https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm
+    lastVerified: "2026-08-15"
+  - label: HHS Poverty Guidelines (ASPE) — the figures the IBR and PAYE formulas subtract
+    url: https://aspe.hhs.gov/topics/poverty-economic-mobility/poverty-guidelines
+    lastVerified: "2026-08-15"
+  - label: IRS Topic 431 — cancellation of debt income, which is how forgiven balances are treated
+    url: https://www.irs.gov/taxtopics/tc431
+    lastVerified: "2026-08-08"
+---
+
+import { figureText } from "@/lib/content";
+
+Every other income-driven plan protects you from your own salary. The Repayment
+Assistance Plan does not, and that single difference is what makes it the wrong
+plan for a particular kind of borrower: high earner, moderate balance, no
+forgiveness in sight.
+
+<KeyFigure id="loans.rap.paymentCapped" variant="block" />
+
+Income-Based Repayment computes a payment from your discretionary income and
+then applies a ceiling: whatever the formula produces, you never pay more than
+the 10-year Standard amount. RAP computes a payment from your **gross**
+adjusted gross income — there is no poverty-line subtraction and no exempted
+income at all — and applies no ceiling of any kind.
+
+## How the RAP payment is built
+
+RAP is a bracket table, not a percentage of discretionary income. Your AGI
+lands in a <KeyFigure id="loans.rap.bracketStep" /> band, and the band names a
+percentage of your whole AGI.
+
+<FigureTable id="loans.rap.brackets" />
+
+Two details that decide real cases. The regulation reads *"more than $X and
+not more than $Y"*, so an AGI landing exactly on a boundary falls in the
+**lower** band — $60,000 is 5%, not 6%. And the payment is reduced by
+<KeyFigure id="loans.rap.dependentReduction" /> for each dependent you claim,
+with a floor of <KeyFigure id="loans.rap.minimumMonthlyPayment" /> a month.
+
+## Where it turns expensive
+
+Follow a borrower earning $145,000 with a $42,000 balance at 6.53%.
+
+RAP puts that AGI in the top band, <KeyFigure id="loans.rap.topRate" />, which
+is about $1,208 a month. The 10-year Standard payment on the same balance is
+roughly $477. Under IBR the ceiling would hold the payment at the Standard
+amount; under RAP nothing holds it anywhere. The borrower pays two and a half
+times as much per month, clears the balance years early, and reaches
+<KeyFigure id="loans.rap.forgivenessPayments" /> having been forgiven nothing,
+because there was nothing left to forgive.
+
+That is not a defect in RAP. It is what an income-percentage plan does to
+someone whose income is large relative to their debt, and it is precisely the
+case the payment cap was invented for.
+
+<ToolCTA
+  tool="loans"
+  label="Rank all 9 plans for this borrower"
+  context="rap-can-cost-more-than-standard"
+  prefill={{
+    loans: [
+      {
+        type: "DIRECT_UNSUBSIDIZED",
+        balanceDollars: 42000,
+        ratePct: 6.53,
+        firstDisbursement: "2026-09-01",
+      },
+    ],
+    household: { agiDollars: 145000, filingStatus: "SINGLE", familySize: 1 },
+    goals: { pursuingPSLF: "NO" },
+  }}
+>
+  The calculator opens on exactly this borrower — $42,000 at 6.53%, $145,000 of
+  AGI, filing single — and simulates all nine plans month by month, ranked by
+  total lifetime cost.
+</ToolCTA>
+
+## Where RAP wins instead
+
+Reverse the ratio and RAP is often the cheapest plan on the board, for two
+reasons that have nothing to do with the payment formula.
+
+The first is the interest waiver:
+<KeyFigure id="loans.rap.interestWaiver" />. On an on-time payment, interest
+that your payment did not cover is written off rather than added to the
+balance. Under IBR, PAYE and ICR that interest accrues in a separate bucket and
+follows you. Under RAP the balance cannot grow at all.
+
+The second is the principal match. Every on-time payment reduces principal by
+at least <KeyFigure id="loans.rap.principalMatch" /> — or by the payment
+amount, when the payment is smaller than that. A borrower paying the
+<KeyFigure id="loans.rap.minimumMonthlyPayment" /> minimum still moves the
+balance down, which is a thing no other income-driven plan does.
+
+So the shape of the answer is: **low income against a large balance, RAP is
+usually the cheapest plan you can be on. High income against a moderate
+balance, it can be the most expensive.** The crossover depends on your exact
+numbers, which is what the simulation is for.
+
+## The trap on the way in
+
+Switching to RAP forfeits every qualifying payment you have already made under
+IBR, PAYE or ICR. Those payments do not transfer. A borrower eleven years into
+old IBR — <KeyFigure id="loans.ibrOld.forgivenessPayments" /> to forgiveness —
+who moves to RAP restarts at zero against
+<KeyFigure id="loans.rap.forgivenessPayments" />. That is a one-way door, and
+it is the single most expensive mistake available in the whole system.
+
+There is a related trap on the way through. Paying **extra** on RAP does not
+simply pay the loan down faster: amounts above the required payment go to
+interest first and can cancel both the waiver and the principal match for that
+month. The plan rewards paying exactly what is asked.
+
+## What happens at the end
+
+Forgiveness under RAP arrives at <KeyFigure id="loans.rap.forgivenessPayments" />.
+Under Public Service Loan Forgiveness it arrives at
+<KeyFigure id="loans.pslf.payments" /> instead, and the difference between
+those two endpoints is a tax bill:
+<KeyFigure id="loans.tax.nonPslfForgivenessTaxable" variant="block" />
+
+PSLF discharge is <KeyFigure id="loans.tax.pslfForgivenessTaxable" />. Any
+ranking that ignores the tax on a non-PSLF forgiven balance is ranking the
+wrong number, which is why the simulation carries it.
+
+<FAQ
+  items={[
+    {
+      question: "Does RAP have a payment cap?",
+      answer: `No. RAP is ${figureText("loans.rap.paymentCapped")}. Income-Based Repayment stops at the 10-year Standard amount; RAP has no equivalent ceiling, so the payment keeps rising with income. At the top band the payment is ${figureText("loans.rap.topRate")}.`,
+    },
+    {
+      question: "How many payments until RAP forgives the balance?",
+      answer: `${figureText("loans.rap.forgivenessPayments")}, which is 30 years of on-time payments. Public Service Loan Forgiveness still arrives at ${figureText("loans.pslf.payments")} for borrowers in qualifying employment.`,
+    },
+    {
+      question: "Does unpaid interest capitalise under RAP?",
+      answer: `No — ${figureText("loans.rap.interestWaiver")}. On an on-time payment, interest your payment did not cover is written off rather than added to the balance, so the balance cannot grow. Paying more than the required amount can cancel the waiver for that month, because the extra is applied to interest first.`,
+    },
+    {
+      question: "Do my old IBR payments count toward RAP forgiveness?",
+      answer: `No. Switching to RAP forfeits qualifying payment credit earned under IBR, PAYE or ICR. It is a one-way door: a borrower part-way through old IBR's ${figureText("loans.ibrOld.forgivenessPayments")} restarts against RAP's ${figureText("loans.rap.forgivenessPayments")}.`,
+    },
+    {
+      question: "Is a forgiven balance taxed?",
+      answer: `Under current federal law a non-PSLF forgiven balance is ${figureText("loans.tax.nonPslfForgivenessTaxable")}. A PSLF discharge is ${figureText("loans.tax.pslfForgivenessTaxable")}. State treatment varies and is not modelled here.`,
+    },
+  ]}
+/>

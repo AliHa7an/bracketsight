@@ -129,6 +129,42 @@ export default function ContractPage() {
           A contract that looks right and is not is worse than no contract, because it gets signed.
         </p>
 
+        <h2>The generator sees three facts about your job, and no more</h2>
+
+        <p className="text-dim" style={{ maxWidth: "var(--measure)" }}>
+          The contract price, the down payment, and the cost of any special-order materials.
+          That is the whole fact set the triggers evaluate against, which is why the same job
+          always produces the same document — and it is also the boundary of what the tool
+          can do for you. It does not know whether the deal was signed at a kitchen table or
+          in your office, how old the homeowner is, whether they are married, whether the
+          property is their homestead, or whether the work is an emergency repair. Every one
+          of those changes what a state requires. Texas asks for both spouses&rsquo;
+          signatures where the owner is married and the property is a homestead; California
+          has a separate cancellation notice, with a longer window, for homeowners aged 65
+          and over, and it is a distinct prescribed notice this ruleset does not model at
+          all. Where a clause depends on a fact the engine cannot see, it fires on every job
+          rather than guessing — over-inclusion, which is the safe direction, but it means
+          the document can carry a notice your particular job did not need.
+        </p>
+
+        <h2>Transcribing the missing text would not unblock every state</h2>
+
+        <p className="text-dim" style={{ maxWidth: "var(--measure)" }}>
+          The statutes that prescribe wording usually prescribe how it appears: a minimum
+          point size, boldface, capitals, a position on the front page, a signature and date
+          belonging to the notice rather than to the contract, and in one case a duplicate
+          form that has to detach from the document. Those requirements are recorded against
+          each clause in the rulesets, and nothing here can render any of them yet — a
+          12-point boldface notice printed at body size is not a compliant notice. So three
+          of the blocked states need a renderer as well as a transcriber; only New York,
+          whose single missing notice asks for bold face type and nothing more, would be
+          cleared by transcription alone. Both halves are tracked in the{" "}
+          <Link href="/trades/changelog" className={`${link} text-ink`}>
+            changelog
+          </Link>
+          .
+        </p>
+
         <h2>Is this legal advice?</h2>
 
         <p className="text-dim" style={{ maxWidth: "var(--measure)" }}>
