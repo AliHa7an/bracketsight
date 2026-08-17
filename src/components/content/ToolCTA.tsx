@@ -27,6 +27,15 @@ import { SECTIONS, type SectionSlug } from "@/lib/site";
  * middle-clickable, and announced as a link. The classes are copied from
  * `Button`'s primary variant so the two cannot drift apart visually while
  * staying honest about what the element is.
+ *
+ * `children` goes into a `<div>`, never a `<p>`. MDX parses the body of a
+ * multi-line JSX block as markdown flow content, so an article's copy arrives
+ * here already wrapped in the `p` component from `articleComponents`. Wrapping
+ * it again produced `<p><p>…</p></p>`, which the HTML parser cannot represent:
+ * the browser closes the outer paragraph before the inner one, the DOM stops
+ * matching the string React rendered on the server, and hydration fails with
+ * React #418 on every page that used this component. The margins the outer
+ * paragraph used to supply are reapplied to the first and last child instead.
  */
 
 interface ToolCTABase {
@@ -71,7 +80,7 @@ export function ToolCTA(props: ToolCTAProps) {
       style={{ background: "var(--paper-raised)" }}
       aria-label={`Open the ${TOOL_NAMES.get(tool) ?? tool} tool`}
     >
-      <p className="m-0">{children}</p>
+      <div className="[&>:first-child]:mt-0 [&>:last-child]:mb-0">{children}</div>
 
       <p className="mt-3 mb-0">
         <a

@@ -19,14 +19,15 @@ import { SECTIONS, SITE_NAME, absoluteUrl, sectionHref } from "@/lib/site";
  * reader who arrives from a tool page stays in the same visual world as the
  * numbers they came from.
  *
- * Structured data:
- *   • `Article`, with `dateModified` from `updatedAt` and `reviewedBy` present
- *     only when a human actually reviewed it.
- *   • `BreadcrumbList` for Home → Guides → tool → this article. Every crumb in
- *     it is a link a reader can see and click in the kicker above the title —
- *     markup that describes a hierarchy the page does not show is the
- *     structured-data abuse the publisher policies name, and a trail that
- *     exists only in JSON would be exactly that.
+ * Structured data: `Article` only, with `dateModified` from `updatedAt` and
+ * `reviewedBy` present only when a human actually reviewed it.
+ *
+ * The `BreadcrumbList` used to be emitted here too. It is not any more: the
+ * global `<Breadcrumbs />` in the root layout emits one for every page from
+ * the same trail it renders visibly, so a second one here described the same
+ * URL twice and put two competing objects in front of a rich-result parser.
+ * One page, one trail, one object. The kicker below stays — it is in-page
+ * navigation to the tool this article belongs to, not markup.
  */
 
 const TOOL_NAMES = new Map(SECTIONS.map((section) => [section.slug, section.name]));
@@ -60,36 +61,17 @@ export async function ArticleView({ post }: { post: Post }) {
       : { reviewedBy: { "@type": "Person", name: post.reviewedBy } }),
   };
 
-  const breadcrumbMarkup = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
-      { "@type": "ListItem", position: 2, name: "Guides", item: absoluteUrl("/guides") },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: toolName,
-        item: absoluteUrl(toolGuidesHref(post.tool)),
-      },
-      { "@type": "ListItem", position: 4, name: post.title },
-    ],
-  };
-
   return (
     <div data-section={post.tool} className="flex-1">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(articleMarkup) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbMarkup) }}
-      />
 
       <article className="mx-auto max-w-3xl px-4 py-10">
         <header>
-          {/* The visible trail every crumb in the markup above resolves to. */}
+          {/* In-page navigation back to the tool's collection. The page's
+              BreadcrumbList comes from the global <Breadcrumbs /> above. */}
           <p className="micro-label flex flex-wrap items-center gap-x-2">
             <Link href="/guides" className="rounded-atlas hover:text-ink hover:underline">
               Guides

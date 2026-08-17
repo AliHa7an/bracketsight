@@ -8,11 +8,18 @@ served with `next start -p 3320`, crawled with system Chrome over every rendered
 sitemap entry — **55 HTML pages**, each fetched twice, once with JavaScript enabled and once with
 it disabled. Publisher account `pub-1973018352310576`. The site has never been submitted.
 
+**Guides-tree amendment, same day.** F1, W1 and W4 were the three findings the audit could only
+flag, because the guides tree belonged to the content agent. All three are now fixed and
+re-verified: fresh `rm -rf .next/cache` build, `next start -p 3340`, same crawl over all 55 routes
+with system Chrome. The word-count method below reproduces every unchanged row exactly, so the
+before/after numbers are comparable rather than remeasured. What changed and why is written up
+under F1, W1 and W4.
+
 **Verdict: close, but not today.** Every structural, technical and disclosure finding from the
-first pass is now closed and re-verified on a fresh crawl. The content floor has moved a long way:
-the thinnest page on the site outside the in-flight guides pipeline is now 604 words, against 41
-words two days ago. Three things stand between this and a submission, and two of them are somebody
-else's keystrokes, not an audit's.
+first pass is now closed and re-verified on a fresh crawl, and the guides tree no longer fails.
+The content floor has moved a long way: the thinnest page on the site is now 604 words, against 41
+words two days ago. What still stands between this and a submission is attribution, and that is
+the owner's keystrokes, not an audit's.
 
 ---
 
@@ -20,24 +27,30 @@ else's keystrokes, not an audit's.
 
 | Area | ✅ pass | ⚠️ weak | ❌ fail |
 |---|---:|---:|---:|
-| Content value / thin pages | 6 | 2 | 1 |
+| Content value / thin pages | 8 | 1 | 0 |
 | Trust and E-E-A-T | 7 | 2 | 0 |
 | Privacy, cookies and consent | 8 | 0 | 0 |
 | Navigation | 7 | 1 | 0 |
-| Technical hygiene | 12 | 1 | 0 |
+| Technical hygiene | 13 | 0 | 0 |
 | Prohibited content / overclaiming | 4 | 2 | 0 |
 | Ad configuration | 5 | 0 | 0 |
-| **Total** | **49** | **8** | **1** |
+| **Total** | **52** | **6** | **0** |
+
+F1 became a pass when `/guides` was rewritten and the two under-populated tool indexes were taken
+out of the index; W1 and W4 became passes when the hydration mismatch and the duplicate structured
+data were fixed. Nothing was relabelled — each is verified in the browser below.
 
 Measured before this pass → after:
 
 | Metric | 2026-08-17 | Now |
 |---|---:|---:|
-| Indexable pages crawled | 48 | **55** |
-| Pages under 300 words of own content | 1 | **3** (all three in the in-flight guides tree) |
-| Pages under 600 words of own content | 16 | **3** (all three in the guides tree) |
-| Thinnest page outside the guides tree | 296 | **604** |
-| Median page-specific word count | 753 | **1,156** |
+| Indexable pages crawled | 48 | **53** (55 routes render; 2 tool indexes carry `noindex, follow`) |
+| Indexable pages under 300 words of own content | 1 | **0** |
+| Indexable pages under 600 words of own content | 16 | **0** |
+| Thinnest indexable page | 296 | **604** |
+| Median page-specific word count | 753 | **1,214** |
+| Pages throwing a browser console error | — | **0** (was 2) |
+| Pages emitting a duplicate JSON-LD object | — | **0** (was 4) |
 | Tool pages under 600 words | 3 | **0** |
 | Methodology pages under 1,000 words | 4 | **0** |
 | Pages with no breadcrumb trail | 47 | **0** |
@@ -53,41 +66,74 @@ Measured before this pass → after:
 
 ---
 
-## ❌ FAIL — one item
+## ❌ FAIL — none
 
-### F1. The guides tree ships three pages under 250 words — **another agent's, flag only**
+### F1. The guides tree shipped three pages under 250 words — **fixed and verified**
 
-`/guides/aca` (105 words), `/guides/loans` (106) and `/guides` (231) are the three thinnest
-indexable pages on the site by a wide margin, and they are in the sitemap. The two tool-index
-pages are a heading, a one-line description and a list of two links. That is the doorway-page
-shape: a URL that exists to hold links rather than to answer anything.
+The finding, as it stood: `/guides/aca` (105 words), `/guides/loans` (106) and `/guides` (231)
+were the three thinnest indexable pages on the site by a wide margin, and all three were in the
+sitemap. The two tool-index pages were a heading, a one-line description and a list of two links —
+the doorway-page shape, a URL that exists to hold links rather than to answer anything, and the
+exact shape four predecessor sites were rejected for.
 
-This is the content agent's in-flight MDX pipeline, and it is explicitly not mine to edit. What
-the audit can say precisely:
+**The decision: a split, not one treatment for all three.** The two page families were failing for
+different reasons and the honest answer is different for each.
 
-- The two articles themselves are substantial (1,353 and 1,641 words) and carry six inline
-  citations each. They are pipeline proofs rather than a guides section, and they should not be
-  counted as evidence that one exists.
-- A tool-index page with two entries cannot carry 600 words honestly. The right answer is
-  probably not to expand them but to **stop emitting a per-tool index until a tool has enough
-  articles to justify one**, and let `/guides` link articles directly in the meantime.
-- Both articles render a visible "no named reviewer has checked this page" line. That is the
-  correct behaviour and it is also, for a YMYL page an ad network is assessing, an admission —
-  see W2.
+**`/guides` was made substantial — 231 → 1,226 words.** A guides index is a legitimate page when it
+earns its place, and this one can, because there is something true to say on it that appears
+nowhere else on the site: how an article gets a number. The page now carries the account of the
+figure pipeline (an article names a value, the build resolves it out of the versioned rule file
+with its citation and verification date, an unresolvable name fails the build), a coverage table
+computed from the figure registry at render time — values, schedules, open verification items and
+guides published, per engine — the staleness floor for anything a guide can print, what the
+collection does not have (no named reviewer on either article, 20 of the wired figures carrying an
+open register item), and how a guide's pre-fill link works and why four of the five tools get a
+plain link instead. Every number on it is read from `figures.ts` or from the post index; not one is
+typed. Nothing was padded to reach a count — the sections were written because a reviewer landing
+on `/guides` should be able to find out how the numbers are made, and could not.
 
-**Nothing else on the site fails.** Every other finding is a pass or a weakness.
+**`/guides/loans` and `/guides/aca` were taken out of the index instead.** With one article each,
+every title, description and link on them also appears on `/guides`. No amount of prose fixes that:
+a 600-word essay wrapped around a single link is a padded index, which is worse than a missing one.
+Both now serve `noindex, follow` and are gone from `sitemap.xml`. They still render, are still
+linked from `/guides` and from every article's kicker, and are still crawlable — nothing about
+navigation changed.
+
+The threshold is code, not a note. `TOOL_INDEX_MIN_POSTS = 3` in `src/lib/content/posts.ts` drives
+both the robots directive in `src/app/guides/[slug]/page.tsx` and the sitemap entry in
+`src/app/sitemap.ts`, so the two cannot disagree and neither can drift from what is actually on the
+page. Publish a third guide for a tool and that tool's index returns to the sitemap and to the
+index in the same build, with no editorial step. Three is where grouping by cluster starts doing
+work a reader could not do by eye on `/guides`.
+
+Verified in the browser on the served build: `/guides` returns `index, follow` and is in the
+sitemap; `/guides/loans` and `/guides/aca` return `noindex, follow` and are not. `sitemap.xml` now
+carries 53 URLs and every one of them asks to be indexed.
+
+**Nothing on the site fails.** Every remaining finding is a pass or a weakness.
 
 ---
 
-## ⚠️ WEAK — eight items
+## ⚠️ WEAK — six items
 
-### W1. Two pages throw a hydration error in the console — **another agent's, flag only**
+### W1. Two pages threw a hydration error in the console — **fixed and verified**
 
-`/guides/rap-can-cost-more-than-standard` and `/guides/aca-subsidy-cliff-400-percent` each emit
-one `pageerror`: React error #418, a server/client HTML mismatch. Every other page on the site is
-console-clean. It is not a visible defect and not a policy breach, but "no console errors" was
-true of all 48 pages before the guides landed and is now true of 53 of 55. Owned by
-`src/app/guides/[slug]/`.
+`/guides/rap-can-cost-more-than-standard` and `/guides/aca-subsidy-cliff-400-percent` each emitted
+one `pageerror`: React error #418, a server/client HTML mismatch.
+
+The cause was `<ToolCTA>`. MDX parses the body of a multi-line JSX block as markdown flow content,
+so an article's copy arrives at the component already wrapped in the `p` element from
+`articleComponents` — and the component wrapped it again in a `<p className="m-0">`. The served
+HTML therefore contained `<p class="m-0"><p class="my-4">`, which the HTML parser cannot represent:
+the browser closes the outer paragraph before the inner one, the DOM stops matching the string the
+server rendered, and React discards and regenerates the tree. That regeneration is also what
+produced the second `Organization` block counted in W4 — it existed only after hydration, never in
+the served HTML.
+
+Fixed by rendering `children` into a `<div>` and reapplying the margins to the first and last
+child. No `suppressHydrationWarning` anywhere. Re-crawled all 53 sitemap URLs plus the two
+noindexed tool indexes with system Chrome: **zero console errors and zero page errors on 55 of
+55.**
 
 ### W2. No credentialed reviewer has signed off on anything, and the site now says so in three places
 
@@ -110,19 +156,32 @@ that one person maintains the rule files and is not yet named, and publishes the
 **This remains the largest single risk to both approval and ranking.** Filling in five fields in
 `src/lib/site.ts` closes it; nothing else has to change.
 
-### W4. Duplicate JSON-LD blocks on the four guides pages — **another agent's, flag only**
+### W4. Duplicate JSON-LD blocks on the four guides pages — **fixed and verified**
 
-All four emit two `BreadcrumbList` blocks, and the two articles emit two `Organization` blocks.
-The global `<Breadcrumbs />` now covers every page, so the per-page blocks in `ArticleView.tsx`
-and `ToolIndexView.tsx` are redundant. Duplicate structured data is not a violation, but two
-`BreadcrumbList` objects describing the same page is the kind of thing that gets a rich-result
-eligibility flag. Left alone on instruction; the content agent is reconciling it.
+All four emitted two `BreadcrumbList` blocks, and the two articles appeared to emit two
+`Organization` blocks. Two separate causes, both closed:
+
+- The `BreadcrumbList` in `ArticleView.tsx` and `ToolIndexView.tsx` predates the global
+  `<Breadcrumbs />`, which now builds one for every page from the same trail it renders visibly.
+  Both per-page blocks are deleted. The visible kicker above each article title stays — it is
+  in-page navigation to the tool, not markup.
+- The second `Organization` was an artefact of W1. The served HTML always carried exactly one; the
+  duplicate appeared only after React regenerated the tree on the failed hydration, and it went
+  away with the fix.
+
+Counted in the served HTML and again in the hydrated DOM: `/guides` and each tool index carry one
+`Organization` and one `BreadcrumbList`. Each article carries one `Organization`, one
+`BreadcrumbList`, one `Article` and one `FAQPage`. Across all 55 routes, **no page emits two blocks
+of the same `@type`.** The `author` and `publisher` objects inside the `Article` node remain — they
+are required properties of `Article`, not standalone `Organization` nodes.
 
 ### W5. `/trades/invoice` has three inbound links, the fewest on the site
 
 Not an orphan and not deep — depth 2, 897 words — but it sits at the bottom of the internal-link
 distribution alongside the four guides pages. The section's four content gates ask for two inbound
-links minimum; three clears it with little margin.
+links minimum; three clears it with little margin. Unchanged by the guides work: each article still
+has two inbound links, from `/guides` and from its tool index, and a tool index carrying
+`noindex, follow` still passes both link equity and the crawler through.
 
 ### W6. Six outbound citation links could not be verified from this environment
 
@@ -146,7 +205,7 @@ county pages now name it with the per-county reason. The gap between "the statut
 and "which is worth $X a year" is disclosed, but a reader in a hurry will read the second number.
 Closing `GAP-014` / `GAP-043` is the real fix.
 
-### W8. `/property/counties` at 604 words is the thinnest page outside the guides tree
+### W8. `/property/counties` at 604 words is the thinnest indexable page on the site
 
 It clears the 600-word floor by four words, which is not a margin. It is a genuinely useful page —
 what must be true before a county publishes, and what to do when yours is not covered — but a
@@ -294,7 +353,7 @@ hub's canonical resolves to the bare origin with no trailing slash, and `sitemap
 `SITE_URL` rather than `absoluteUrl("/")` for that one entry, so the sitemap no longer declares a
 URL the page canonicalises away.
 
-**P17.** Zero console errors on 53 of 55 pages; the two exceptions are W1.
+**P17.** Zero console errors and zero page errors on all 55 pages, re-crawled after the W1 fix.
 
 **P18.** No images to break: the site uses no raster images at all. Every graphic is inline SVG,
 and every SVG is either `aria-hidden` or carries an accessible name — checked programmatically
@@ -400,11 +459,14 @@ than three pages subtracted as boilerplate — so the site header, footer, secti
 trail and the repeated section disclaimers are all excluded. "JS-off" is the same measurement in a
 browser context with JavaScript disabled. ⚠ marks under 600.
 
+Two routes now carry `noindex, follow` and are marked ⊘. They render and are crawlable; they are
+not candidates for a search result and are not in the sitemap, so they are excluded from every
+"thinnest page" and median figure above.
+
 | Route | Words | JS-off | Depth | Inbound | Cites | Controls |
 |---|---:|---:|:-:|---:|---:|---:|
-| `/guides/aca` | 105 ⚠ | 105 | 2 | 2 | — | — |
-| `/guides/loans` | 106 ⚠ | 106 | 2 | 2 | — | — |
-| `/guides` | 231 ⚠ | 231 | 1 | 54 | — | — |
+| `/guides/aca` | 105 ⊘ | 105 | 2 | 2 | — | — |
+| `/guides/loans` | 106 ⊘ | 106 | 2 | 2 | — | — |
 | `/property/counties` | 604 | 604 | 2 | 9 | — | — |
 | `/contact` | 627 | 627 | 1 | 54 | — | — |
 | `/` | 693 | 693 | 0 | 54 | — | — |
@@ -433,6 +495,7 @@ browser context with JavaScript disabled. ⚠ marks under 600.
 | `/authors` | 1190 | 1190 | 1 | 54 | — | — |
 | `/loans/about` | 1214 | 1214 | 2 | 7 | — | — |
 | `/property/changelog` | 1218 | 1218 | 2 | 9 | — | — |
+| `/guides` | 1226 | 1226 | 1 | 54 | — | — |
 | `/trades/contracts/FL` | 1258 | 1258 | 2 | 8 | 2 | 1 |
 | `/paycheck/about` | 1288 | 1288 | 2 | 6 | — | — |
 | `/guides/aca-subsidy-cliff-400-percent` | 1353 | 1353 | 2 | 2 | 6 | — |
@@ -458,8 +521,11 @@ browser context with JavaScript disabled. ⚠ marks under 600.
 | `/aca/methodology` | 3243 | 3243 | 1 | 17 | — | — |
 | `/glossary` | 5385 | 5385 | 1 | 54 | — | 18 |
 
-Three pages sit under 600 words and all three are in the guides tree (F1). `/contact` at 627 is a
-contact page and is the right length for one.
+No indexable page sits under 600 words. The two that do are the noindexed tool indexes, which is
+the point of noindexing them (F1). `/contact` at 627 is a contact page and is the right length for
+one. Every row above was remeasured on the amended build with the same script; every unchanged
+route reproduced its earlier count exactly, so `/guides` moving 231 → 1,226 is a real change and
+not a measurement difference.
 
 ---
 
@@ -502,10 +568,11 @@ from all 54 other pages, via the site footer.
 | Check | Result |
 |---|---|
 | Pages crawled | 55 |
-| Sitemap entries | 55 |
+| Sitemap entries | 53 |
 | Internal links resolving to a non-200 | **0** |
 | Sitemap entries not returning 200 | **0** |
-| Crawlable pages missing from the sitemap | **0** |
+| Sitemap entries carrying `noindex` | **0** |
+| Indexable pages missing from the sitemap | **0** — the two omissions both serve `noindex` |
 | True orphans | **0** |
 | Pages deeper than 2 clicks | **0** |
 | Pages with no breadcrumb trail | **0** |
@@ -515,7 +582,7 @@ from all 54 other pages, via the site footer.
 | Pages with zero or multiple `<h1>` | **0** |
 | `<html lang>` other than `en-US` | **0** |
 | Pages returning non-200 with JavaScript disabled | **0** |
-| Browser console errors | **2 pages**, both in the guides tree (W1) |
+| Browser console errors | **0 pages** (was 2 — W1) |
 | `<img>` without dimensions | **0** — no raster images anywhere |
 | SVGs without an accessible name or `aria-hidden` | **0** |
 | Third-party script origins | **0** |
@@ -527,8 +594,9 @@ from all 54 other pages, via the site footer.
 55 (site-level; claims only the name, origin and an email visible on the page). `BreadcrumbList` on
 all 54 non-hub pages, from the same trail the reader sees. `WebApplication` on all five tool roots.
 `FAQPage` on `/loans`, `/paycheck` and `/aca` — questions and answers visibly rendered, verified in
-the crawled HTML. `Article` on the two guides articles, `DefinedTermSet` on `/glossary`. No markup
-describes content a reader cannot see. Four pages carry duplicate blocks (W4).
+the crawled HTML. `Article` and `FAQPage` on the two guides articles, `DefinedTermSet` on
+`/glossary`. No markup describes content a reader cannot see. **No page carries two blocks of the
+same `@type`** (W4), counted in both the served HTML and the hydrated DOM.
 
 ---
 
@@ -567,10 +635,14 @@ Nothing below can be produced by an audit.
    registered entity, name the entity and its jurisdiction in `entity` as well; an entity with no
    named person behind it is not attribution.
 
-2. **A decision on the guides tree before submission** (F1). Either give `/guides` and the two
-   tool-index pages real substance, or stop emitting per-tool index pages until a tool has enough
-   articles to need one. Three pages under 250 words in the sitemap is the exact shape the previous
-   rejections were about, and it is the only outright failure in this audit.
+2. **Articles, so the guides tree is a section rather than a proof.** F1 is closed — `/guides`
+   stands on its own and the two under-populated tool indexes are out of the index — but the tree
+   still holds two articles, and both are pipeline proofs by their own admission in
+   `content/CONTENT-LOG.md`. Nothing in the code needs changing when that lands: a third article
+   for a tool returns that tool's index to the sitemap and to the index automatically. Two of the
+   five engines cannot carry an article yet at all, because property has three figures wired into
+   the registry and trades two — `/guides` publishes that table rather than hiding it, and it is
+   the honest reading order: coverage, then the article.
 
 3. **The credentialed reviewers the editorial policies promise.** An enrolled agent or CPA for the
    tax and subsidy engines, a construction attorney per state for the contract clause language, a
@@ -628,14 +700,20 @@ Nothing below can be produced by an audit.
 - **No fact was asserted without a source in the repository.** The one unsourced claim found was
   removed rather than sourced from memory (P28).
 - **`src/components/ui/**` and `src/styles/globals.css` were not edited.**
-- **`src/app/guides/**`, `src/app/glossary/**` and `content/**` were not edited** — owned by the
-  content agent. The three findings in that tree (F1, W1, W4) are written up rather than fixed. The
-  one exception is that `/guides` and `/glossary` were added to the footer and to
-  `breadcrumbTrail()`, from `src/lib/site.ts`, because both shipped with nothing linking to them.
+- **`content/**` and `src/app/glossary/**` were not edited.** No article body, frontmatter,
+  `reviewedBy` value or glossary entry was touched. `MAINTAINER` is still `null` and both articles
+  still render "no named reviewer has checked this page".
+- **`src/app/guides/**` was edited in the amendment pass only**, to close F1, W1 and W4:
+  `page.tsx` rewritten, `[slug]/page.tsx` given a robots directive, and the redundant
+  `BreadcrumbList` blocks removed from `ArticleView.tsx` and `ToolIndexView.tsx`. Outside that
+  tree the amendment touched `src/lib/content/posts.ts` and `index.ts` (the indexability
+  threshold), `src/app/sitemap.ts` (reads that threshold) and
+  `src/components/content/ToolCTA.tsx` (the hydration fix). Nothing else.
 - **`/design/a|b|c` were not deleted.** Recommended, not done.
 - **No git command was run.**
 
 ## Gates
 
 `npm run typecheck` clean · `npm test` **468 passing (42 files)** · `npm run build` clean, **64
-routes prerendered**, 55 of them indexable.
+routes prerendered**, 53 of them indexable and all 53 in the sitemap. Re-run after the amendment
+pass, on a `rm -rf .next/cache` build served at `next start -p 3340`. No git command was run.

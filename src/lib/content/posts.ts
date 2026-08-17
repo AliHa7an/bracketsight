@@ -104,6 +104,35 @@ export function toolsWithPosts(): readonly SectionSlug[] {
   return [...tools];
 }
 
+/**
+ * How many articles a tool needs before its index page asks to be indexed.
+ *
+ * `/guides/loans` exists so a reader who wants everything about student loans
+ * has one place to stand. With one or two articles on it there is no such
+ * thing to stand in: every title, description and link on the page also
+ * appears on `/guides`, so the URL holds links rather than answers — which is
+ * the doorway shape, and the shape four predecessor sites were rejected for.
+ * Three is where grouping by cluster starts doing work a reader could not do
+ * by eye on the main index.
+ *
+ * The route keeps working below the threshold. It renders, it is linked from
+ * `/guides` and from every article's kicker, and it is crawlable — it carries
+ * `noindex, follow` and stays out of `sitemap.xml`, both derived from this one
+ * number so the two can never disagree. Publish a third article for a tool and
+ * that tool's index returns to the index and to the sitemap in the same build.
+ */
+export const TOOL_INDEX_MIN_POSTS = 3;
+
+/** Whether `/guides/<tool>` currently carries enough to be worth indexing. */
+export function toolIndexIsIndexable(tool: SectionSlug): boolean {
+  return postsForTool(tool).length >= TOOL_INDEX_MIN_POSTS;
+}
+
+/** The tool indexes that belong in `sitemap.xml` today. */
+export function indexableToolGuides(): readonly SectionSlug[] {
+  return toolsWithPosts().filter((tool) => toolIndexIsIndexable(tool));
+}
+
 /** Articles for one tool, grouped by cluster, clusters in alphabetical order. */
 export function clustersForTool(tool: SectionSlug): readonly { cluster: string; posts: readonly Post[] }[] {
   const groups = new Map<string, Post[]>();

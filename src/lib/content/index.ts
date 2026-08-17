@@ -29,12 +29,15 @@ export { jsonLd } from "./json-ld";
 export { loadArticleBody } from "./mdx-body";
 
 export {
+  TOOL_INDEX_MIN_POSTS,
   clustersForTool,
   getPost,
+  indexableToolGuides,
   listPosts,
   postsForTool,
   relatedPosts,
   toolGuidesHref,
+  toolIndexIsIndexable,
   toolsWithPosts,
   type Frontmatter,
   type Post,

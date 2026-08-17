@@ -1,8 +1,7 @@
 import Link from "next/link";
 
 import { clustersForTool, postsForTool } from "@/lib/content";
-import { jsonLd } from "@/lib/content/json-ld";
-import { SECTIONS, SECTION_PAGES, absoluteUrl, sectionHref, type Section } from "@/lib/site";
+import { SECTION_PAGES, sectionHref, type Section } from "@/lib/site";
 
 /**
  * /guides/<tool> — every guide for one engine, grouped by cluster.
@@ -17,6 +16,16 @@ import { SECTIONS, SECTION_PAGES, absoluteUrl, sectionHref, type Section } from 
  * `/guides`, from here, and from the related block of its siblings — so no
  * guide is ever an orphan, and the cluster it belongs to is visible rather
  * than implied.
+ *
+ * Below `TOOL_INDEX_MIN_POSTS` articles this page is deliberately kept out of
+ * the index — see the note on that constant in `src/lib/content/posts.ts`. It
+ * still renders, still links and is still crawlable; it just does not ask to
+ * be a search result while everything on it also appears on `/guides`.
+ *
+ * No structured data is emitted here. The page's `BreadcrumbList` comes from
+ * the global `<Breadcrumbs />` in the root layout, which builds it from the
+ * same trail it renders visibly. A second copy from this component described
+ * the same URL twice.
  */
 
 export function ToolIndexView({ section }: { section: Section }) {
@@ -24,23 +33,8 @@ export function ToolIndexView({ section }: { section: Section }) {
   const clusters = clustersForTool(section.slug);
   const trustPages = SECTION_PAGES[section.slug].filter((page) => page.trust);
 
-  const breadcrumbMarkup = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
-      { "@type": "ListItem", position: 2, name: "Guides", item: absoluteUrl("/guides") },
-      { "@type": "ListItem", position: 3, name: section.name },
-    ],
-  };
-
   return (
     <div data-section={section.slug} className="flex-1">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbMarkup) }}
-      />
-
       <div className="mx-auto max-w-3xl px-4 py-10">
         <header>
           <p className="micro-label">

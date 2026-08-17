@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { counties } from "@/engines/property";
 import { STATE_IDS } from "@/engines/trades";
-import { listPosts, toolGuidesHref, toolsWithPosts } from "@/lib/content";
+import { indexableToolGuides, listPosts, toolGuidesHref } from "@/lib/content";
 
 import {
   SECTIONS,
@@ -116,13 +116,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
    * time. It is the one date on this site that means something specific: the
    * day the page was last reviewed against its sources. Stamping a redeploy on
    * it would be the fake freshness the rest of this file refuses to emit.
+   *
+   * The tool indexes come from `indexableToolGuides()` rather than
+   * `toolsWithPosts()`: a tool index below `TOOL_INDEX_MIN_POSTS` articles
+   * serves `noindex, follow`, and submitting a URL that tells the crawler not
+   * to index it is a contradiction the crawler charges us for. One predicate
+   * drives both, so the sitemap and the directive cannot disagree.
    */
   const guideIndex: MetadataRoute.Sitemap = [
     { url: absoluteUrl("/guides"), lastModified, changeFrequency: "weekly", priority: 0.8 },
     { url: absoluteUrl("/glossary"), lastModified, changeFrequency: "monthly", priority: 0.6 },
   ];
 
-  const guideClusters: MetadataRoute.Sitemap = toolsWithPosts().map((tool) => ({
+  const guideClusters: MetadataRoute.Sitemap = indexableToolGuides().map((tool) => ({
     url: absoluteUrl(toolGuidesHref(tool)),
     lastModified,
     changeFrequency: "weekly" as const,
