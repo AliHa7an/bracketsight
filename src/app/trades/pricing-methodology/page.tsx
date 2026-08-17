@@ -22,6 +22,7 @@ import {
   type LedgerRow,
 } from "@/components/ui";
 import { formatCents, formatDate } from "@/components/ui/format";
+import { renderableCitation } from "@/lib/trades/citation";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/trades/pricing-methodology" },
@@ -61,7 +62,12 @@ const SAMPLE_WIDTH_FT = 8;
 const SAMPLE_AREA = SAMPLE_LENGTH_FT * SAMPLE_WIDTH_FT;
 
 export default function PricingMethodologyPage() {
-  const primary = TRADE_RULES.decks.citations[0];
+  // Routed through `renderableCitation`: the pricing rulesets cite a reserved
+  // `.invalid` host by design, and rendering it as a live link pointed the one
+  // citation a sceptical reader would click at a DNS failure.
+  // See src/lib/trades/citation.ts.
+  const rawPrimary = TRADE_RULES.decks.citations[0];
+  const primary = rawPrimary ? renderableCitation(rawPrimary) : undefined;
 
   /* Regions down the side, trades across: a contractor looks up their own
      region, not a trade. Three data columns fit the measure; seven did not. */

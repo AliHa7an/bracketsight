@@ -88,7 +88,7 @@ export async function generateMetadata({
   if (!rules) return {};
   return {
     title: `${rules.stateName} Home Improvement Contract Requirements (2026)`,
-    description: `The clauses ${rules.stateName} law requires in a home improvement contract, each with its statute cite — plus a free generator that assembles them for your job. Not legal advice.`,
+    description: `The clauses ${rules.stateName} law requires in a home improvement contract, each with its statute cite, plus a generator that assembles them. Not legal advice.`,
     // Relative — the root layout owns `metadataBase`. `rules.stateId` rather
     // than the raw param so the canonical is always the prerendered casing.
     alternates: { canonical: `/trades/contracts/${rules.stateId}` },

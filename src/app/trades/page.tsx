@@ -12,7 +12,7 @@ import { renderableCitation } from "@/lib/trades/citation";
 export const metadata: Metadata = {
   title: "Free Estimate Builder for Trades — Itemised, With Ranges",
   description:
-    "Price a deck, an interior paint job or a bathroom remodel on a live takeoff sheet. Edit any line, watch the total move, print the sheet your customer gets. Free, no signup.",
+    "Price a deck, an interior paint job or a bathroom remodel on a live takeoff sheet. Edit any line, watch the total move, print the sheet your customer gets.",
   alternates: { canonical: "/trades" },
 };
 

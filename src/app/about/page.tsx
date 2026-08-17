@@ -14,7 +14,7 @@ import {
 export const metadata: Metadata = {
   title: "About — who builds these engines and how the rules get verified",
   description:
-    "How five US money-rule engines are built, funded and corrected: deterministic arithmetic, cited primary sources, 468 tests, and a published register of 55 unverified items.",
+    "How five US money-rule engines are built, funded and corrected: deterministic arithmetic, cited primary sources, and a published register of 55 unverified items.",
   alternates: { canonical: "/about" },
 };
 

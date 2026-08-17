@@ -47,3 +47,23 @@
   outline-offset: 3px;
   border-radius: 2px;
 }
+
+/* The mockup notice. These pages hide the site chrome, which takes the
+   disclaimer and the privacy link with it; this stands in for both. Deliberately
+   plain and unstyled-looking — it is a warning, not part of any direction. */
+.mockNotice {
+  margin: 0;
+  padding: 10px 20px;
+  background: #1a1a1a;
+  color: #f2f2f2;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.mockNoticeLink {
+  color: #f2f2f2;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

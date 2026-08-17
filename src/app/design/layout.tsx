@@ -61,6 +61,24 @@ export default function DesignReviewLayout({ children }: { children: React.React
         body { background: #ffffff; }
       `}</style>
 
+      {/*
+        These pages hide the site header and footer so a redesign can be judged
+        without the current chrome on top of it. That removes the disclaimer,
+        the privacy link and the way back, so the notice below stands in for all
+        three. The figures in these mockups are real `simulateAllPlans` output
+        (provenance in ./data.ts) but they are FROZEN STRINGS — they will drift
+        from the engines the moment a rule file changes, which is exactly why a
+        visitor must not read them as a live answer.
+      */}
+      <p className={styles.mockNotice} role="note">
+        Internal design mockup. The figures shown are frozen sample output, not a
+        live calculation, and may no longer match the engines. Nothing here is
+        advice.{" "}
+        <Link href="/" className={styles.mockNoticeLink}>
+          Return to Bracketsight
+        </Link>
+      </p>
+
       {children}
 
       <nav className={styles.switcher} aria-label="Design directions">

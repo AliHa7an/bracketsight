@@ -8,7 +8,7 @@ import { absoluteUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Is Your Home Over-Assessed? Free Property Tax Check",
   description:
-    "Run your assessment against comparable homes with the same median-ratio statistics an assessor uses. Most people are told not to file — that is the point. Free, no signup.",
+    "Run your assessment against comparable homes with the same median-ratio statistics an assessor uses. Most people are told not to file — that is the point.",
   alternates: { canonical: "/property" },
 };
 

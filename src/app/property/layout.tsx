@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: "%s · Property tax · Bracketsight",
   },
   description:
-    "Compare your assessment against comparable homes using the median-ratio statistics assessors use, then get your county's deadline, fee and forms. Free, no signup.",
+    "Compare your assessment against comparable homes using the median-ratio statistics assessors use, then get your county's deadline, fee and forms. Free.",
 };
 
 export default function PropertySectionLayout({ children }: { children: ReactNode }) {

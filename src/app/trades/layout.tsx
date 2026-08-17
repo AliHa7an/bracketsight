@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: "%s · Trades · Bracketsight",
   },
   description:
-    "Build an itemised takeoff with honest price ranges, turn it into an invoice that matches to the cent, and see which contract clauses your state requires. No signup.",
+    "Build an itemised takeoff with honest price ranges, turn it into an invoice that matches to the cent, and see which clauses your state requires.",
 };
 
 export default function TradesSectionLayout({ children }: { children: ReactNode }) {

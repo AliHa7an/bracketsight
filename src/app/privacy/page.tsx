@@ -5,7 +5,7 @@ import { CONTACT_EMAIL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Privacy and cookies — nothing you enter leaves your browser",
   description:
-    "Every calculation runs in your browser: no account, no database, no server-side storage of what you type. What is stored, what advertising would change, and how to refuse it.",
+    "Every calculation runs in your browser: no account, no database, no server-side storage. What is stored, what advertising changes, and how to refuse it.",
   alternates: { canonical: "/privacy" },
 };
 

@@ -215,6 +215,26 @@ export const TRUST_PAGES: readonly StaticPage[] = [
   { href: "/terms", label: "Terms and disclaimer" },
 ] as const;
 
+/**
+ * The reading surface: written explainers and the term index, as opposed to
+ * the tools and the policy pages.
+ *
+ * Kept separate from `TRUST_PAGES` on purpose. Both render in the footer on
+ * every page, but only `TRUST_PAGES` feeds `sitemap.ts` — the guides tree
+ * enumerates its own URLs there, from the same functions its
+ * `generateStaticParams` reads, so listing it here as well would emit each URL
+ * twice.
+ *
+ * These exist in the footer because they were otherwise reachable from nothing:
+ * a glossary and a guides index that no page links to are, to a crawler, two
+ * more orphans, and orphaned reference pages are exactly what "low value
+ * content" is usually attached to.
+ */
+export const LIBRARY_PAGES: readonly StaticPage[] = [
+  { href: "/guides", label: "Guides" },
+  { href: "/glossary", label: "Glossary" },
+] as const;
+
 export type SectionPage = {
   /** Path relative to the section root: "/methodology". */
   readonly href: string;
@@ -326,6 +346,18 @@ export const DISCLAIMER =
  * state, or its breadcrumb falls back to the raw URL segment.
  */
 const DYNAMIC_PAGE_LABELS: Readonly<Record<string, string>> = {
+  // The guides tree. `/guides/[slug]` serves two shapes — a tool index and an
+  // article — so the five tool slugs are named here and an article falls
+  // through to the humanised-segment path. Without these entries an article's
+  // trail collapses to "Home / Rap can cost more than standard", skipping both
+  // the guides index and the tool the article belongs to.
+  "/guides": "Guides",
+  "/guides/loans": "Student loans",
+  "/guides/paycheck": "Paycheck",
+  "/guides/aca": "Health cover",
+  "/guides/property": "Property tax",
+  "/guides/trades": "Trades",
+  "/glossary": "Glossary",
   "/property/counties/il/cook": "Cook County, Illinois",
   "/property/counties/nj/bergen": "Bergen County, New Jersey",
   "/trades/contracts/CA": "California",
@@ -339,6 +371,7 @@ const DYNAMIC_PAGE_LABELS: Readonly<Record<string, string>> = {
 function knownRoutes(): Map<string, string> {
   const map = new Map<string, string>([["/", "Home"]]);
   for (const page of TRUST_PAGES) map.set(page.href, page.label);
+  for (const page of LIBRARY_PAGES) map.set(page.href, page.label);
   for (const section of SECTIONS) {
     map.set(sectionHref(section), section.name);
     for (const page of SECTION_PAGES[section.slug]) {

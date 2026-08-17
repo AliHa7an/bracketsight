@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/trades/contract" },
   title: "Contract Template — State-Required Clauses, Cited",
   description:
-    "Generate a home improvement contract template carrying the clauses your state requires for a job this size, each with its statute. Template, not legal advice. Free, no signup.",
+    "A home improvement contract template carrying the clauses your state requires for a job this size, each with its statute. A template, not legal advice.",
 };
 
 /**

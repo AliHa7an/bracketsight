@@ -7,6 +7,7 @@ import { ConsentChoicesLink } from "./ConsentBanner";
 import {
   CONTACT_EMAIL,
   DISCLAIMER,
+  LIBRARY_PAGES,
   SECTIONS,
   SECTION_PAGES,
   SITE_NAME,
@@ -98,6 +99,29 @@ export function SiteFooter() {
             reachable only through /privacy, which for a site computing
             high-stakes money figures is the same as not having a disclaimer.
           */}
+          {/*
+            The reading surface. Separate from the trust column because a
+            glossary is not a policy page, and separate from the tools column
+            because it is not a tool — but in the footer of every page for the
+            same reason both of those are: nothing else on the site linked to
+            either, so both shipped as orphans.
+          */}
+          <nav aria-label="Reference" className="min-w-[10rem]">
+            <p className="micro-label mb-2">Reference</p>
+            <ul className="space-y-0">
+              {LIBRARY_PAGES.map((page) => (
+                <li key={page.href}>
+                  <Link
+                    href={page.href}
+                    className="inline-flex min-h-11 items-center rounded-atlas underline-offset-4 hover:text-ink hover:underline"
+                  >
+                    {page.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
           <nav aria-label="About this site" className="min-w-[10rem]">
             <p className="micro-label mb-2">This site</p>
             <ul className="space-y-0">
