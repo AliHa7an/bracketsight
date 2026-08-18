@@ -1,0 +1,1330 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+ * THE HOME PAGE — "the instrument".
+ *
+ * THE THESIS: the home page should demonstrate the product rather than describe
+ * it. The page it replaces asked a visitor to take five paragraphs on trust
+ * before anything was computed. So the largest object on the first screen is a
+ * working instrument — an ink panel with a live chart, six live readouts and a
+ * scrub, wired to the ACA engine, showing a real household walking up to the
+ * 400% cliff and off it. The prose is cut to what fits beside it.
+ *
+ * WHAT MAKES IT THIS AND NOT A GENERIC LANDING PAGE:
+ *
+ *   • DENSITY IS THE POINT. Base type is 16px, line-height 1.48, and the first
+ *     screen carries roughly four times as many figures as the page it
+ *     replaces. Where a landing page leaves air, this leaves a hairline. Labels
+ *     are 10.5px mono in small caps — the voice of an instrument face, not of
+ *     an essay.
+ *   • AN INK GROUND, TWICE. The panel and the trust band invert to `--panel`
+ *     with their own hairline grid. That gives the page two obvious centres of
+ *     gravity that are not the headline, and it is why the demo reads as
+ *     equipment rather than as a hero graphic.
+ *   • THE DEMO IS A CHART, NOT A FIGURE. A cliff is a shape: two households $1
+ *     apart with a $14,902 difference between them. No single number carries
+ *     that; the discontinuity has to be visible.
+ *   • SERIF IS RATIONED. `--font-serif` appears exactly three times — the
+ *     headline, the section title, the card question — and never above 66px.
+ *     Everything else, including every label, is the body face or the data
+ *     face.
+ *   • THE GRID HAS A HIERARCHY. Loans is the flagship: it spans the grid, it
+ *     carries a badge, and it is the only card with a ledger. Five identical
+ *     cards would tell a reader that the site has no opinion about where to
+ *     start, which is false.
+ *
+ * NO COLOUR VALUE APPEARS IN THIS FILE. Every one is a token from globals.css,
+ * which is where both themes and every contrast ratio are recorded. A card gets
+ * its accent by carrying `data-section="<slug>"`, the same mechanism the five
+ * tools use, so the grid previews all five identities in whichever theme the
+ * reader is in.
+ * ═════════════════════════════════════════════════════════════════════════ */
+
+.root {
+  --gutter: clamp(16px, 3.4vw, 44px);
+  --hair: color-mix(in srgb, var(--ink) 15%, transparent);
+  --hair-soft: color-mix(in srgb, var(--ink) 7%, transparent);
+
+  font-size: 16px;
+  line-height: 1.48;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.shell {
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Small caps mono: the label voice of the whole page. */
+.tag {
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+/* ──────────────────────────────────────────────────────────────── hero ── */
+
+/*
+ * A drafting grid, not a gradient: 26px squares of 7%-ink hairline, masked so
+ * it fades before it reaches the type. Two static background-images and a mask.
+ * Nothing animates, so there is nothing here to switch off for reduced motion.
+ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--ink);
+}
+
+.heroGrid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(to right, var(--hair-soft) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(to bottom, var(--hair-soft) 0 1px, transparent 1px 26px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 35%) 62%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 35%) 62%, transparent 100%);
+}
+
+.heroInner {
+  position: relative;
+  display: grid;
+  gap: clamp(28px, 3.6vw, 46px);
+  padding-block: clamp(28px, 4.6vw, 56px) clamp(30px, 4.6vw, 56px);
+}
+
+@media (min-width: 1040px) {
+  .heroInner {
+    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+    align-items: center;
+  }
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.eyebrowRule {
+  flex: 0 0 34px;
+  height: 1px;
+  background: var(--ink);
+}
+
+.display {
+  margin: 0;
+  max-width: 15ch;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 5.3vw, 4.1rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.displayAccent {
+  color: var(--signal);
+}
+
+.lead {
+  margin: 20px 0 0;
+  max-width: 46ch;
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--dim);
+}
+
+.trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 0;
+  margin: 20px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--hair);
+  list-style: none;
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+/* The separator belongs to the item BEFORE it, not the one after. Written the
+   other way round, a strip that wraps starts its second line with a floating
+   hairline. */
+.trust li:not(:last-child)::after {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 9px;
+  margin-inline: 11px;
+  vertical-align: -1px;
+  background: var(--hair);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 22px;
+  margin: 22px 0 0;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-atlas);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 14.5px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background var(--dur-fast) var(--ease);
+}
+
+.btnPrimary:hover {
+  background: color-mix(in srgb, var(--ink) 86%, var(--signal));
+}
+
+.btnQuiet {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  color: var(--signal);
+  font-size: 14.5px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.btnQuiet:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────── panel ── */
+
+/*
+ * The working panel. Ink ground with its own hairline grid, so the live demo
+ * reads as an instrument rather than as a hero illustration — and so the page
+ * has an obvious centre of gravity that is neither the headline nor a picture.
+ * The panel is ink in BOTH themes: it sinks below the page in light and rises
+ * above it in dark, which is the only thing about it that changes.
+ */
+.panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ink) 55%, var(--panel));
+  border-radius: var(--radius-atlas);
+  background: var(--panel);
+  color: var(--panel-text);
+  box-shadow:
+    0 1px 2px rgb(6 10 18 / 10%),
+    0 14px 34px -20px rgb(6 10 18 / 42%),
+    0 34px 60px -40px rgb(6 10 18 / 38%);
+}
+
+.panelGrid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--panel-text) 6%, transparent) 0 1px,
+      transparent 1px 30px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--panel-text) 6%, transparent) 0 1px,
+      transparent 1px 30px
+    );
+}
+
+/* Three labels, one line where there is room and stacked where there is not. */
+.panelHead {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--panel-hair);
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--panel-dim);
+}
+
+.panelLive {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--panel-teal);
+}
+
+.panelDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--panel-teal);
+}
+
+.status {
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+}
+
+.statusOk {
+  color: var(--panel-teal);
+}
+
+/* The one oxide mark in the panel — an irreversible fact and nothing else. */
+.statusCliff {
+  color: var(--panel-flag);
+}
+
+.panelBody {
+  position: relative;
+  padding: 16px 16px 18px;
+}
+
+/*
+ * Plot in SVG, every label in HTML around it.
+ *
+ * An SVG <text> scales with the viewBox, so a 9px label in a 640-unit box
+ * rendered into a 343px column came out at 4.8px on a 375px screen: present in
+ * the DOM, unreadable on the device. Every label is HTML positioned around the
+ * plot instead, at a real font size that does not depend on how wide the column
+ * happens to be. The chart reserves its box from the viewBox's own aspect
+ * ratio, so it cannot shift anything when the curve is computed — the space is
+ * correct before the first sample is taken.
+ */
+.chartFrame {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 5px 6px;
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--panel-dim);
+}
+
+.chartY {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-block: 6px 0;
+}
+
+.chartPlot {
+  position: relative;
+  min-width: 0;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.chartX {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Sits above the oxide line and right-aligned to it. */
+.edgeTag {
+  position: absolute;
+  top: 0;
+  transform: translateX(-100%);
+  padding-right: 5px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--panel-flag);
+}
+
+/* ---- the readout grid ---- */
+
+.readouts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 16px;
+  border-top: 1px solid var(--panel-hair);
+  border-left: 1px solid var(--panel-hair);
+}
+
+@media (min-width: 560px) {
+  .readouts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.readout {
+  padding: 10px 12px;
+  border-right: 1px solid var(--panel-hair);
+  border-bottom: 1px solid var(--panel-hair);
+}
+
+.readoutLabel {
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: 9.5px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--panel-dim);
+}
+
+.readoutValue {
+  margin: 5px 0 0;
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(1.05rem, 2.2vw, 1.32rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: var(--panel-text);
+}
+
+.readoutValueKey {
+  color: var(--panel-gold);
+}
+
+.readoutNote {
+  margin: 3px 0 0;
+  font-family: var(--font-data);
+  font-size: 9.5px;
+  color: var(--panel-dim);
+}
+
+/* ---- the scrub ---- */
+
+.scrub {
+  margin-top: 16px;
+}
+
+.scrubLabel {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: var(--font-data);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--panel-dim);
+}
+
+.scrubValue {
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  font-variant-numeric: tabular-nums;
+  color: var(--panel-text);
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 11px 0;
+  background: transparent;
+  cursor: ew-resize;
+}
+
+.slider::-webkit-slider-runnable-track {
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    var(--panel-gold) 0 var(--fill, 0%),
+    color-mix(in srgb, var(--panel-text) 22%, transparent) var(--fill, 0%) 100%
+  );
+}
+
+.slider::-moz-range-track {
+  height: 2px;
+  background: color-mix(in srgb, var(--panel-text) 22%, transparent);
+}
+
+.slider::-moz-range-progress {
+  height: 2px;
+  background: var(--panel-gold);
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 3px;
+  height: 24px;
+  margin-top: -11px;
+  border: 0;
+  border-radius: 1px;
+  background: var(--panel-text);
+}
+
+.slider::-moz-range-thumb {
+  width: 3px;
+  height: 24px;
+  border: 0;
+  border-radius: 1px;
+  background: var(--panel-text);
+}
+
+.slider:focus-visible {
+  outline: 2px solid var(--panel-text);
+  outline-offset: 5px;
+  border-radius: var(--radius-atlas);
+}
+
+.scrubEnds {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0 0;
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+  font-size: 10px;
+  color: var(--panel-dim);
+}
+
+/* Rule-set identifiers and citation labels are long unbroken tokens, and they
+   break rather than scroll. */
+.panelFoot {
+  overflow-wrap: anywhere;
+  position: relative;
+  padding: 11px 16px 13px;
+  border-top: 1px solid var(--panel-hair);
+  font-family: var(--font-data);
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--panel-dim);
+}
+
+.panelFoot a {
+  color: var(--panel-dim);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.panelFoot a:hover {
+  color: var(--panel-text);
+}
+
+/* ────────────────────────────────────────────────────────── proof row ── */
+
+/*
+ * A ruled row, not a band of cards: the figures sit in the same rhythm as the
+ * panel's readouts directly above them, so the page reads as one instrument
+ * with two registers rather than as a hero followed by a marketing strip.
+ */
+.proof {
+  background: var(--band);
+  border-bottom: 1px solid var(--hair);
+}
+
+.proofRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 840px) {
+  .proofRow {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.proofItem {
+  padding: clamp(20px, 2.6vw, 30px) 18px clamp(20px, 2.6vw, 30px) 0;
+}
+
+.proofItem + .proofItem {
+  padding-left: 18px;
+  border-left: 1px solid var(--hair);
+}
+
+@media (min-width: 840px) {
+  .proofItem:nth-child(1) {
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 839px) {
+  .proofItem:nth-child(3),
+  .proofItem:nth-child(4) {
+    border-top: 1px solid var(--hair);
+  }
+
+  .proofItem:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+.proofFigure {
+  display: block;
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(1.85rem, 3.6vw, 2.7rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--bronze);
+}
+
+/* A date is not a quantity, and at figure size it is three times the width of
+   one and dominates the row. */
+.proofFigureDate {
+  font-size: clamp(1.15rem, 2.4vw, 1.85rem);
+  letter-spacing: -0.02em;
+}
+
+.proofLabel {
+  margin: 10px 0 0;
+  max-width: 30ch;
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  line-height: 1.55;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.proofSource {
+  margin: 5px 0 0;
+  font-size: 12.5px;
+  color: var(--dim);
+}
+
+/* ─────────────────────────────────────────────────────────── the grid ── */
+
+.tools {
+  padding-block: clamp(38px, 5vw, 64px);
+  scroll-margin-top: 72px;
+}
+
+.sectionHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 20px;
+  margin: 0 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.8vw, 2rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+.cardGrid {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 760px) {
+  .cardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* The flagship spans the grid. Five equal cards would say the site has no
+     opinion about where a reader should start, which is false. */
+  .cardGrid > li:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1120px) {
+  .cardGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .cardGrid > li:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.cardWrap {
+  min-width: 0;
+  height: 100%;
+}
+
+/*
+ * ONE FOCUS STOP for the whole surface: the question is the only anchor, its
+ * ::after covers the card, and the CTA below is a styled span. `:has()` puts
+ * the ring on the card so the highlighted surface is the clickable one.
+ */
+.card {
+  position: relative;
+  display: grid;
+  height: 100%;
+  align-content: start;
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--signal);
+  border-radius: var(--radius-atlas);
+  background: var(--paper);
+  color: var(--ink);
+  transition:
+    transform var(--dur-base) var(--ease),
+    box-shadow var(--dur-base) var(--ease);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 1px rgb(6 10 18 / 6%),
+    0 10px 24px -14px rgb(6 10 18 / 28%),
+    0 26px 52px -34px rgb(6 10 18 / 32%);
+}
+
+.card:has(a:focus-visible) {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.card a:focus-visible {
+  outline: none;
+}
+
+@media (min-width: 900px) {
+  .cardFlagship {
+    grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+  }
+}
+
+.cardMain {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(16px, 2.2vw, 24px);
+}
+
+.cardEyebrow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+.cardBadge {
+  align-self: center;
+  padding: 3px 8px;
+  border: 1px solid color-mix(in srgb, var(--signal) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--signal) 10%, transparent);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+
+.cardArt {
+  flex: none;
+  color: var(--signal);
+}
+
+.cardQuestion {
+  margin: 10px 0 0;
+  max-width: 24ch;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(1.32rem, 2.4vw, 1.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.cardFlagship .cardQuestion {
+  max-width: 22ch;
+  font-size: clamp(1.5rem, 2.7vw, 1.95rem);
+  line-height: 1.08;
+}
+
+/* Never underlined: it is the largest type in the card, and an underline on
+   top of that reads as a correction. */
+.cardLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cardLink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-atlas);
+}
+
+.cardBody {
+  margin: 12px 0 0;
+  max-width: 52ch;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--dim);
+}
+
+.cardCta {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  margin-top: 16px;
+  padding: 0 16px;
+  border: 1px solid color-mix(in srgb, var(--signal) 45%, transparent);
+  border-radius: var(--radius-atlas);
+  color: var(--signal);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.card:hover .cardCta {
+  background: color-mix(in srgb, var(--signal) 8%, transparent);
+  border-color: var(--signal);
+}
+
+/* ---- the worked example ---- */
+
+.cardExample {
+  margin: 16px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dim);
+}
+
+.cardExampleLabel {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-data);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.cardExampleFigure {
+  display: block;
+  margin-bottom: 5px;
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--bronze);
+}
+
+/* ---- the flagship's ledger side ---- */
+
+.cardData {
+  padding: clamp(16px, 2.2vw, 24px);
+  border-top: 1px solid var(--rule);
+  background: var(--paper-raised);
+}
+
+@media (min-width: 900px) {
+  .cardData {
+    border-top: 0;
+    border-left: 1px solid var(--rule);
+  }
+}
+
+.cardDataHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-family: var(--font-data);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.ledger {
+  margin: 0;
+  display: grid;
+  gap: 9px;
+}
+
+.ledgerRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.ledgerName {
+  font-family: var(--font-data);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
+.ledgerValue {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+  font-size: 13.5px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.ledgerValueKey {
+  color: var(--bronze);
+}
+
+.ledgerBar {
+  grid-column: 1 / -1;
+  height: 5px;
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+}
+
+.ledgerBarFill {
+  display: block;
+  height: 100%;
+  background: color-mix(in srgb, var(--signal) 62%, transparent);
+}
+
+.ledgerBarFillKey {
+  background: var(--bronze);
+}
+
+.ledgerNote {
+  grid-column: 1 / -1;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--dim);
+}
+
+/* ────────────────────────────────────────────────────────── trust band ── */
+
+/*
+ * The one other ink ground on the page. The four claims and the pipeline are
+ * the answer to the only question a sceptical reader has, so they get the
+ * page's second centre of gravity rather than a run of grey paragraphs.
+ */
+.trustBand {
+  position: relative;
+  overflow: hidden;
+  border-block: 1px solid color-mix(in srgb, var(--ink) 55%, var(--panel));
+  background: var(--panel);
+  color: var(--panel-text);
+}
+
+.trustBandGrid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--panel-text) 5%, transparent) 0 1px,
+      transparent 1px 30px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--panel-text) 5%, transparent) 0 1px,
+      transparent 1px 30px
+    );
+}
+
+.trustInner {
+  position: relative;
+  padding-block: clamp(38px, 5vw, 64px);
+}
+
+.trustHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 20px;
+  margin: 0 0 22px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--panel-hair);
+}
+
+.trustTitle {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--panel-text);
+}
+
+.trustTag {
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--panel-dim);
+}
+
+.claims {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--panel-hair);
+}
+
+@media (min-width: 700px) {
+  .claims {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1080px) {
+  .claims {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.claim {
+  padding: 18px 18px 20px 0;
+  border-bottom: 1px solid var(--panel-hair);
+}
+
+@media (min-width: 700px) {
+  .claim:nth-child(even) {
+    padding-left: 18px;
+    border-left: 1px solid var(--panel-hair);
+  }
+}
+
+@media (min-width: 1080px) {
+  .claim + .claim {
+    padding-left: 18px;
+    border-left: 1px solid var(--panel-hair);
+  }
+}
+
+.claimArt {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--panel-teal);
+}
+
+.claimHeading {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--panel-text);
+}
+
+.claimDd {
+  margin: 0;
+}
+
+.claimLede {
+  display: block;
+  margin: 6px 0 0;
+  font-family: var(--font-data);
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--panel-gold);
+}
+
+.claimBody {
+  display: block;
+  margin: 9px 0 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--panel-dim);
+}
+
+/* ---- how a rule becomes a number ---- */
+
+.pipeline {
+  margin: clamp(30px, 4vw, 48px) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0;
+  counter-reset: none;
+}
+
+@media (min-width: 900px) {
+  .pipeline {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.pipelineHead {
+  margin: 0 0 18px;
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--panel-dim);
+}
+
+/*
+ * The connector. A hairline that runs out of each node's marker to the next
+ * one — horizontally where the run is a row, vertically where it has stacked.
+ * Drawn with ::before on the node rather than as a separate element, so it
+ * cannot get out of step with the nodes it joins.
+ */
+.pipelineStep {
+  position: relative;
+  padding: 0 0 26px 30px;
+}
+
+.pipelineStep:last-child {
+  padding-bottom: 0;
+}
+
+/* the marker */
+.pipelineStep::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--panel-teal);
+  border-radius: 50%;
+  background: var(--panel);
+}
+
+/* the run to the next node */
+.pipelineStep::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  bottom: 4px;
+  left: 4px;
+  width: 1px;
+  background: var(--panel-hair);
+}
+
+.pipelineStep:last-child::before {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .pipelineStep {
+    padding: 22px 18px 0 0;
+  }
+
+  .pipelineStep::after {
+    top: 0;
+    left: 0;
+  }
+
+  .pipelineStep::before {
+    top: 4px;
+    bottom: auto;
+    left: 14px;
+    right: 0;
+    width: auto;
+    height: 1px;
+  }
+}
+
+.pipelineNum {
+  display: block;
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--panel-gold);
+}
+
+.pipelineTitle {
+  margin: 5px 0 0;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--panel-text);
+}
+
+.pipelineBody {
+  margin: 7px 0 0;
+  max-width: 34ch;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--panel-dim);
+}
+
+/* ──────────────────────────────────────────────────────────── workings ── */
+
+.workings {
+  padding-block: clamp(34px, 4.4vw, 56px);
+}
+
+.workingsLead {
+  margin: 16px 0 0;
+  max-width: 68ch;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--dim);
+}
+
+.workingsLead a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--rule);
+}
+
+.workingsLead a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* The closing two paragraphs, side by side where there is room. At 68ch in a
+   1280px shell they otherwise leave the right half of the page empty. */
+.workingsTail {
+  display: grid;
+  gap: 4px 40px;
+  margin-top: 26px;
+}
+
+@media (min-width: 900px) {
+  .workingsTail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .workingsTail > * {
+    max-width: 52ch;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chipsLabel {
+  margin: 20px 0 0;
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 13px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-atlas);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-size: 13px;
+  text-decoration: none;
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+
+.chip:hover {
+  border-color: var(--ink);
+  background: var(--paper-sunken);
+}
+
+.chipDot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--signal);
+}
+
+.chipMono {
+  font-family: var(--font-data);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+/* ─────────────────────────────────────────────────────────── entrance ── */
+
+/*
+ * Opacity and transform only. Both are composited, neither reflows, so the
+ * whole mechanic contributes nothing to CLS. Nothing is hidden by default:
+ * the server renders phase "static", which is unstyled here, so a failed
+ * hydration leaves a readable page rather than an empty one.
+ */
+.root [data-reveal="pending"] > * {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.root [data-reveal="in"] > * {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 520ms var(--ease),
+    transform 520ms var(--ease);
+  transition-delay: calc(var(--reveal-index, 0) * 70ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root [data-reveal] > *,
+  .root [data-reveal="pending"] > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .root .card,
+  .root .btnPrimary,
+  .root .chip {
+    transition: none;
+  }
+
+  .root .card:hover {
+    transform: none;
+  }
+}

@@ -17,11 +17,11 @@ import { absoluteUrl } from "@/lib/site";
  * ignores it, and only Yandex ever honoured it — so its only real effect on
  * this site was to put a non-standard line in the first file a reviewer opens.
  *
- * `/design/*` is deliberately NOT disallowed. Those three routes are internal
- * mockups carrying `noindex, nofollow` in their own metadata, and a crawler
- * has to be able to fetch a page to read the noindex on it. Blocking the path
- * would leave the pages indexable-by-reference and unreadable — the worst of
- * both. Nothing links to them, so nothing discovers them either.
+ * There is no `/design/*` rule any more, and there should not be one. Those
+ * routes were internal redesign mockups; the direction they were reviewing is
+ * now the live home page, so the routes have been deleted rather than hidden.
+ * A `Disallow` for a path that 404s is a line in the first file a reviewer
+ * opens that describes something the site does not have.
  */
 export default function robots(): MetadataRoute.Robots {
   return {

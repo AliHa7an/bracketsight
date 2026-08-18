@@ -30,7 +30,7 @@ export default function SourcesPage() {
         </p>
       </header>
 
-      <div className="overflow-x-auto border border-rule rounded-atlas bg-white">
+      <div className="overflow-x-auto border border-rule rounded-atlas surface-raised">
         <table className="w-full text-[0.9rem] border-collapse min-w-[560px]">
           <thead>
             <tr className="border-b border-rule text-left text-[0.75rem] uppercase tracking-wide text-dim">

@@ -56,7 +56,7 @@ export default function ChangelogPage() {
 
       <ol className="space-y-6">
         {entries.map((e) => (
-          <li key={e.date + e.title} className="border border-rule rounded-atlas bg-white p-4">
+          <li key={e.date + e.title} className="border border-rule rounded-atlas surface-raised p-4">
             <h2>
               <time dateTime={e.date} className="font-data text-[0.85rem] text-dim block">
                 {e.date}

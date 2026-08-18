@@ -14,16 +14,21 @@
  * ==========================================================================*/
 
 @theme {
-  /* Defaults = the site shell (loans identity, the flagship). Sections below
-     override the six colour tokens; everything else is shared and never varies. */
-  --color-paper: #f5f7fa;
-  --color-ink: #14213a;
-  --color-rule: #c9d4e2;
-  --color-dim: #5c6b85;
-  --color-signal: #0f6e5c;
+  /* Defaults = the site shell. Sections below override the six colour tokens;
+     everything else is shared and never varies. These literals exist so that
+     Tailwind emits the `text-ink` / `bg-paper` / `border-rule` utilities at
+     all — the values that actually paint are assigned in the :root block
+     underneath, from the light/dark pairs, and every theme rule reassigns
+     these same `--color-*` names. */
+  --color-paper: #f7f6f3;
+  --color-ink: #0e1626;
+  --color-rule: #d9d5cc;
+  --color-dim: #4f5a70;
+  --color-signal: #0b5f52;
   --color-flag: #b4451f;
 
   --font-display: var(--font-bricolage), "Bricolage Grotesque", system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), "Instrument Serif", Georgia, serif;
   --font-body: var(--font-public-sans), "Public Sans", system-ui, sans-serif;
   --font-data: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
 
@@ -50,10 +55,125 @@
   --ease-atlas: cubic-bezier(0.2, 0, 0.13, 1);
 }
 
+/* ============================================================================
+ * TWO THEMES, ONE MECHANISM.
+ *
+ * Every palette on this site — the shell and all five section identities —
+ * declares BOTH its light values (`--lt-*`) and its dark values (`--dk-*`) on
+ * the element that owns it. Nothing below chooses between them. Three generic
+ * rules do that, once, for every palette at the same time:
+ *
+ *   1. the default assignment,      :root / [data-section]           → light
+ *   2. the system preference,       prefers-color-scheme: dark       → dark
+ *   3. the explicit choice,         :root[data-theme="dark"|"light"] → either
+ *
+ * Rule 3 outranks rule 2 by specificity — `:root[data-theme="dark"]` is (0,2,0)
+ * against `:root:not([data-theme="light"])`'s (0,3,0)… which is why rule 2 is
+ * written with the `:not()` guard rather than left to lose. A reader who has
+ * chosen light keeps light on a dark-preferring OS, and a reader who has chosen
+ * nothing follows the OS. `data-theme` is stamped on <html> before first paint
+ * by the inline script in app/layout.tsx, so there is no flash of the wrong
+ * theme; it is never absent-but-chosen, because the script writes it from the
+ * same localStorage key the toggle writes.
+ *
+ * THE DARK PALETTE IS NOT THE LIGHT ONE INVERTED. Grounds are layered ink —
+ * near-black with hue, lighter as a surface rises — and the text is chromatic
+ * off-white rather than #FFF, which is what stops a dark UI reading as a
+ * flashlight. Signal and flag are lifted in value and dropped in saturation so
+ * they still read as the same two meanings at the same two jobs.
+ *
+ * CONTRAST, WCAG 2.2 relative luminance, measured against the ground each token
+ * is actually painted on. `--rule` is a hairline, never text, and is exempt.
+ *
+ *   SHELL          light on #F7F6F3        dark on #0F151E
+ *     ink          #0E1626  16.73 AAA      #E9EEF6  15.72 AAA
+ *     dim          #4F5A70   6.42 AA       #A0AABC   7.83 AAA
+ *     signal       #0B5F52   7.01 AAA      #45C4A8   8.47 AAA
+ *     flag         #B4451F   5.10 AA       #F2825C   7.09 AAA
+ *   LOANS          light on #F5F7FA        dark on #0E1520
+ *     ink          #14213A  14.96 AAA      #E7ECF4  15.44 AAA
+ *     dim          #5C6B85   5.02 AA       #9BA7BC   7.54 AAA
+ *     signal       #0F6E5C   5.75 AA       #4FC3A6   8.45 AAA
+ *     flag         #B4451F   5.13 AA       #F0855E   7.17 AAA
+ *   PAYCHECK       light on #F6F5F2        dark on #14130F
+ *     ink          #1C1B18  15.80 AAA      #F0EDE6  15.90 AAA
+ *     dim          #6B675F   5.16 AA       #ADA69A   7.70 AAA
+ *     signal       #0E6E63   5.62 AA       #4FC0B2   8.42 AAA
+ *     flag         #9A5B00   4.98 AA       #E0A34A   8.42 AAA
+ *   ACA            light on #F4F7F8        dark on #0D161B
+ *     ink          #16232B  14.90 AAA      #E6EEF2  15.58 AAA
+ *     dim          #5A6B73   5.15 AA       #9BAAB3   7.66 AAA
+ *     signal       #0A6E8A   5.40 AA       #55BEDC   8.53 AAA
+ *     flag         #B4451F   5.12 AA       #F0855E   7.16 AAA
+ *   PROPERTY       light on #F7F5F0        dark on #15120C
+ *     ink          #221D14  15.37 AAA      #F1EBE0  15.75 AAA
+ *     dim          #6E6553   5.28 AA       #B0A692   7.76 AAA
+ *     signal       #3D6B35   5.75 AA       #86C176   8.81 AAA
+ *     flag         #A83820   5.93 AA       #EC8163   7.02 AAA
+ *   TRADES         light on #F7F7F5        dark on #11141A
+ *     ink          #20242A  14.53 AAA      #E9EBEF  15.45 AAA
+ *     dim          #666B73   5.00 AA       #A2A8B2   7.71 AAA
+ *     signal       #155EA8   6.12 AA       #6FA8E8   7.41 AAA
+ *     flag         #AD5210   4.91 AA       #E08A4A   6.94 AA
+ *   INSTRUMENT PANEL — an ink ground in BOTH themes, so it is the same object
+ *   either way. It sinks in light (#101A2B, below the page) and rises in dark
+ *   (#18222F, above it), which is the only difference.
+ *                    light ground #101A2B    dark ground #18222F
+ *     panel-text   #F2F4F8  15.83 AAA      #F2F4F8  14.57 AAA
+ *     panel-dim    #9AA6BC   7.10 AAA      #9AA6BC   6.54 AA
+ *     panel-teal   #3FBFA5   7.64 AAA      #3FBFA5   7.04 AAA
+ *     panel-gold   #C9A063   7.22 AAA      #C9A063   6.64 AA
+ *     panel-flag   #E4714A   5.61 AA       #E4714A   5.17 AA
+ * ==========================================================================*/
+
 /* The six semantic names, plus everything derived from them. Declared once
    here for the shell and once on [data-section] below; see the note there for
    why the repetition is load-bearing rather than sloppy. */
 :root {
+  color-scheme: light;
+
+  --lt-paper: #f7f6f3;
+  --lt-ink: #0e1626;
+  --lt-rule: #d9d5cc;
+  --lt-dim: #4f5a70;
+  --lt-signal: #0b5f52;
+  --lt-flag: #b4451f;
+  /* A recessed band: the rail, the proof strip, the trust ground. */
+  --lt-band: #edebe6;
+  /* The evidence colour. Carries figures the site asserts about ITSELF — the
+     proof strip, a worked example's headline — so they are legible as a third
+     register that is neither the answer (signal) nor a warning (flag). Never
+     used for an irreversible fact. AA on all six light grounds, worst 5.82. */
+  --lt-bronze: #7a5a1e;
+
+  --dk-paper: #0f151e;
+  --dk-ink: #e9eef6;
+  --dk-rule: #29313e;
+  --dk-dim: #a0aabc;
+  --dk-signal: #45c4a8;
+  --dk-flag: #f2825c;
+  --dk-band: #141b26;
+  /* AAA on all six dark grounds, worst 7.16. */
+  --dk-bronze: #c9a063;
+
+  --color-paper: var(--lt-paper);
+  --color-ink: var(--lt-ink);
+  --color-rule: var(--lt-rule);
+  --color-dim: var(--lt-dim);
+  --color-signal: var(--lt-signal);
+  --color-flag: var(--lt-flag);
+  --band: var(--lt-band);
+  --bronze: var(--lt-bronze);
+
+  /* The instrument panel. Ink in both themes — see the note above. */
+  --panel: #101a2b;
+  --panel-text: #f2f4f8;
+  --panel-dim: #9aa6bc;
+  --panel-teal: #3fbfa5;
+  --panel-gold: #c9a063;
+  --panel-flag: #e4714a;
+  --panel-hair: color-mix(in srgb, var(--panel-text) 14%, transparent);
+
   --paper: var(--color-paper);
   --ink: var(--color-ink);
   --rule: var(--color-rule);
@@ -103,6 +223,14 @@
  * ------------------------------------------------------------------------ */
 
 [data-section] {
+  --color-paper: var(--lt-paper);
+  --color-ink: var(--lt-ink);
+  --color-rule: var(--lt-rule);
+  --color-dim: var(--lt-dim);
+  --color-signal: var(--lt-signal);
+  --color-flag: var(--lt-flag);
+  --band: var(--lt-band);
+
   --paper: var(--color-paper);
   --ink: var(--color-ink);
   --rule: var(--color-rule);
@@ -116,60 +244,169 @@
   --paper-sunken: color-mix(in srgb, var(--ink) 5%, var(--paper));
 }
 
-/* Loans — "federal ledger, redrawn".  ink 14.96 · dim 5.02 · signal 5.75 · flag 5.13 */
+/* Loans — "federal ledger, redrawn". */
 [data-section="loans"] {
-  --color-paper: #f5f7fa;
-  --color-ink: #14213a;
-  --color-rule: #c9d4e2;
-  --color-dim: #5c6b85;
-  --color-signal: #0f6e5c;
-  --color-flag: #b4451f;
+  --lt-paper: #f5f7fa;
+  --lt-ink: #14213a;
+  --lt-rule: #c9d4e2;
+  --lt-dim: #5c6b85;
+  --lt-signal: #0f6e5c;
+  --lt-flag: #b4451f;
+  --lt-band: #e7ecf3;
+
+  --dk-paper: #0e1520;
+  --dk-ink: #e7ecf4;
+  --dk-rule: #29313f;
+  --dk-dim: #9ba7bc;
+  --dk-signal: #4fc3a6;
+  --dk-flag: #f0855e;
+  --dk-band: #131b28;
 }
 
-/* Paycheck — "the annotated paystub".  ink 15.80 · dim 5.16 · signal 5.62 · flag 4.98
-   Amber means "money you're about to leave behind", never irreversible.
-   4.98 is the thinnest margin in the portfolio — do not lighten it. */
+/* Paycheck — "the annotated paystub".
+   Amber means "money you're about to leave behind", never irreversible. In
+   light, 4.98 is the thinnest margin in the portfolio — do not lighten it. */
 [data-section="paycheck"] {
-  --color-paper: #f6f5f2;
-  --color-ink: #1c1b18;
-  --color-rule: #dad7d0;
-  --color-dim: #6b675f;
-  --color-signal: #0e6e63;
-  --color-flag: #9a5b00;
+  --lt-paper: #f6f5f2;
+  --lt-ink: #1c1b18;
+  --lt-rule: #dad7d0;
+  --lt-dim: #6b675f;
+  --lt-signal: #0e6e63;
+  --lt-flag: #9a5b00;
+  --lt-band: #edeae4;
+
+  --dk-paper: #14130f;
+  --dk-ink: #f0ede6;
+  --dk-rule: #33302a;
+  --dk-dim: #ada69a;
+  --dk-signal: #4fc0b2;
+  --dk-flag: #e0a34a;
+  --dk-band: #1a1814;
 }
 
-/* ACA — "the clinical margin".  ink 14.90 · dim 5.15 · signal 5.40 · flag 5.12 */
+/* ACA — "the clinical margin". */
 [data-section="aca"] {
-  --color-paper: #f4f7f8;
-  --color-ink: #16232b;
-  --color-rule: #c6d6dc;
-  --color-dim: #5a6b73;
-  --color-signal: #0a6e8a;
-  --color-flag: #b4451f;
+  --lt-paper: #f4f7f8;
+  --lt-ink: #16232b;
+  --lt-rule: #c6d6dc;
+  --lt-dim: #5a6b73;
+  --lt-signal: #0a6e8a;
+  --lt-flag: #b4451f;
+  --lt-band: #e6eef1;
+
+  --dk-paper: #0d161b;
+  --dk-ink: #e6eef2;
+  --dk-rule: #26333a;
+  --dk-dim: #9baab3;
+  --dk-signal: #55bedc;
+  --dk-flag: #f0855e;
+  --dk-band: #121d23;
 }
 
-/* Property — "the plat book".  ink 15.37 · dim 5.28 · signal 5.75 · flag 5.93 */
+/* Property — "the plat book". */
 [data-section="property"] {
-  --color-paper: #f7f5f0;
-  --color-ink: #221d14;
-  --color-rule: #d8d0c2;
-  --color-dim: #6e6553;
-  --color-signal: #3d6b35;
-  --color-flag: #a83820;
+  --lt-paper: #f7f5f0;
+  --lt-ink: #221d14;
+  --lt-rule: #d8d0c2;
+  --lt-dim: #6e6553;
+  --lt-signal: #3d6b35;
+  --lt-flag: #a83820;
+  --lt-band: #eee9df;
+
+  --dk-paper: #15120c;
+  --dk-ink: #f1ebe0;
+  --dk-rule: #322c21;
+  --dk-dim: #b0a692;
+  --dk-signal: #86c176;
+  --dk-flag: #ec8163;
+  --dk-band: #1c1811;
 }
 
-/* Trades — "the takeoff sheet".  ink 14.53 · dim 5.00 · signal 6.12 · flag 4.91
-   NOTE: the design system specifies flag #C25E10, which measures 3.99:1 and
-   FAILS AA. It carries the placeholder-pricing and state-law warnings — the
-   last text that should be hard to read on a phone in daylight. Darkened to
-   #AD5210 (4.91:1). Same hue family. DO NOT revert to the spec value. */
+/* Trades — "the takeoff sheet".
+   NOTE: the design system specifies light flag #C25E10, which measures 3.99:1
+   and FAILS AA. It carries the placeholder-pricing and state-law warnings —
+   the last text that should be hard to read on a phone in daylight. Darkened
+   to #AD5210 (4.91:1). Same hue family. DO NOT revert to the spec value. */
 [data-section="trades"] {
-  --color-paper: #f7f7f5;
-  --color-ink: #20242a;
-  --color-rule: #d5d7da;
-  --color-dim: #666b73;
-  --color-signal: #155ea8;
-  --color-flag: #ad5210;
+  --lt-paper: #f7f7f5;
+  --lt-ink: #20242a;
+  --lt-rule: #d5d7da;
+  --lt-dim: #666b73;
+  --lt-signal: #155ea8;
+  --lt-flag: #ad5210;
+  --lt-band: #eceded;
+
+  --dk-paper: #11141a;
+  --dk-ink: #e9ebef;
+  --dk-rule: #2b2f36;
+  --dk-dim: #a2a8b2;
+  --dk-signal: #6fa8e8;
+  --dk-flag: #e08a4a;
+  --dk-band: #171b22;
+}
+
+/* ---- The two theme rules. Every palette above swaps at once. --------------
+ * Written against `[data-section]` as well as `:root` because a section's
+ * `--color-*` assignments live on its own wrapper, and a custom property whose
+ * value contains `var()` resolves on the element that declares it — a swap
+ * applied only at `:root` would never reach a section subtree.
+ *
+ * `--panel-*` is not swapped: the instrument panel is an ink object in both
+ * themes. Only the ground it sits on moves, so it sinks in light and rises in
+ * dark, and `--panel` is nudged for that below.
+ * ---------------------------------------------------------------------- */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --panel: #18222f;
+    --bronze: var(--dk-bronze);
+  }
+
+  :root:not([data-theme="light"]),
+  :root:not([data-theme="light"]) [data-section] {
+    --color-paper: var(--dk-paper);
+    --color-ink: var(--dk-ink);
+    --color-rule: var(--dk-rule);
+    --color-dim: var(--dk-dim);
+    --color-signal: var(--dk-signal);
+    --color-flag: var(--dk-flag);
+    --band: var(--dk-band);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --panel: #18222f;
+  --bronze: var(--dk-bronze);
+}
+
+:root[data-theme="dark"],
+:root[data-theme="dark"] [data-section] {
+  --color-paper: var(--dk-paper);
+  --color-ink: var(--dk-ink);
+  --color-rule: var(--dk-rule);
+  --color-dim: var(--dk-dim);
+  --color-signal: var(--dk-signal);
+  --color-flag: var(--dk-flag);
+  --band: var(--dk-band);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --panel: #101a2b;
+  --bronze: var(--lt-bronze);
+}
+
+:root[data-theme="light"],
+:root[data-theme="light"] [data-section] {
+  --color-paper: var(--lt-paper);
+  --color-ink: var(--lt-ink);
+  --color-rule: var(--lt-rule);
+  --color-dim: var(--lt-dim);
+  --color-signal: var(--lt-signal);
+  --color-flag: var(--lt-flag);
+  --band: var(--lt-band);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -292,6 +529,16 @@
   }
   .density-reading > * + * {
     margin-top: var(--spacing-6);
+  }
+
+  /* A surface one step above the page ground. Reads as a lighter card in
+     light and, correctly, as a lighter card in dark too — `--paper-raised`
+     mixes toward `--ink`, which is the light token in a dark theme. */
+  .surface-raised {
+    background: var(--paper-raised);
+  }
+  .surface-band {
+    background: var(--band);
   }
 
   .hairline-t {

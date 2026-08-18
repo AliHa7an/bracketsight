@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, IBM_Plex_Mono, Public_Sans } from "next/font/google";
+import {
+  Bricolage_Grotesque,
+  IBM_Plex_Mono,
+  Instrument_Serif,
+  Public_Sans,
+} from "next/font/google";
 
 import "@/styles/globals.css";
 
@@ -10,20 +15,47 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 
 /*
- * Three faces, three roles. `next/font/google` downloads at BUILD time and
+ * Four faces, four roles. `next/font/google` downloads at BUILD time and
  * serves the files from our own origin — there is no runtime request to
  * Google, which is what the "never a font CDN" rule protects (Core Web Vitals
  * and privacy at once). Each face declares only the weights the system
  * actually uses; an unused weight is bytes on the critical path.
  *
  * The `variable` names are the contract with globals.css, which maps them onto
- * --font-display, --font-body and --font-data. Renaming one here silently
- * drops the whole site to a system fallback.
+ * --font-display, --font-serif, --font-body and --font-data. Renaming one here
+ * silently drops the whole site to a system fallback.
+ */
+/*
+ * The section display face: h1 and h2 inside a tool, and nowhere else.
+ *
+ * ONE WEIGHT, NOT PRELOADED, and both of those are deliberate. globals.css sets
+ * `h1, h2 { font-weight: 600 }` and nothing on the site asks Bricolage for 500
+ * or 700, so shipping them was two files nobody rendered. And it is used on no
+ * home-page element at all — the redesigned hub sets its headings in the serif
+ * and the body face — so preloading it put three requests on the critical path
+ * of the page that needs none of them. It now loads when a glyph actually needs
+ * it, behind `display: swap`, which costs a tool page's h1 a late swap and buys
+ * every page a shorter critical path.
  */
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  weight: ["500", "600", "700"], // display: h1/h2 only
+  weight: ["600"],
   variable: "--font-bricolage",
+  display: "swap",
+  preload: false,
+});
+
+/*
+ * The rationed face. It appears three times on the home page — the headline,
+ * the section titles, the card question — and once at the top of each policy
+ * page. One weight is all Instrument Serif ships and all this needs; it is
+ * never set below 20px, where a display serif stops being legible and starts
+ * being decoration.
+ */
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-instrument-serif",
   display: "swap",
   preload: true,
 });
@@ -114,9 +146,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     */
     <html
       lang="en-US"
-      className={`${bricolage.variable} ${publicSans.variable} ${plexMono.variable}`}
+      className={`${bricolage.variable} ${instrumentSerif.variable} ${publicSans.variable} ${plexMono.variable}`}
+      suppressHydrationWarning
     >
       <body className="flex min-h-screen flex-col antialiased">
+        {/*
+          THE THEME, BEFORE THE FIRST PAINT.
+
+          Two lines of blocking script, first thing in the body, so the ground
+          colour is decided before anything is drawn. Without it a reader who
+          has chosen dark gets a white flash on every navigation that is not a
+          client-side one — the single most visible bug a theme toggle can
+          have, and one that cannot be fixed after hydration because by then the
+          wrong paint has already happened.
+
+          It only ever stamps `data-theme` when the reader has made an explicit
+          choice. With no choice stored the attribute stays absent and the
+          `prefers-color-scheme` rules in globals.css decide, which is what
+          "respect the system by default" has to mean. `suppressHydrationWarning`
+          on <html> is required because this attribute is, by design, present in
+          the DOM and absent from the server's markup.
+        */}
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{var t=localStorage.getItem("bracketsight-theme");' +
+              'if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}',
+          }}
+        />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}

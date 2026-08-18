@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 function Formula({ children }: { children: React.ReactNode }) {
   return (
-    <pre className="font-data text-[0.85rem] bg-white border border-rule rounded-atlas p-3 overflow-x-auto whitespace-pre-wrap">
+    <pre className="font-data text-[0.85rem] surface-raised border border-rule rounded-atlas p-3 overflow-x-auto whitespace-pre-wrap">
       {children}
     </pre>
   );

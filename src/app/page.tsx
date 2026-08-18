@@ -1,9 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { AnswerBox } from "@/components/ui";
+import { CliffPanel } from "@/components/home/CliffPanel";
+import { ProofRow } from "@/components/home/ProofRow";
+import { RevealGroup } from "@/components/home/RevealGroup";
+import { ToolCard } from "@/components/home/ToolCard";
+import { ClaimIcon } from "@/components/home/ToolIcon";
+import {
+  CTA_LABEL,
+  RULE_PIPELINE,
+  TOOL_CARDS,
+  TRUST_POINTS,
+  TRUST_STRIP,
+} from "@/components/home/data";
+import styles from "@/components/home/home.module.css";
 
-import { SECTIONS, SECTION_PAGES, type SectionSlug, sectionHref } from "@/lib/site";
+import { formatProofDate, getProof } from "@/lib/proof";
+import { SECTIONS, SECTION_PAGES } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Five decision engines for US money rules (2026)",
@@ -15,143 +28,165 @@ export const metadata: Metadata = {
 /**
  * The hub.
  *
- * This is a portfolio of decision engines, not a link farm. One h1, one
- * sentence saying what the site does, then one card per section that names the
- * question that tool answers and the concrete number it turns on. A visitor
- * should be able to pick their tool in a single screen without reading prose.
+ * This is a portfolio of decision engines, not a link farm, and the page is
+ * built to demonstrate that rather than assert it. The largest object on the
+ * first screen is a working instrument — the ACA engine, running in the
+ * reader's browser, plotting the 400% cliff as an actual discontinuity they can
+ * drag a household across. Underneath it, four figures derived from this
+ * repository at build time. Then one card per tool, each carrying a real engine
+ * result rather than a plausible-looking round number.
  *
- * Every card is derived from `SECTIONS`; the copy below is keyed by slug and
- * typed `Record<SectionSlug, …>`, so adding a sixth section is a type error
- * until it has a card here as well as an entry in the nav, footer and sitemap.
+ * WHERE EVERY FIGURE COMES FROM is set out at the top of
+ * `@/components/home/data.ts`, per card, with the inputs and the run date. The
+ * three registers are: live (the panel), build-time (the proof strip) and
+ * frozen-but-cited (the five card examples).
+ *
+ * The five cards are derived from `TOOL_CARDS`, keyed by `SectionSlug`, and the
+ * methodology chips from `SECTION_PAGES`, so neither can point at a page that
+ * was never built and a sixth section cannot ship without a card here.
  */
-
-type SectionCard = {
-  /** ≤40 words. Concrete, with the number the decision actually turns on. */
-  body: string;
-  /** Button label naming the outcome, never "Learn more". */
-  cta: string;
-};
-
-const CARDS: Record<SectionSlug, SectionCard> = {
-  loans: {
-    body: "Enter your loan mix once. All 9 plans are simulated month by month and ranked by 30-year total cost, with the one-way doors flagged: switching to RAP forfeits every qualifying payment already credited under IBR, PAYE or ICR.",
-    cta: "Compare all 9 plans",
-  },
-  paycheck: {
-    body: "Tips up to $25,000 and the overtime premium up to $12,500 single or $25,000 joint run off one MAGI, so a raise can phase out several deductions at once. See what the next $1,000 of income costs — and what your W-2 should show.",
-    cta: "Check your deductions",
-  },
-  aca: {
-    body: "At 400.00% of the federal poverty level a household gets a premium tax credit. At 400.01% it gets $0, and any advance credit taken during the year is repaid in full. Levers are ranked by dollars recovered per dollar committed.",
-    cta: "Measure your cliff distance",
-  },
-  property: {
-    body: "Comparable assessments, a median ratio and a confidence score produce one honest verdict: strong case, worth filing, or not worth the fee. If it is worth filing you get the evidence packet and your county's form — no 25–50% contingency cut.",
-    cta: "Test your assessment",
-  },
-  trades: {
-    body: "A job description becomes an itemised estimate that shows the basis for every line, then a matching invoice and a contract carrying your state's required clauses — right to cancel, down-payment caps, lien warnings. No signup, no monthly fee.",
-    cta: "Price a job",
-  },
-};
-
-const TRUST_POINTS: readonly { heading: string; body: string }[] = [
-  {
-    heading: "Every rule is cited and dated",
-    body: "Rates, thresholds, brackets and deadlines live in versioned JSON with a link to the regulation and the date it was last checked against it. When a rule changes, one file changes and every page that depends on it updates.",
-  },
-  {
-    heading: "No AI touches the arithmetic",
-    body: "The five engines are plain TypeScript with zero dependencies and no network access, so there is nothing for a model call to be made through. Two AI features are planned and neither is live: reading an uploaded document to fill a form in, and explaining a result in words. Neither would ever compute a figure you are shown.",
-  },
-  {
-    heading: "Nothing you enter is stored",
-    body: "No account, no signup wall, no database. What you type stays in your own browser and is never sent to a server, because there is no server to send it to. A shared scenario link carries its numbers in the URL fragment, which browsers never transmit.",
-  },
-  {
-    heading: "Estimates, not promises",
-    body: "Every figure is an estimate under current rules. Irreversible choices are flagged in red before you make them, and the site says plainly when a case is one to take to your servicer, your county or a licensed adviser.",
-  },
-];
-
 export default function HubPage() {
+  const proof = getProof();
+
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12">
-      <h1 className="max-w-[22ch]">Work out what the rule actually costs you</h1>
+    <div className={styles.root}>
+      {/* ────────────────────────────────────────────────────────── hero ── */}
 
-      <AnswerBox className="mt-6">
-        Five decision engines for US money rules. Each takes your real numbers, runs every option
-        under the rules in force today — all <span className="num">9</span> federal repayment
-        plans, every OBBBA deduction, both sides of the <span className="num">400%</span> ACA
-        cliff — and ranks them by what you actually pay, with irreversible choices flagged and
-        every rule cited.
-      </AnswerBox>
+      <section className={styles.hero}>
+        <div className={styles.heroGrid} aria-hidden="true" />
 
-      <h2 className="mt-16">Which question are you trying to answer?</h2>
+        <div className={`${styles.shell} ${styles.heroInner}`}>
+          <div>
+            <p className={styles.eyebrow}>
+              <span className={styles.eyebrowRule} aria-hidden="true" />
+              <span className={styles.tag}>Decision engines · not calculators</span>
+            </p>
 
-      <ul className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-        {SECTIONS.map((section) => {
-          const card = CARDS[section.slug];
-          const href = sectionHref(section);
-          return (
-            <li key={section.id} data-section={section.dataSection} className="min-w-0">
-              {/*
-                The card carries the section's own six colour tokens, so the
-                grid previews the five identities before you are inside one.
-              */}
-              <div className="hairline-all flex h-full flex-col rounded-atlas p-6">
-                <p className="micro-label">{section.name}</p>
+            <h1 className={styles.display}>
+              Every option, priced. <span className={styles.displayAccent}>Then ranked.</span>
+            </h1>
 
-                <h3 className="mt-2 max-w-[30ch] text-ink">
-                  <Link
-                    href={href}
-                    className="rounded-atlas underline decoration-rule decoration-2 underline-offset-4 hover:decoration-current"
-                  >
-                    {section.tagline}
-                  </Link>
-                </h3>
+            <p className={styles.lead}>
+              Five engines for the US money rules that move real dollars. Nine federal repayment
+              plans. Every OBBBA deduction. Both sides of the 400% subsidy cliff. You enter your
+              own numbers, the engines simulate every option under the rules in force today, and
+              the answer is the one that costs you least — with the one-way doors marked before
+              you reach them and every rule cited to its source.
+            </p>
 
-                <p className="mt-3 max-w-[52ch] flex-1 text-step--1 text-dim">{card.body}</p>
+            <ul className={styles.trust}>
+              {TRUST_STRIP.map((claim) => (
+                <li key={claim}>{claim}</li>
+              ))}
+            </ul>
 
-                <p className="mt-4">
-                  <Link
-                    href={href}
-                    className="inline-flex min-h-11 items-center gap-2 rounded-atlas font-medium text-signal underline-offset-4 hover:underline"
-                  >
-                    {card.cta}
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.75"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                      focusable="false"
-                    >
-                      <path d="M3 8h9" />
-                      <path d="M8.5 4.5 12 8l-3.5 3.5" />
-                    </svg>
-                  </Link>
-                </p>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-
-      <h2 className="mt-16">Why trust a number from here?</h2>
-
-      <dl className="mt-6 grid grid-cols-1 gap-x-12 gap-y-6 md:grid-cols-2">
-        {TRUST_POINTS.map((point) => (
-          <div key={point.heading} className="min-w-0">
-            <dt className="font-semibold text-ink">{point.heading}</dt>
-            <dd className="mt-1 max-w-[56ch] text-step--1 text-dim">{point.body}</dd>
+            <p className={styles.actions}>
+              <a className={styles.btnPrimary} href="#tools">
+                {CTA_LABEL}
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path d="M3 8h9" />
+                  <path d="m8.6 4.6 3.4 3.4-3.4 3.4" />
+                </svg>
+              </a>
+              <a className={styles.btnQuiet} href="#proof">
+                What we check, and how often
+              </a>
+            </p>
           </div>
-        ))}
-      </dl>
+
+          <CliffPanel />
+        </div>
+      </section>
+
+      {/* ───────────────────────────────────────────────────── the proof ── */}
+
+      <section className={styles.proof} id="proof" aria-label="What is checked">
+        <div className={styles.shell}>
+          <ProofRow stats={proof.stats} />
+        </div>
+      </section>
+
+      {/* ───────────────────────────────────────────────────── the tools ── */}
+
+      <section className={`${styles.shell} ${styles.tools}`} id="tools">
+        <div className={styles.sectionHead}>
+          <h2 className={styles.sectionTitle}>Which question are you trying to answer?</h2>
+          <p className={styles.tag}>
+            5 engines · {proof.ruleFiles} rule files · rules in force 2026
+          </p>
+        </div>
+
+        <RevealGroup as="ul" className={styles.cardGrid}>
+          {TOOL_CARDS.map((card, index) => (
+            <ToolCard key={card.slug} card={card} index={index} />
+          ))}
+        </RevealGroup>
+      </section>
+
+      {/* ───────────────────────────────────────────────── why trust it ── */}
+
+      <section className={styles.trustBand} aria-labelledby="trust-title">
+        <div className={styles.trustBandGrid} aria-hidden="true" />
+
+        <div className={`${styles.shell} ${styles.trustInner}`}>
+          <div className={styles.trustHead}>
+            <h2 className={styles.trustTitle} id="trust-title">
+              Why trust a number from here?
+            </h2>
+            <p className={styles.trustTag}>
+              {proof.verified} of {proof.figures} figures verified
+            </p>
+          </div>
+
+          <dl className={styles.claims}>
+            {TRUST_POINTS.map((point) => (
+              <div key={point.id} className={styles.claim}>
+                <dt className={styles.claimHeading}>
+                  <span className={styles.claimArt}>
+                    <ClaimIcon id={point.id} />
+                  </span>
+                  {point.heading}
+                </dt>
+                <dd className={styles.claimDd}>
+                  <span className={styles.claimLede}>{point.lede}</span>
+                  <span className={styles.claimBody}>{point.body}</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+
+          {/*
+            The method, as a run of four nodes with hairline connectors: a
+            regulation, a versioned rule file, a deterministic engine, your
+            result. It is the site's whole answer to "why should I believe
+            this", and it is easier to follow as a line than as a paragraph.
+          */}
+          <h3 className={styles.pipelineHead}>How a rule becomes a number</h3>
+
+          <ol className={styles.pipeline}>
+            {RULE_PIPELINE.map((step) => (
+              <li key={step.step} className={styles.pipelineStep}>
+                <span className={styles.pipelineNum}>{step.step}</span>
+                <p className={styles.pipelineTitle}>{step.title}</p>
+                <p className={styles.pipelineBody}>{step.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* ────────────────────────────────────────────────── the workings ── */}
 
       {/*
         Each tool answers to a different rule-maker, so the workings live with
@@ -159,57 +194,78 @@ export default function HubPage() {
         them. These links are computed from SECTION_PAGES, so none of them can
         point at a page that was never built.
       */}
-      <h2 className="mt-16">Where are the workings?</h2>
+      <section className={`${styles.shell} ${styles.workings}`} aria-labelledby="workings-title">
+        <div className={styles.sectionHead}>
+          <h2 className={styles.sectionTitle} id="workings-title">
+            Where are the workings?
+          </h2>
+          <p className={styles.tag}>last rule check {formatProofDate(proof.lastRuleCheck)}</p>
+        </div>
 
-      <p className="mt-4 max-w-[68ch] text-dim">
-        Every tool carries its own methodology, its own list of primary sources and its own
-        changelog, because each one answers to a different rule-maker — the Department of
-        Education, the IRS, HHS, a county assessor, a state contractor board. Start with the
-        methodology for the tool you are using:
-      </p>
+        <p className={styles.workingsLead}>
+          Every tool carries its own methodology, its own list of primary sources and its own
+          changelog, because each one answers to a different rule-maker — the Department of
+          Education, the IRS, HHS, a county assessor, a state contractor board. Start with the
+          methodology for the tool you are using:
+        </p>
 
-      <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-0">
-        {SECTIONS.map((section) => {
-          const methodology = SECTION_PAGES[section.slug].find((page) => page.trust);
-          if (!methodology) return null;
-          return (
-            <li key={section.id}>
-              <Link
-                href={`/${section.slug}${methodology.href}`}
-                className="inline-flex min-h-11 items-center rounded-atlas underline underline-offset-4 hover:text-ink"
-              >
-                {section.name}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+        <ul className={styles.chips}>
+          {SECTIONS.map((section) => {
+            const methodology = SECTION_PAGES[section.slug].find((page) => page.trust);
+            if (!methodology) return null;
+            return (
+              <li key={section.id}>
+                <Link
+                  href={`/${section.slug}${methodology.href}`}
+                  className={styles.chip}
+                  data-section={section.dataSection}
+                >
+                  <span className={styles.chipDot} aria-hidden="true" />
+                  {section.name} — {methodology.label.toLowerCase()}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
 
-      <p className="mt-4 max-w-[68ch] text-step--1 text-dim">
-        For how a rule gets from a regulation into a number on this site, how it is funded, and
-        the <span className="num">55</span> items still recorded as unverified, read{" "}
-        <Link href="/about" className="rounded-atlas underline underline-offset-4 hover:text-ink">
-          about Bracketsight
-        </Link>
-        . For what verification means here, what a pass over{" "}
-        <span className="num">315</span> individual figures found, and which professional reviews
-        have not happened yet, read{" "}
-        <Link
-          href="/authors"
-          className="rounded-atlas underline underline-offset-4 hover:text-ink"
-        >
-          who writes and checks this
-        </Link>
-        .
-      </p>
+        <p className={styles.chipsLabel}>And the rest of the record</p>
 
-      <p className="mt-4 max-w-[68ch] text-step--1 text-dim">
-        Found a figure that is wrong?{" "}
-        <Link href="/contact" className="rounded-atlas underline underline-offset-4 hover:text-ink">
-          Report it and it gets fixed
-        </Link>{" "}
-        — checked against the primary source, then logged in that tool's changelog.
-      </p>
+        <ul className={styles.chips}>
+          <li>
+            <Link href="/about" className={styles.chip}>
+              About Bracketsight
+            </Link>
+          </li>
+          <li>
+            <Link href="/authors" className={styles.chip}>
+              Who writes and checks this
+            </Link>
+          </li>
+          <li>
+            <Link href="/contact" className={styles.chip}>
+              Report a wrong figure
+            </Link>
+          </li>
+        </ul>
+
+        <div className={styles.workingsTail}>
+          <p className={styles.workingsLead}>
+            For how a rule gets from a regulation into a number on this site, how it is funded, and
+            the <span className={styles.chipMono}>55</span> items still recorded as unverified,
+            read <Link href="/about">about Bracketsight</Link>. For what verification means here,
+            what a pass over <span className={styles.chipMono}>{proof.figures}</span> individual
+            figures found, and which professional reviews have not happened yet, read{" "}
+            <Link href="/authors">who writes and checks this</Link>.
+          </p>
+
+          <p className={styles.workingsLead}>
+            Found a figure that is wrong?{" "}
+            <Link href="/contact">Report it and it gets fixed</Link> — checked against the primary
+            source, then logged in that tool&rsquo;s changelog with the date and the document it
+            came from. Corrections are never taken on a secondary source.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }

@@ -27,8 +27,12 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/",
     scope: "/",
     display: "browser",
-    background_color: "#f5f7fa",
-    theme_color: "#14213a",
+    /* The shell's LIGHT paper and ink, transcribed from globals.css. A manifest
+       is static JSON: it cannot read a custom property and it cannot follow the
+       reader's theme, so it carries the light values and the dark theme is
+       handled entirely in CSS. Keep these in step with `--lt-paper` / `--lt-ink`. */
+    background_color: "#f7f6f3",
+    theme_color: "#0e1626",
     lang: "en-US",
     dir: "ltr",
     categories: ["finance", "utilities"],

@@ -1,0 +1,283 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+ * THE POLICY AND RECORD PAGES — /terms, /privacy, /about, /authors.
+ *
+ * These four were written to satisfy an ad network's policy reviewer and a YMYL
+ * quality rater, and they read like it: a wall of undifferentiated 16px prose
+ * at whatever measure the viewport happened to be, with no way to find the one
+ * disclosure you came for. NOT A WORD OF THEM HAS CHANGED. What changed is that
+ * they are now shaped like documents:
+ *
+ *   • A MEASURE. 68ch, which is the `--measure` token the rest of the site
+ *     already uses for reading text, so a line is 9 to 12 words rather than 20.
+ *   • A CONTENTS RAIL. Every h2 is an anchor and every anchor is in a sticky
+ *     list beside the prose above 1024px, above it below that. A reader looking
+ *     for the cookie position should not have to scroll a privacy notice.
+ *   • A DATE. Stamped at the top, in the data face, where a reader deciding
+ *     whether a policy is current will look for it.
+ *   • A HIERARCHY. One h1 in the rationed serif, h2 section heads in the body
+ *     face with a hairline over them, and nothing below h3. A policy page with
+ *     four heading levels is a policy page nobody finishes.
+ *
+ * Colour comes entirely from the semantic tokens, so all four themes with the
+ * rest of the site.
+ * ═════════════════════════════════════════════════════════════════════════ */
+
+/* Narrower than the home page's 1280px shell on purpose: a 210px rail plus a
+   68ch column is about 890px, and a 1280px frame around that leaves a third of
+   the page empty to the right of every paragraph. */
+.page {
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 3.4vw, 44px);
+  padding-block: clamp(28px, 4vw, 52px) clamp(40px, 5vw, 72px);
+}
+
+/* ---- masthead ---- */
+
+.head {
+  padding-bottom: clamp(20px, 2.6vw, 30px);
+  border-bottom: 1px solid var(--ink);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.eyebrowRule {
+  flex: 0 0 30px;
+  height: 1px;
+  background: var(--ink);
+}
+
+.title {
+  margin: 0;
+  max-width: 20ch;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(2.1rem, 4.4vw, 3.2rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: var(--ink);
+}
+
+.standfirst {
+  margin: 16px 0 0;
+  max-width: 58ch;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--dim);
+}
+
+.stamp {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+/* The separator belongs to the item BEFORE it: written the other way round, a
+   stamp line that wraps starts its second line with a floating hairline. */
+.stamp li:not(:last-child)::after {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 9px;
+  margin-inline: 11px;
+  vertical-align: -1px;
+  background: color-mix(in srgb, var(--ink) 22%, transparent);
+}
+
+/* ---- the two-column body ---- */
+
+.body {
+  display: grid;
+  gap: clamp(24px, 3vw, 44px);
+  margin-top: clamp(24px, 3vw, 40px);
+}
+
+@media (min-width: 1024px) {
+  .body {
+    grid-template-columns: 210px minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.contents {
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .contents {
+    position: sticky;
+    /* clears the sticky header at its tallest */
+    top: 96px;
+  }
+}
+
+.contentsLabel {
+  margin: 0 0 8px;
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.contentsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 1024px) {
+  .contentsList {
+    display: block;
+    border-left: 1px solid var(--rule);
+  }
+}
+
+.contentsLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 2px 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-atlas);
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--dim);
+  text-decoration: none;
+}
+
+@media (min-width: 1024px) {
+  .contentsLink {
+    display: block;
+    min-height: 0;
+    padding: 6px 0 6px 12px;
+    border: 0;
+    border-left: 2px solid transparent;
+    margin-left: -1px;
+    border-radius: 0;
+  }
+}
+
+.contentsLink:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+@media (min-width: 1024px) {
+  .contentsLink:hover {
+    border-left-color: var(--signal);
+  }
+}
+
+/* ---- the prose ---- */
+
+.prose {
+  min-width: 0;
+  max-width: var(--measure);
+  font-size: 1rem;
+  line-height: 1.62;
+  color: var(--ink);
+}
+
+.prose > section + section {
+  margin-top: clamp(30px, 3.4vw, 46px);
+}
+
+.prose h2 {
+  margin: 0 0 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  scroll-margin-top: 96px;
+}
+
+.prose p {
+  margin: 0 0 14px;
+  color: var(--dim);
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+.prose strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.prose ul {
+  margin: 0 0 14px;
+  padding-left: 20px;
+  list-style: disc;
+  color: var(--dim);
+}
+
+.prose li {
+  margin-bottom: 8px;
+}
+
+.prose a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--rule);
+  border-radius: var(--radius-atlas);
+}
+
+.prose a:hover {
+  text-decoration-color: currentColor;
+}
+
+.prose code {
+  font-family: var(--font-data);
+  font-size: 0.875em;
+}
+
+/* The closing line: what this page is not, and where the other one is. */
+.footnote {
+  margin-top: clamp(30px, 3.4vw, 44px);
+  padding-top: 18px;
+  border-top: 1px solid var(--ink);
+  font-size: var(--text-step--1);
+  line-height: 1.6;
+  color: var(--dim);
+}
+
+.footnote a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--rule);
+}
+
+.footnote a:hover {
+  text-decoration-color: currentColor;
+}
