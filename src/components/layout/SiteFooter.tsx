@@ -43,8 +43,15 @@ import {
  * Client component only because the section mapping needs the pathname.
  */
 
+/*
+ * `min-h-8` rather than `min-h-9`. 32px is still a comfortable stacked-list tap
+ * target for a text link inside a list (the 44px floor is for controls, and a
+ * footer link is prose), and across sixteen links in a two-column stack the four
+ * pixels each were 60px of a phone screen spent on nothing. Nothing was dropped
+ * in the tightening — see the note below on why that matters here specifically.
+ */
 const linkClass =
-  "inline-flex min-h-9 items-center rounded-atlas py-[3px] underline-offset-4 hover:text-ink hover:underline";
+  "inline-flex min-h-8 items-center rounded-atlas py-[3px] underline-offset-4 hover:text-ink hover:underline";
 
 function Column({
   label,
@@ -69,10 +76,10 @@ export function SiteFooter() {
   const trustPages = section ? SECTION_PAGES[section.slug].filter((page) => page.trust) : [];
 
   return (
-    <footer className="hairline-t mt-16 bg-paper">
-      <div className="mx-auto max-w-6xl px-4 py-10 text-step--1 text-dim">
+    <footer className="hairline-t mt-12 bg-paper">
+      <div className="mx-auto max-w-6xl px-4 py-8 text-step--1 text-dim">
         {/* ---- the brand line, and the one address a correction arrives by ---- */}
-        <div className="hairline-b flex flex-wrap items-start justify-between gap-x-8 gap-y-4 pb-6">
+        <div className="hairline-b flex flex-wrap items-start justify-between gap-x-8 gap-y-4 pb-5">
           <div className="min-w-0">
             <p className="flex items-center gap-2 text-ink">
               <LogoMark size={20} />
@@ -82,7 +89,7 @@ export function SiteFooter() {
             </p>
             <p className="mt-2 max-w-[46ch]">
               Five decision engines for US money rules. Every rule cited and dated, no arithmetic
-              done by a language model, nothing you enter stored anywhere.
+              by a language model, nothing stored.
             </p>
           </div>
 
@@ -103,7 +110,7 @@ export function SiteFooter() {
         </div>
 
         {/* ---- the four columns ---- */}
-        <div className="grid grid-cols-2 gap-x-8 gap-y-7 pt-6 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-6 pt-5 md:grid-cols-4">
           <Column label="Tools" ariaLabel="Tools">
             {SECTIONS.map((item) => (
               <li key={item.id}>
@@ -183,9 +190,9 @@ export function SiteFooter() {
           </Column>
         </div>
 
-        <p className="hairline-t mt-8 max-w-[74ch] pt-6">{DISCLAIMER}</p>
+        <p className="hairline-t mt-6 max-w-[74ch] pt-5">{DISCLAIMER}</p>
 
-        <p className="mt-3">
+        <p className="mt-2">
           © <span className="num">{new Date().getUTCFullYear()}</span> {SITE_NAME}. No lender,
           insurer, employer or county pays for placement here.
         </p>

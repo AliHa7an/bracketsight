@@ -48,13 +48,21 @@ const bricolage = Bricolage_Grotesque({
 /*
  * The rationed face. It appears three times on the home page — the headline,
  * the section titles, the card question — and once at the top of each policy
- * page. One weight is all Instrument Serif ships and all this needs; it is
- * never set below 20px, where a display serif stops being legible and starts
- * being decoration.
+ * page. It is never set below 20px, where a display serif stops being legible
+ * and starts being decoration.
+ *
+ * BOTH CUTS, 400 ONLY. Instrument Serif ships one weight, so the home page's
+ * headline cannot be made heavier — the second line of it is set in the real
+ * italic instead, which is a genuine second cut rather than a synthesised
+ * oblique. `font-style: italic` against a family with no italic file makes the
+ * browser shear the roman, and a sheared display serif at 49px is the single
+ * most obvious way to look cheap. Loading the file is what buys the right to
+ * use it.
  */
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: ["400"],
+  style: ["normal", "italic"],
   variable: "--font-instrument-serif",
   display: "swap",
   preload: true,

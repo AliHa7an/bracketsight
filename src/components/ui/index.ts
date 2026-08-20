@@ -80,6 +80,10 @@ export type { TraceDisclosureProps, TraceInput } from "./components/TraceDisclos
 // function per section. No LLM in that path; the numbers must be engine-exact.
 
 /* ---- Group C: data display ---------------------------------------------- */
+// The phone corollary to M1/M2: on a narrow screen the form and the answer
+// cannot share the fold, so the answer is pinned rather than scrolled away.
+export { StickyAnswer } from "./components/StickyAnswer";
+export type { StickyAnswerProps } from "./components/StickyAnswer";
 export { HeroNumber } from "./components/HeroNumber";
 export type { HeroNumberDelta, HeroNumberProps } from "./components/HeroNumber";
 export { LedgerTable } from "./components/LedgerTable";

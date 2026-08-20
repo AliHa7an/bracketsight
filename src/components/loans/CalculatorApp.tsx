@@ -10,6 +10,12 @@
  * than a person can type and a gate would only add latency to a result that
  * already exists.
  *
+ * On a phone the two columns become one, which puts the whole form above the
+ * answer — so the answer also rides in a pinned bar at the bottom edge
+ * (`StickyAnswer`), where it stays visible and keeps tweening while the fields
+ * that drive it scroll past. Without that, the mechanic the tool is built on is
+ * invisible on the screen most readers arrive with.
+ *
  * Nothing is sent anywhere. State persists to localStorage on every change and
  * to the URL *fragment* — a fragment rather than a query string because a query
  * string travels to the server in the request line, and "your loan data never
@@ -35,6 +41,7 @@ import {
   ConfidenceMeter,
   ErrorState,
   ScenarioPins,
+  StickyAnswer,
   Stepper,
   useScenarioPins,
 } from "@/components/ui";
@@ -226,6 +233,11 @@ export function CalculatorApp() {
 
   const stepIndex = STEPS.findIndex((s) => s.id === step);
 
+  /** The cheapest eligible plan — the pinned phone summary and the pin label. */
+  const winner = result
+    ? (result.plans.find((p) => p.planId === result.recommendation.lowestTotalCost) ?? null)
+    : null;
+
   function restorePin(id: string) {
     const pin = pins.find((p) => p.id === id);
     if (!pin) return;
@@ -235,8 +247,6 @@ export function CalculatorApp() {
   }
 
   function pinCurrent() {
-    if (!result) return;
-    const winner = result.plans.find((p) => p.planId === result.recommendation.lowestTotalCost);
     if (!winner) return;
     addPin({
       summary: `${PLAN_NAMES[winner.planId]} · ${usd(winner.firstMonthlyPayment)}/mo · ${usd(
@@ -247,92 +257,107 @@ export function CalculatorApp() {
   }
 
   return (
-    <div className="grid items-start gap-8 lg:grid-cols-[minmax(19rem,22rem)_minmax(0,1fr)] lg:gap-10">
-      <FormProvider {...form}>
-        <form
-          noValidate
-          onSubmit={(event) => event.preventDefault()}
-          aria-label="Your loans, household and goals"
-          className="hairline-all rounded-atlas p-4 sm:p-5"
-          style={{ background: "var(--paper-raised)" }}
-        >
-          <Stepper
-            steps={STEPS.map((s) => ({ id: s.id, label: s.label }))}
-            current={step}
-            onNavigate={(id) => setStep(id as StepId)}
-            label="Your details"
+    <div>
+      <div className="grid items-start gap-8 lg:grid-cols-[minmax(19rem,22rem)_minmax(0,1fr)] lg:gap-10">
+        <FormProvider {...form}>
+          <form
+            noValidate
+            onSubmit={(event) => event.preventDefault()}
+            aria-label="Your loans, household and goals"
+            className="hairline-all rounded-atlas p-4 sm:p-5"
+            style={{ background: "var(--paper-raised)" }}
+          >
+            <Stepper
+              steps={STEPS.map((s) => ({ id: s.id, label: s.label }))}
+              current={step}
+              onNavigate={(id) => setStep(id as StepId)}
+              label="Your details"
+            />
+
+            <div className="mt-4">
+              <h3 ref={stepHeadingRef} tabIndex={-1} className="sr-only">
+                {STEPS[stepIndex]?.label} — step {stepIndex + 1} of {STEPS.length}
+              </h3>
+              {step === "loans" ? <LoanEntryForm /> : null}
+              {step === "household" ? <HouseholdStep result={result} asOf={asOf} /> : null}
+              {step === "goals" ? <GoalsStep result={result} asOf={asOf} /> : null}
+            </div>
+
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              {stepIndex > 0 ? (
+                <Button variant="secondary" onClick={() => setStep(STEPS[stepIndex - 1]!.id)}>
+                  Back to {STEPS[stepIndex - 1]!.label.toLowerCase()}
+                </Button>
+              ) : null}
+              {stepIndex < STEPS.length - 1 ? (
+                <Button onClick={() => setStep(STEPS[stepIndex + 1]!.id)}>
+                  Continue to {STEPS[stepIndex + 1]!.label.toLowerCase()}
+                </Button>
+              ) : null}
+            </div>
+          </form>
+        </FormProvider>
+
+        <div className="min-w-0">
+          <ConfidenceMeter
+            filled={filled}
+            total={details.length}
+            missingLabel={firstMissing ? `${firstMissing.ask} for an exact answer` : undefined}
           />
 
-          <div className="mt-4">
-            <h3 ref={stepHeadingRef} tabIndex={-1} className="sr-only">
-              {STEPS[stepIndex]?.label} — step {stepIndex + 1} of {STEPS.length}
-            </h3>
-            {step === "loans" ? <LoanEntryForm /> : null}
-            {step === "household" ? <HouseholdStep result={result} asOf={asOf} /> : null}
-            {step === "goals" ? <GoalsStep result={result} asOf={asOf} /> : null}
+          {filled === 0 ? (
+            <p className="mt-2 text-dim" style={{ fontSize: "var(--text-step--1)" }}>
+              Nothing entered yet, so this models an example borrower —{" "}
+              <span className="num">$38,500</span> at <span className="num">6.39%</span> on{" "}
+              <span className="num">$55,000</span> of income. Change any field and the answer
+              below becomes yours.
+            </p>
+          ) : null}
+
+          <div className="mt-6">
+            {result ? (
+              <Results result={result} />
+            ) : (
+              <ErrorState
+                cause="No repayment plan can take this loan mix."
+                fix="FFEL, Perkins and HEAL loans are shut out of most plans. Check the loan types in step 1, or consolidate into a Direct Consolidation Loan to open more of them."
+                action={
+                  <Button variant="secondary" onClick={() => setStep("loans")}>
+                    Check your loan types
+                  </Button>
+                }
+              />
+            )}
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            {stepIndex > 0 ? (
-              <Button variant="secondary" onClick={() => setStep(STEPS[stepIndex - 1]!.id)}>
-                Back to {STEPS[stepIndex - 1]!.label.toLowerCase()}
-              </Button>
-            ) : null}
-            {stepIndex < STEPS.length - 1 ? (
-              <Button onClick={() => setStep(STEPS[stepIndex + 1]!.id)}>
-                Continue to {STEPS[stepIndex + 1]!.label.toLowerCase()}
-              </Button>
-            ) : null}
-          </div>
-        </form>
-      </FormProvider>
-
-      <div className="min-w-0">
-        <ConfidenceMeter
-          filled={filled}
-          total={details.length}
-          missingLabel={firstMissing ? `${firstMissing.ask} for an exact answer` : undefined}
-        />
-
-        {filled === 0 ? (
-          <p className="mt-2 text-dim" style={{ fontSize: "var(--text-step--1)" }}>
-            Nothing entered yet, so this models an example borrower —{" "}
-            <span className="num">$38,500</span> at <span className="num">6.39%</span> on{" "}
-            <span className="num">$55,000</span> of income. Change any field and the answer
-            below becomes yours.
+          {/* M7 — pin a scenario, keep editing, compare. The address bar already
+              carries the live scenario, so there is no separate share button. */}
+          <ScenarioPins
+            className="hairline-t mt-8 pt-6"
+            pins={pins}
+            onPin={pinCurrent}
+            onRemove={removePin}
+            onRestore={restorePin}
+          />
+          <p className="mt-2 text-dim" style={{ fontSize: "var(--text-step--2)" }}>
+            This page&apos;s address carries your scenario in its fragment — copy it from the
+            address bar to send it to someone. It never reaches a server.
           </p>
-        ) : null}
-
-        <div className="mt-6">
-          {result ? (
-            <Results result={result} />
-          ) : (
-            <ErrorState
-              cause="No repayment plan can take this loan mix."
-              fix="FFEL, Perkins and HEAL loans are shut out of most plans. Check the loan types in step 1, or consolidate into a Direct Consolidation Loan to open more of them."
-              action={
-                <Button variant="secondary" onClick={() => setStep("loans")}>
-                  Check your loan types
-                </Button>
-              }
-            />
-          )}
         </div>
-
-        {/* M7 — pin a scenario, keep editing, compare. The address bar already
-            carries the live scenario, so there is no separate share button. */}
-        <ScenarioPins
-          className="hairline-t mt-8 pt-6"
-          pins={pins}
-          onPin={pinCurrent}
-          onRemove={removePin}
-          onRestore={restorePin}
-        />
-        <p className="mt-2 text-dim" style={{ fontSize: "var(--text-step--2)" }}>
-          This page&apos;s address carries your scenario in its fragment — copy it from the
-          address bar to send it to someone. It never reaches a server.
-        </p>
       </div>
+
+      {/* The three-step form is taller than a phone viewport, so without this
+          the answer is off-screen for the whole time it is being changed. */}
+      {winner ? (
+        <StickyAnswer
+          label={`Lowest lifetime cost — ${PLAN_NAMES[winner.planId]}`}
+          value={winner.totalLifetimeCost}
+          format={usd}
+          caption={`${usd(winner.firstMonthlyPayment)}/mo to start`}
+          jumpTo="lifetime-cost"
+          jumpLabel="Full answer"
+        />
+      ) : null}
     </div>
   );
 }

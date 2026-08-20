@@ -62,16 +62,27 @@ export default function HubPage() {
               <span className={styles.tag}>Decision engines · not calculators</span>
             </p>
 
+            {/*
+              Two lines, two cuts of one serif. Instrument Serif ships weight
+              400 only, so authority here has to come from size and fit rather
+              than from weight: the display steps up a rung on the ladder, the
+              tracking closes as it grows, and the second line is the real
+              italic — a deliberate contrast, never a synthesised bold.
+            */}
             <h1 className={styles.display}>
               Every option, priced. <span className={styles.displayAccent}>Then ranked.</span>
             </h1>
 
+            {/*
+              THE LEAD IS TWO SENTENCES. It ran to five lines on a laptop and
+              eight on a phone, listing what the five engines cover — which the
+              five cards below then list again, better, with a worked example
+              each. What survives is the only thing the cards cannot say: that
+              you enter your numbers once and the engines do the comparing.
+            */}
             <p className={styles.lead}>
-              Five engines for the US money rules that move real dollars. Nine federal repayment
-              plans. Every OBBBA deduction. Both sides of the 400% subsidy cliff. You enter your
-              own numbers, the engines simulate every option under the rules in force today, and
-              the answer is the one that costs you least — with the one-way doors marked before
-              you reach them and every rule cited to its source.
+              Enter your numbers once. Five engines simulate every option under the rules in force
+              today, and flag the one-way doors before you reach one.
             </p>
 
             <ul className={styles.trust}>
@@ -203,10 +214,8 @@ export default function HubPage() {
         </div>
 
         <p className={styles.workingsLead}>
-          Every tool carries its own methodology, its own list of primary sources and its own
-          changelog, because each one answers to a different rule-maker — the Department of
-          Education, the IRS, HHS, a county assessor, a state contractor board. Start with the
-          methodology for the tool you are using:
+          Each tool answers to a different rule-maker, so each carries its own methodology, sources
+          and changelog:
         </p>
 
         <ul className={styles.chips}>
@@ -248,21 +257,25 @@ export default function HubPage() {
           </li>
         </ul>
 
+        {/*
+          The closing record. Both figures and all three links survive — the
+          55 still unverified, the pass over every figure, about, authors,
+          contact — with the connective prose taken out. This is the last band
+          on the page and it should read as a colophon, not as another essay.
+        */}
         <div className={styles.workingsTail}>
           <p className={styles.workingsLead}>
-            For how a rule gets from a regulation into a number on this site, how it is funded, and
-            the <span className={styles.chipMono}>55</span> items still recorded as unverified,
-            read <Link href="/about">about Bracketsight</Link>. For what verification means here,
-            what a pass over <span className={styles.chipMono}>{proof.figures}</span> individual
-            figures found, and which professional reviews have not happened yet, read{" "}
+            How this is funded, and the <span className={styles.chipMono}>55</span> items still
+            recorded as unverified: <Link href="/about">about Bracketsight</Link>. What a pass over{" "}
+            <span className={styles.chipMono}>{proof.figures}</span> figures found, and which
+            professional reviews have not happened yet:{" "}
             <Link href="/authors">who writes and checks this</Link>.
           </p>
 
           <p className={styles.workingsLead}>
             Found a figure that is wrong?{" "}
             <Link href="/contact">Report it and it gets fixed</Link> — checked against the primary
-            source, then logged in that tool&rsquo;s changelog with the date and the document it
-            came from. Corrections are never taken on a secondary source.
+            source, then logged in that tool&rsquo;s changelog. Never on a secondary source.
           </p>
         </div>
       </section>

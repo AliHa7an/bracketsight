@@ -10,11 +10,25 @@
  *
  * WHAT MAKES IT THIS AND NOT A GENERIC LANDING PAGE:
  *
- *   • DENSITY IS THE POINT. Base type is 16px, line-height 1.48, and the first
- *     screen carries roughly four times as many figures as the page it
- *     replaces. Where a landing page leaves air, this leaves a hairline. Labels
- *     are 10.5px mono in small caps — the voice of an instrument face, not of
- *     an essay.
+ *   • DENSITY IS THE POINT — BUT DENSITY IS FIGURES, NOT PROSE. Base type is
+ *     16px, line-height 1.48, and the first screen carries roughly four times as
+ *     many figures as the page it replaces. Where a landing page leaves air,
+ *     this leaves a hairline. Labels are 10.5px mono in small caps — the voice
+ *     of an instrument face, not of an essay. What density is NOT is five-line
+ *     grey paragraphs: at 390px those made the page 8,520px tall, and the fix
+ *     was to cut words rather than to close gaps. Every body on the page is now
+ *     one or two lines, and the worked examples, links and disclosures that the
+ *     prose was crowding all survived intact.
+ *   • THE SCALE IS WIDE, NOT FLAT. Measured on a phone, the first build ran
+ *     h1 40px, section h2 24px, card question 21px — an h2 three pixels above
+ *     the h3 beneath it, which is a rounding error rather than a hierarchy. The
+ *     display and the section titles each moved up a rung of the 1.25 ladder
+ *     (steps 5 and 3→5, added in globals.css for this page), the tracking closes
+ *     as the size grows, and the headline's second line is set in Instrument
+ *     Serif's real italic because the family has no bold to reach for.
+ *   • THE BANDS ARE NOT ALL THE SAME WEIGHT. The hero and the trust band get the
+ *     most air, the grid sits in the middle, the proof row is a ruled strip and
+ *     the workings are a colophon. See the note on `.heroInner`.
  *   • AN INK GROUND, TWICE. The panel and the trust band invert to `--panel`
  *     with their own hairline grid. That gives the page two obvious centres of
  *     gravity that are not the headline, and it is why the demo reads as
@@ -22,10 +36,12 @@
  *   • THE DEMO IS A CHART, NOT A FIGURE. A cliff is a shape: two households $1
  *     apart with a $14,902 difference between them. No single number carries
  *     that; the discontinuity has to be visible.
- *   • SERIF IS RATIONED. `--font-serif` appears exactly three times — the
- *     headline, the section title, the card question — and never above 66px.
- *     Everything else, including every label, is the body face or the data
- *     face.
+ *   • SERIF IS RATIONED. `--font-serif` appears exactly four times — the
+ *     headline, the two section titles, the card question — and never above
+ *     61px. Everything else, including every label, is the body face or the data
+ *     face. The trust band's title was the exception and it was a mistake: a
+ *     section title set in the body face at 20.8px, between two serif ones at
+ *     24px, made the page look as though three people had built it.
  *   • THE GRID HAS A HIERARCHY. Loans is the flagship: it spans the grid, it
  *     carries a badge, and it is the only card with a ledger. Five identical
  *     cards would tell a reader that the site has no opinion about where to
@@ -98,11 +114,21 @@
   mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 35%) 62%, transparent 100%);
 }
 
+/*
+ * THE BANDS ARE NOT ALL THE SAME WEIGHT any more, and that is the point.
+ *
+ * Five bands with identical padding gave the page one flat rhythm from top to
+ * bottom, which is most of why it read as a long column rather than as a
+ * composed page. The hero and the trust band — the two ink-adjacent moments the
+ * page is built around — get the most air; the tool grid sits in the middle;
+ * the proof strip is a ruled row and stays tight; the workings are a colophon
+ * and are tighter still. The numbers below are the whole crescendo, in order.
+ */
 .heroInner {
   position: relative;
   display: grid;
-  gap: clamp(28px, 3.6vw, 46px);
-  padding-block: clamp(28px, 4.6vw, 56px) clamp(30px, 4.6vw, 56px);
+  gap: clamp(30px, 3.6vw, 48px);
+  padding-block: clamp(30px, 5.4vw, 76px) clamp(32px, 5.4vw, 76px);
 }
 
 @media (min-width: 1040px) {
@@ -125,26 +151,43 @@
   background: var(--ink);
 }
 
+/*
+ * AUTHORITY WITHOUT WEIGHT.
+ *
+ * Instrument Serif ships one weight, so at 40px on a phone this headline had
+ * neither size nor mass and read as thin. Three fixes, none of them faking a
+ * bold: it steps up a full rung of the ladder (--text-step-5, 48.8px, from
+ * 39px), the tracking closes to -0.032em because a display serif needs less air
+ * between letters the larger it is set, and the second line takes the family's
+ * real italic — see the `style: ["normal", "italic"]` in app/layout.tsx, which
+ * is what stops the browser shearing the roman instead.
+ *
+ * `text-wrap: balance` is deliberately absent: the line break belongs after
+ * "priced." every time, and the 15ch measure plus the sentence structure put it
+ * there. Balancing moved it around by viewport.
+ */
 .display {
   margin: 0;
   max-width: 15ch;
   font-family: var(--font-serif);
   font-weight: 400;
-  font-size: clamp(2.5rem, 5.3vw, 4.1rem);
-  line-height: 0.98;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
+  font-size: clamp(var(--text-step-5), 5.4vw, var(--text-step-6));
+  line-height: 0.94;
+  letter-spacing: -0.032em;
 }
 
 .displayAccent {
   color: var(--signal);
+  font-style: italic;
+  /* The italic's own sidebearings are narrower; give the pair back its comma. */
+  letter-spacing: -0.024em;
 }
 
 .lead {
-  margin: 20px 0 0;
-  max-width: 46ch;
-  font-size: 15.5px;
-  line-height: 1.55;
+  margin: 22px 0 0;
+  max-width: 44ch;
+  font-size: 16px;
+  line-height: 1.5;
   color: var(--dim);
 }
 
@@ -180,7 +223,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 22px;
+  gap: 4px 22px;
   margin: 22px 0 0;
 }
 
@@ -369,24 +412,108 @@
 
 /* ---- the readout grid ---- */
 
+/*
+ * THREE ON THE FACE, THREE BEHIND THE DISCLOSURE — below 560px only.
+ *
+ * Six readouts in a 326px column was nine rows of 9.5px mono under a 122px
+ * chart: dense in the wrong way, and the reason the panel read as cramped
+ * rather than as equipment. The three that carry the cliff — the credit, the
+ * room left, what is at stake — sit in one row of three; the other three are
+ * clipped off-screen until the toggle is pressed.
+ *
+ * CLIPPED, NOT `display: none`. The three collapsed cells keep their box in the
+ * accessibility tree and are read by a screen reader in either state, so the
+ * toggle changes what is painted and nothing else. `.readout` resets its own
+ * padding and borders when clipped, or the 1px hairlines of three off-screen
+ * cells still occupied 3px of the grid.
+ *
+ * From 560px up the whole mechanism is inert: the toggle is `display: none`, the
+ * clip rule is outside the media query that applies it, and the grid is the
+ * three-column, two-row face it always was.
+ */
 .readouts {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 16px;
   border-top: 1px solid var(--panel-hair);
   border-left: 1px solid var(--panel-hair);
-}
-
-@media (min-width: 560px) {
-  .readouts {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 .readout {
   padding: 10px 12px;
   border-right: 1px solid var(--panel-hair);
   border-bottom: 1px solid var(--panel-hair);
+}
+
+@media (max-width: 559px) {
+  .readouts[data-collapsed="true"] .readout[data-extra="true"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Reopened on a phone: two columns, because a 9.5px label in a 108px cell
+     wraps to three lines and the collapsed three are the wordier ones. */
+  .readouts[data-collapsed="false"] .readout[data-extra="true"] {
+    grid-column: span 3;
+  }
+}
+
+/*
+ * The toggle. A real button, so it is one tab stop with the page's own focus
+ * ring and it responds to Enter and Space without a keydown handler. It is
+ * always in the markup and always reserves its height below 560px — the panel's
+ * box is therefore correct on first paint whichever state it is in.
+ */
+.readoutsToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  margin-top: 10px;
+  padding: 0 12px;
+  border: 1px solid var(--panel-hair);
+  border-radius: var(--radius-atlas);
+  background: transparent;
+  color: var(--panel-dim);
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+.readoutsToggle:hover {
+  color: var(--panel-text);
+  border-color: color-mix(in srgb, var(--panel-text) 32%, transparent);
+}
+
+.readoutsToggle:focus-visible {
+  outline: 2px solid var(--panel-text);
+  outline-offset: 3px;
+}
+
+.readoutsChevron {
+  transition: transform var(--dur-base) var(--ease);
+}
+
+.readoutsToggle[aria-expanded="true"] .readoutsChevron {
+  transform: rotate(180deg);
+}
+
+@media (min-width: 560px) {
+  .readoutsToggle {
+    display: none;
+  }
 }
 
 .readoutLabel {
@@ -515,11 +642,11 @@
 .panelFoot {
   overflow-wrap: anywhere;
   position: relative;
-  padding: 11px 16px 13px;
+  padding: 10px 16px 12px;
   border-top: 1px solid var(--panel-hair);
   font-family: var(--font-data);
   font-size: 10px;
-  line-height: 1.6;
+  line-height: 1.5;
   color: var(--panel-dim);
 }
 
@@ -542,7 +669,7 @@
  */
 .proof {
   background: var(--band);
-  border-bottom: 1px solid var(--hair);
+  border-bottom: 1px solid var(--ink);
 }
 
 .proofRow {
@@ -560,7 +687,7 @@
 }
 
 .proofItem {
-  padding: clamp(20px, 2.6vw, 30px) 18px clamp(20px, 2.6vw, 30px) 0;
+  padding: clamp(18px, 2.6vw, 30px) 18px clamp(18px, 2.6vw, 30px) 0;
 }
 
 .proofItem + .proofItem {
@@ -586,29 +713,38 @@
   }
 }
 
+/*
+ * COMMANDING WITHOUT DECORATION. The four figures were set at the same register
+ * as a card question, which made the band that carries the site's strongest
+ * claims about itself the plainest thing on the page. The fix is size and fit
+ * only — no rules above the numbers, no boxes, no tint. They go up to
+ * --text-step-5 on a phone and past --text-step-6 on a laptop, the tracking
+ * closes to -0.045em, and the label under each one sits in ink rather than dim
+ * so the figure and its subject read as one object.
+ */
 .proofFigure {
   display: block;
   font-family: var(--font-data);
   font-variant-numeric: tabular-nums;
-  font-size: clamp(1.85rem, 3.6vw, 2.7rem);
-  line-height: 1;
-  letter-spacing: -0.04em;
+  font-size: clamp(var(--text-step-4), 4.4vw, 4rem);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
   color: var(--bronze);
 }
 
 /* A date is not a quantity, and at figure size it is three times the width of
    one and dominates the row. */
 .proofFigureDate {
-  font-size: clamp(1.15rem, 2.4vw, 1.85rem);
+  font-size: clamp(1.25rem, 2.6vw, 2rem);
   letter-spacing: -0.02em;
 }
 
 .proofLabel {
-  margin: 10px 0 0;
-  max-width: 30ch;
+  margin: 12px 0 0;
+  max-width: 26ch;
   font-family: var(--font-data);
   font-size: 10.5px;
-  line-height: 1.55;
+  line-height: 1.5;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink);
@@ -616,14 +752,15 @@
 
 .proofSource {
   margin: 5px 0 0;
-  font-size: 12.5px;
+  font-size: 12px;
+  line-height: 1.45;
   color: var(--dim);
 }
 
 /* ─────────────────────────────────────────────────────────── the grid ── */
 
 .tools {
-  padding-block: clamp(38px, 5vw, 64px);
+  padding-block: clamp(36px, 4.6vw, 60px);
   scroll-margin-top: 72px;
 }
 
@@ -632,24 +769,36 @@
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 6px 20px;
-  margin: 0 0 18px;
-  padding-bottom: 10px;
+  gap: 8px 24px;
+  margin: 0 0 22px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--ink);
 }
 
+/*
+ * THE SECTION TITLE HAD TO OUT-RANK A CARD QUESTION BY MORE THAN ONE STEP.
+ *
+ * Measured on a phone before this: h1 40px, section h2 24px, card question
+ * 21px. A 24px h2 three pixels above the h3 under it is not a hierarchy, it is
+ * a rounding error, and it is why the page read as one undifferentiated column
+ * however the spacing was tuned. The title now runs --text-step-3 (31.25px) on
+ * a phone to --text-step-5 (48.8px) on a laptop, against a card question that
+ * stays at 21px and 25.6px — a ratio of 1.48 and 1.91 instead of 1.14 and 1.25.
+ * Tracking closes as it grows, which is the other half of reading as display
+ * type rather than as large body type.
+ */
 .sectionTitle {
   margin: 0;
   font-family: var(--font-serif);
   font-weight: 400;
-  font-size: clamp(1.5rem, 2.8vw, 2rem);
-  line-height: 1.1;
-  letter-spacing: -0.015em;
+  font-size: clamp(var(--text-step-3), 3.4vw, var(--text-step-5));
+  line-height: 1.04;
+  letter-spacing: -0.026em;
 }
 
 .cardGrid {
   display: grid;
-  gap: 14px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -687,27 +836,70 @@
  * ::after covers the card, and the CTA below is a styled span. `:has()` puts
  * the ring on the card so the highlighted surface is the clickable one.
  */
+/*
+ * THE ACCENT DOES MORE THAN A TOP RULE.
+ *
+ * Before this, the whole of a card's identity was 3px of colour on its top edge
+ * and a green eyebrow; hovering lifted the box 2px and added a shadow, which is
+ * what every card on every site does. Four things now move together, and every
+ * one of them is a colour or an opacity — nothing changes a box, a border width
+ * or a position, so the hover cannot shift a pixel of layout:
+ *
+ *   1. the top rule thickens optically, by going from 62% to full accent
+ *   2. the card's own border picks up the accent instead of the neutral rule
+ *   3. `.cardBleed` fades in — a flat wash of the accent over the ground
+ *   4. the mark's plate fills, and the CTA border goes solid
+ *
+ * ONE FOCUS STOP for the whole surface: the question is the only anchor, its
+ * ::after covers the card, and the CTA below is a styled span. `:has()` puts the
+ * ring on the card so the highlighted surface is the clickable one, and the same
+ * selector drives the four hover states so a keyboard user sees exactly what a
+ * pointer user sees.
+ */
 .card {
   position: relative;
+  isolation: isolate;
   display: grid;
   height: 100%;
   align-content: start;
+  overflow: hidden;
   border: 1px solid var(--rule);
-  border-top: 3px solid var(--signal);
+  border-top: 3px solid color-mix(in srgb, var(--signal) 72%, transparent);
   border-radius: var(--radius-atlas);
   background: var(--paper);
   color: var(--ink);
   transition:
     transform var(--dur-base) var(--ease),
+    border-color var(--dur-base) var(--ease),
     box-shadow var(--dur-base) var(--ease);
 }
 
-.card:hover {
+/* The wash. Absolutely positioned and behind everything, so it is paint and
+   nothing else — it has no effect on the grid it sits in. */
+.cardBleed {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: color-mix(in srgb, var(--signal) 7%, transparent);
+  transition: opacity var(--dur-base) var(--ease);
+}
+
+.card:hover,
+.card:has(a:focus-visible) {
   transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--signal) 38%, var(--rule));
+  border-top-color: var(--signal);
   box-shadow:
     0 1px 1px rgb(6 10 18 / 6%),
     0 10px 24px -14px rgb(6 10 18 / 28%),
     0 26px 52px -34px rgb(6 10 18 / 32%);
+}
+
+.card:hover .cardBleed,
+.card:has(a:focus-visible) .cardBleed {
+  opacity: 1;
 }
 
 .card:has(a:focus-visible) {
@@ -733,15 +925,20 @@
 
 .cardEyebrow {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin: 0;
+  min-height: 44px;
   font-family: var(--font-data);
   font-size: 10.5px;
   letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--signal);
+}
+
+.cardFlagship .cardEyebrow {
+  min-height: 50px;
 }
 
 .cardBadge {
@@ -755,26 +952,68 @@
   white-space: nowrap;
 }
 
+/*
+ * The plate. A fixed square with a hairline of the section accent, so five
+ * hand-drawn marks of different ink density land on the page at one optical
+ * weight — and so the mark has somewhere to go on hover. The square is what
+ * gives the marks presence; they were 34px of thin line floating in a corner and
+ * a reader's eye went past them.
+ */
 .cardArt {
   flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid color-mix(in srgb, var(--signal) 26%, transparent);
+  border-radius: var(--radius-atlas);
+  background: color-mix(in srgb, var(--signal) 6%, transparent);
   color: var(--signal);
+  transition:
+    background var(--dur-base) var(--ease),
+    border-color var(--dur-base) var(--ease);
 }
 
+.cardFlagship .cardArt {
+  width: 50px;
+  height: 50px;
+}
+
+.card:hover .cardArt,
+.card:has(a:focus-visible) .cardArt {
+  border-color: color-mix(in srgb, var(--signal) 55%, transparent);
+  background: color-mix(in srgb, var(--signal) 14%, transparent);
+}
+
+/*
+ * NO MEASURE WHILE THE GRID IS ONE COLUMN. A 24ch cap inside a 326px card threw
+ * every question onto a third line — the cap was set for the four-abreast layout
+ * and was quietly costing 23px a card on a phone, where the column itself is
+ * already a perfectly good measure. It comes back the moment the grid splits.
+ */
 .cardQuestion {
-  margin: 10px 0 0;
-  max-width: 24ch;
+  margin: 12px 0 0;
   font-family: var(--font-serif);
   font-weight: 400;
   font-size: clamp(1.32rem, 2.4vw, 1.6rem);
-  line-height: 1.1;
-  letter-spacing: -0.015em;
+  line-height: 1.08;
+  letter-spacing: -0.018em;
   color: var(--ink);
 }
 
 .cardFlagship .cardQuestion {
-  max-width: 22ch;
   font-size: clamp(1.5rem, 2.7vw, 1.95rem);
-  line-height: 1.08;
+  line-height: 1.05;
+}
+
+@media (min-width: 760px) {
+  .cardQuestion {
+    max-width: 24ch;
+  }
+
+  .cardFlagship .cardQuestion {
+    max-width: 22ch;
+  }
 }
 
 /* Never underlined: it is the largest type in the card, and an underline on
@@ -791,11 +1030,13 @@
   border-radius: var(--radius-atlas);
 }
 
+/* One line. See the note on `ToolCard.body` in ./data.ts for why that is a
+   budget rather than a preference. */
 .cardBody {
-  margin: 12px 0 0;
-  max-width: 52ch;
+  margin: 10px 0 0;
+  max-width: 50ch;
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.5;
   color: var(--dim);
 }
 
@@ -804,35 +1045,42 @@
   align-self: flex-start;
   align-items: center;
   gap: 8px;
-  min-height: 42px;
-  margin-top: 16px;
-  padding: 0 16px;
-  border: 1px solid color-mix(in srgb, var(--signal) 45%, transparent);
+  min-height: 40px;
+  margin-top: 14px;
+  padding: 0 15px;
+  border: 1px solid color-mix(in srgb, var(--signal) 40%, transparent);
   border-radius: var(--radius-atlas);
   color: var(--signal);
   font-size: 14px;
   font-weight: 500;
+  transition:
+    background var(--dur-base) var(--ease),
+    border-color var(--dur-base) var(--ease);
 }
 
-.card:hover .cardCta {
-  background: color-mix(in srgb, var(--signal) 8%, transparent);
+.card:hover .cardCta,
+.card:has(a:focus-visible) .cardCta {
+  background: color-mix(in srgb, var(--signal) 10%, transparent);
   border-color: var(--signal);
 }
 
 /* ---- the worked example ---- */
 
+/* The engine result is the point of the block, so it gets the size and the
+   bronze; the label is a caption for it and the inputs are the fine print. That
+   is the card's internal hierarchy in three lines. */
 .cardExample {
-  margin: 16px 0 0;
-  padding-top: 12px;
+  margin: 14px 0 0;
+  padding-top: 11px;
   border-top: 1px solid var(--rule);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 11.5px;
+  line-height: 1.45;
   color: var(--dim);
 }
 
 .cardExampleLabel {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   font-family: var(--font-data);
   font-size: 9.5px;
   letter-spacing: 0.12em;
@@ -842,12 +1090,13 @@
 
 .cardExampleFigure {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   font-family: var(--font-data);
   font-variant-numeric: tabular-nums;
-  font-size: 14px;
+  font-size: 14.5px;
+  line-height: 1.28;
   font-weight: 400;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.024em;
   color: var(--bronze);
 }
 
@@ -968,7 +1217,7 @@
 
 .trustInner {
   position: relative;
-  padding-block: clamp(38px, 5vw, 64px);
+  padding-block: clamp(44px, 5.6vw, 80px);
 }
 
 .trustHead {
@@ -976,19 +1225,26 @@
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 6px 20px;
-  margin: 0 0 22px;
-  padding-bottom: 10px;
+  gap: 8px 24px;
+  margin: 0 0 26px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--panel-hair);
 }
 
+/*
+ * The same register as the other two section titles, and for the same reason:
+ * this IS a section title, and setting it in the body face at 20.8px while the
+ * two around it were serif at 24px made the page look as though three different
+ * people had built it. Serif is still rationed — four places, one of them here —
+ * and the ratio against the 15px claim headings under it is now 2.1.
+ */
 .trustTitle {
   margin: 0;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
-  line-height: 1.15;
-  letter-spacing: -0.015em;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(var(--text-step-3), 3.4vw, var(--text-step-5));
+  line-height: 1.04;
+  letter-spacing: -0.026em;
   color: var(--panel-text);
 }
 
@@ -1021,7 +1277,7 @@
 }
 
 .claim {
-  padding: 18px 18px 20px 0;
+  padding: 16px 18px 18px 0;
   border-bottom: 1px solid var(--panel-hair);
 }
 
@@ -1039,18 +1295,30 @@
   }
 }
 
+/*
+ * The mark sits on the heading's own line rather than on a line of its own.
+ * Stacked, four claims spent 42px each on an icon and the air under it — 168px
+ * of a phone screen buying nothing the inline arrangement does not, and it
+ * pushed the fourth claim's body off the bottom of the band. Inline it also
+ * reads as a bullet for the heading, which is what it is.
+ */
 .claimArt {
-  display: block;
-  margin-bottom: 12px;
+  flex: none;
+  display: grid;
+  place-items: center;
   color: var(--panel-teal);
 }
 
 .claimHeading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
   margin: 0;
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: 15.5px;
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.22;
+  letter-spacing: -0.008em;
   color: var(--panel-text);
 }
 
@@ -1060,26 +1328,28 @@
 
 .claimLede {
   display: block;
-  margin: 6px 0 0;
+  margin: 9px 0 0;
   font-family: var(--font-data);
   font-size: 11px;
-  line-height: 1.5;
+  line-height: 1.45;
   letter-spacing: 0.02em;
   color: var(--panel-gold);
 }
 
+/* The four claims are quoted verbatim and are not cut — they are the only
+   reason to believe anything else on the page. What was tuned is the leading. */
 .claimBody {
   display: block;
-  margin: 9px 0 0;
+  margin: 8px 0 0;
   font-size: 12.5px;
-  line-height: 1.55;
+  line-height: 1.5;
   color: var(--panel-dim);
 }
 
 /* ---- how a rule becomes a number ---- */
 
 .pipeline {
-  margin: clamp(30px, 4vw, 48px) 0 0;
+  margin: clamp(28px, 3.6vw, 44px) 0 0;
   padding: 0;
   list-style: none;
   display: grid;
@@ -1110,7 +1380,7 @@
  */
 .pipelineStep {
   position: relative;
-  padding: 0 0 26px 30px;
+  padding: 0 0 20px 30px;
 }
 
 .pipelineStep:last-child {
@@ -1183,25 +1453,35 @@
   color: var(--panel-text);
 }
 
+/* No measure below the breakpoint: a 34ch cap in a 330px column threw every
+   node's body onto a third line for no reading benefit — the column IS the
+   measure there. The cap only earns its keep once the run is four abreast. */
 .pipelineBody {
-  margin: 7px 0 0;
-  max-width: 34ch;
+  margin: 6px 0 0;
   font-size: 12.5px;
-  line-height: 1.55;
+  line-height: 1.5;
   color: var(--panel-dim);
+}
+
+@media (min-width: 900px) {
+  .pipelineBody {
+    max-width: 34ch;
+  }
 }
 
 /* ──────────────────────────────────────────────────────────── workings ── */
 
+/* The colophon, and the tightest band on the page — see the rhythm note on
+   `.heroInner`. It closes the page; it does not restate it. */
 .workings {
-  padding-block: clamp(34px, 4.4vw, 56px);
+  padding-block: clamp(28px, 3.4vw, 44px);
 }
 
 .workingsLead {
-  margin: 16px 0 0;
-  max-width: 68ch;
-  font-size: 14.5px;
-  line-height: 1.6;
+  margin: 14px 0 0;
+  max-width: 62ch;
+  font-size: 14px;
+  line-height: 1.55;
   color: var(--dim);
 }
 
@@ -1220,8 +1500,10 @@
    1280px shell they otherwise leave the right half of the page empty. */
 .workingsTail {
   display: grid;
-  gap: 4px 40px;
-  margin-top: 26px;
+  gap: 2px 40px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--hair-soft);
 }
 
 @media (min-width: 900px) {
@@ -1237,14 +1519,14 @@
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin: 20px 0 0;
+  gap: 6px;
+  margin: 16px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .chipsLabel {
-  margin: 20px 0 0;
+  margin: 18px 0 0;
   font-family: var(--font-data);
   font-size: 10.5px;
   letter-spacing: 0.13em;
@@ -1256,13 +1538,13 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  min-height: 38px;
-  padding: 0 13px;
+  min-height: 34px;
+  padding: 0 12px;
   border: 1px solid var(--rule);
   border-radius: var(--radius-atlas);
   background: var(--paper-raised);
   color: var(--ink);
-  font-size: 13px;
+  font-size: 12.5px;
   text-decoration: none;
   transition:
     border-color var(--dur-fast) var(--ease),
@@ -1318,13 +1600,27 @@
     transition: none;
   }
 
+  /* Every transition on the page, listed. The hover states themselves stay —
+     they are information, and a reader who has asked for less motion still needs
+     to know which card is under the pointer — but they arrive instantly, and
+     nothing translates or rotates. */
   .root .card,
+  .root .cardBleed,
+  .root .cardArt,
+  .root .cardCta,
   .root .btnPrimary,
-  .root .chip {
+  .root .chip,
+  .root .readoutsToggle,
+  .root .readoutsChevron {
     transition: none;
   }
 
-  .root .card:hover {
+  .root .card:hover,
+  .root .card:has(a:focus-visible) {
     transform: none;
   }
+
+  /* The chevron keeps its flip: that is a state, not an animation, and it is
+     how the closed and open panel are told apart at a glance. It simply
+     arrives rather than turning. */
 }

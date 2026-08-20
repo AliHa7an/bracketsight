@@ -12,6 +12,7 @@ import {
   magiAtPctEdge,
 } from "@/engines/aca";
 import { FactTable } from "@/components/ui";
+import { ContentsRail } from "@/components/content";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/aca/methodology" },
@@ -77,6 +78,8 @@ export default function MethodologyPage() {
         whole calculation in the order the engine performs it, including the
         places where it stops short of the law and what that costs you.
       </p>
+
+      <ContentsRail className="mt-6" />
 
       <section className="space-y-3">
         <h2>MAGI is adjusted gross income plus three add-backs, and nothing is subtracted</h2>

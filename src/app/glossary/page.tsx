@@ -159,15 +159,52 @@ function Entry({ entry }: { entry: GlossaryEntry }) {
 
       <p className="mt-3">{entry.definition()}</p>
 
-      <p className="mt-3">
-        <span className="micro-label">Why it matters</span>
-        <span className="mt-1 block">{entry.whyItMatters()}</span>
-      </p>
+      {/*
+       * Twenty-four entries rendered whole made this page 28,451px tall at
+       * 390px — about seventy phone screens, which is not a glossary but a
+       * scroll. The term and its definition, the two things a reader came for,
+       * stay open; the apparatus behind them folds.
+       *
+       * A native <details> rather than the `Disclosure` primitive on purpose:
+       * this page is a server component with a build-time cross-reference
+       * assertion, the fold needs no state, and 24 client islands to open and
+       * close 24 paragraphs would be the wrong trade. It is keyboard-operable
+       * and screen-reader-labelled by the UA, its contents stay in the DOM for
+       * indexing, and the JSON-LD DefinedTermSet above carries every definition
+       * whatever the markup does.
+       */}
+      <details className="group mt-3">
+        <summary className="rounded-atlas flex min-h-11 cursor-pointer items-center gap-2 text-dim hover:text-ink">
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 12 12"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            focusable="false"
+            className="shrink-0 transition-transform group-open:rotate-90"
+            style={{ transitionDuration: "var(--dur-fast)" }}
+          >
+            <path d="M4 2.5 8 6l-4 3.5" />
+          </svg>
+          <span style={{ fontSize: "var(--text-step--1)" }}>
+            Why it matters, where it appears, and the source
+          </span>
+        </summary>
 
-      {entry.figures?.map((id) => <KeyFigure key={id} id={id} variant="block" />)}
-      {entry.tables?.map((id) => <FigureTable key={id} id={id} />)}
+        <p className="mt-3">
+          <span className="micro-label">Why it matters</span>
+          <span className="mt-1 block">{entry.whyItMatters()}</span>
+        </p>
 
-      <div className="mt-4 flex flex-col gap-2">
+        {entry.figures?.map((id) => <KeyFigure key={id} id={id} variant="block" />)}
+        {entry.tables?.map((id) => <FigureTable key={id} id={id} />)}
+
+        <div className="mt-4 flex flex-col gap-2">
         <p className="text-dim" style={{ fontSize: "var(--text-step--1)", margin: 0 }}>
           <span className="micro-label">Where it appears</span>{" "}
           {entry.tools.map((tool, index) => (
@@ -222,7 +259,8 @@ function Entry({ entry }: { entry: GlossaryEntry }) {
             ))}
           </p>
         ) : null}
-      </div>
+        </div>
+      </details>
     </section>
   );
 }

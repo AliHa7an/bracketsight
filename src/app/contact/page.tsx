@@ -146,6 +146,65 @@ export default function ContactPage() {
           Email {CONTACT_EMAIL}
         </a>
       </p>
+
+      {/* No dead ends. A reader who arrived here to check whether the site is
+          answerable has two better next steps than the back button: the record
+          of what is already known to be unverified, and the log of what has
+          been corrected. Both answer "is anyone maintaining this?" without an
+          email round trip. */}
+      <p className="hairline-t mt-8 max-w-[68ch] pt-6 text-dim">
+        Before you write: the{" "}
+        <Link
+          href="/about"
+          className="rounded-atlas underline decoration-rule underline-offset-4 hover:decoration-current"
+        >
+          register of unverified items
+        </Link>{" "}
+        may already list what you found, and each section keeps its own changelog of
+        corrections —{" "}
+        <Link
+          href="/loans/changelog"
+          className="rounded-atlas underline decoration-rule underline-offset-4 hover:decoration-current"
+        >
+          student loans
+        </Link>
+        ,{" "}
+        <Link
+          href="/paycheck/changelog"
+          className="rounded-atlas underline decoration-rule underline-offset-4 hover:decoration-current"
+        >
+          paycheck
+        </Link>
+        ,{" "}
+        <Link
+          href="/aca/changelog"
+          className="rounded-atlas underline decoration-rule underline-offset-4 hover:decoration-current"
+        >
+          health cover
+        </Link>
+        ,{" "}
+        <Link
+          href="/property/changelog"
+          className="rounded-atlas underline decoration-rule underline-offset-4 hover:decoration-current"
+        >
+          property tax
+        </Link>{" "}
+        and{" "}
+        <Link
+          href="/trades/changelog"
+          className="rounded-atlas underline decoration-rule underline-offset-4 hover:decoration-current"
+        >
+          trades
+        </Link>
+        . Terms the tools use are defined in the{" "}
+        <Link
+          href="/glossary"
+          className="rounded-atlas underline decoration-rule underline-offset-4 hover:decoration-current"
+        >
+          glossary
+        </Link>
+        .
+      </p>
     </div>
   );
 }

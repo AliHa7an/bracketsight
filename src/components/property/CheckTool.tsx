@@ -23,6 +23,7 @@ import {
   NumberInput,
   RadioGroup,
   Select,
+  StickyAnswer,
 } from "@/components/ui";
 import { CompMap } from "./CompMap";
 import { EvidenceSummary } from "./EvidenceSummary";
@@ -439,6 +440,50 @@ export function CheckTool({
         {SAMPLE_DATA_LABEL} Real parcel records land county by county; the statistics are the
         production engine either way.
       </p>
+
+      {/* The verdict, pinned, while the eleven parcel fields scroll past it.
+          It mirrors VerdictHero's own choice of figure exactly: the statutory
+          relief where a corridor state supplies one, and otherwise the
+          comparables gap LABELLED AS A MEASUREMENT. A CANNOT_DETERMINE county
+          (New Jersey) therefore never gets a relief figure here either — the
+          bar has no fallback of its own to fall back to. */}
+      {result && "check" in result ? <StickyVerdict check={result.check} /> : null}
     </div>
+  );
+}
+
+/**
+ * Reads the same two fields VerdictHero does, in the same order, so the pinned
+ * figure and the hero can never disagree. Split out so the tween re-renders one
+ * line rather than the whole tool.
+ */
+function StickyVerdict({ check }: { check: AssessmentCheck }) {
+  const clr = check.verdict.commonLevelRange;
+  const undetermined = check.verdict.kind === "CANNOT_DETERMINE";
+  const statutory = clr !== null && !undetermined && clr.reliefCents !== null;
+
+  const value = statutory ? (clr.reliefCents ?? 0) : check.verdict.overAssessmentCents;
+  const label = statutory
+    ? clr.outcome === "INCREASE"
+      ? "Your assessment would go UP by"
+      : "Reduction the statute allows"
+    : value > 0
+      ? "Above what comparable homes suggest"
+      : "Below what comparable homes suggest";
+
+  return (
+    <StickyAnswer
+      label={label}
+      value={Math.abs(value)}
+      format={usd}
+      flagged={statutory && clr.outcome === "INCREASE"}
+      caption={
+        undetermined
+          ? "The statute cannot be applied here"
+          : `${check.analysis.compCount} comparables`
+      }
+      jumpTo="verdict-heading"
+      jumpLabel="The verdict"
+    />
   );
 }

@@ -7,6 +7,7 @@
  * out of the ones that exist.
  */
 
+export { ContentsRail } from "./ContentsRail";
 export { FAQ, type FAQItem, type FAQProps } from "./FAQ";
 export { FigureTable, type FigureTableProps } from "./FigureTable";
 export { KeyFigure, type KeyFigureProps } from "./KeyFigure";

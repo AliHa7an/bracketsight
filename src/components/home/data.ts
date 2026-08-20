@@ -100,6 +100,17 @@ export interface ToolCard {
   readonly eyebrow: string;
   /** The question the tool answers, in the reader's words. Never underlined. */
   readonly question: string;
+  /**
+   * ONE SHARP LINE, and it is a budget rather than a style note.
+   *
+   * A card is a question, one line, the worked example, the CTA. Nothing more.
+   * These bodies were five and six lines each; at 390px that made five cards
+   * 2,930px tall on their own and the page ten screens long, which is the
+   * failure a reader experiences as "there is too much here to read". Every
+   * body below is now the single most load-bearing sentence about the tool —
+   * usually the trap the tool exists to surface. Keep them under ~120
+   * characters: that is two lines at 390px and one on a laptop.
+   */
   readonly body: string;
   readonly example: WorkedExample;
   /** Button label naming the outcome, never "Learn more". */
@@ -241,11 +252,11 @@ export const TOOL_CARDS: readonly ToolCard[] = [
     slug: "loans",
     eyebrow: "Student loans",
     question: "Which of the 9 federal repayment plans costs you least over 30 years?",
-    body: "Enter your loan mix once. Every plan is simulated month by month and ranked by what you pay in total rather than by what leaves your account each month, with the one-way doors flagged before you walk through one: switching to RAP forfeits every qualifying payment already credited under IBR, PAYE or ICR.",
+    body: "Ranked by 30-year total, not by monthly payment. Switching to RAP forfeits every payment already credited under IBR, PAYE or ICR.",
     example: {
       figure: "$170,936 between the cheapest plan and the dearest",
       caption:
-        "One borrower, $142,200 across two loans, $80,000 of income. The plan with the smallest monthly payment is the third-dearest of the nine.",
+        "$142,200 across two loans, $80,000 of income. The smallest monthly payment is the third-dearest of the nine.",
     },
     cta: "Compare all 9 plans",
     href: "/loans",
@@ -255,11 +266,11 @@ export const TOOL_CARDS: readonly ToolCard[] = [
     slug: "paycheck",
     eyebrow: "Paycheck",
     question: "Which OBBBA deductions is your pay owed — and does your W-2 show them?",
-    body: "Tips up to $25,000 and the overtime premium up to $12,500 single or $25,000 joint run off one MAGI, so a raise can phase out several deductions at once. See what the next $1,000 of income actually costs — and what your W-2 should show.",
+    body: "Tips and the overtime premium phase out off one MAGI, so a raise can cost more than it pays.",
     example: {
       figure: "The next $1,000 costs $288 — a 28.8% rate inside the 24% bracket",
       caption:
-        "$130,000 of wages, $18,000 of tips, $12,000 of overtime pay. MAGI lands $10,000 past the $150,000 threshold, so tips and overtime phase out together.",
+        "$130,000 wages, $18,000 tips, $12,000 overtime — $10,000 past the $150,000 threshold.",
     },
     cta: "Check your deductions",
     href: "/paycheck",
@@ -268,11 +279,11 @@ export const TOOL_CARDS: readonly ToolCard[] = [
     slug: "aca",
     eyebrow: "Health cover",
     question: "How close is your household to the 400% subsidy cliff?",
-    body: "Above 400% of the federal poverty line the premium tax credit does not taper. It stops, and any advance credit taken during the year is repaid in full. The engine measures the distance to your own edge in dollars, then ranks the levers that move you back under it by credit recovered per dollar committed.",
+    body: "Above 400% of the poverty line the credit stops rather than tapers, and advance credit already taken is repaid in full.",
     example: {
       figure: "$106,600 → $14,902 a year. $106,601 → $0.",
       caption:
-        "One dollar of income, either side of the line, for the family of three in the panel above. Benchmark premiums are sample data pending the CMS county file.",
+        "The family of three in the panel above. Benchmark premiums are sample data pending the CMS county file.",
     },
     cta: "Measure your cliff distance",
     href: "/aca",
@@ -281,11 +292,11 @@ export const TOOL_CARDS: readonly ToolCard[] = [
     slug: "property",
     eyebrow: "Property tax",
     question: "Is your home over-assessed enough to be worth appealing?",
-    body: "Comparable assessments, a median ratio and a confidence score produce one honest verdict: strong case, worth filing, or not worth the fee. If it is worth filing you get the evidence packet and your county's form — no 25–50% contingency cut.",
+    body: "Comparables and a median ratio, then one verdict — strong case, worth filing, or not worth the fee. No contingency cut.",
     example: {
       figure: "15.17% over · $1,676 a year · strong case",
       caption:
-        "A Cook County parcel against 8 comparables, coefficient of dispersion 1.53, confidence high. Comparables are the bundled synthetic demo neighbourhood, not a live county roll.",
+        "A Cook County parcel, 8 comparables. Comparables are the bundled synthetic demo neighbourhood, not a live county roll.",
     },
     cta: "Test your assessment",
     href: "/property",
@@ -294,11 +305,11 @@ export const TOOL_CARDS: readonly ToolCard[] = [
     slug: "trades",
     eyebrow: "Trades",
     question: "What should this job cost, and what must the contract say in your state?",
-    body: "A job description becomes an itemised estimate that shows the basis for every line, then a matching invoice and a contract carrying your state's required clauses — right to cancel, down-payment caps, lien warnings. No signup, no monthly fee.",
+    body: "An itemised estimate with the basis for every line, plus a contract carrying your state's required clauses.",
     example: {
       figure: "$9,421 · range $8,479 – $11,117",
       caption:
-        "A 16 × 12 ft mid-grade deck in the southeast, 6 line items, 10% overhead and 15% profit. A range from reference pricing, never a quote you have to honour.",
+        "A 16 × 12 ft mid-grade deck, southeast, 6 line items, 10% overhead, 15% profit. Reference pricing, never a quote.",
     },
     cta: "Price a job",
     href: "/trades",
@@ -312,6 +323,11 @@ export const TOOL_CARDS: readonly ToolCard[] = [
  * Each has a punchy line the eye lands on and the full claim underneath it;
  * shortening one to fit a card would be softening it, and these four are the
  * only reason to believe anything else on the page.
+ *
+ * `body` IS QUOTED VERBATIM AND IS NOT A CANDIDATE FOR CUTTING, ever, in any
+ * pass that is trying to make the page shorter. `lede` is a one-line summary of
+ * the body written for the eye, so it is fair game — two of them ran to a second
+ * line on a phone and were tightened, which is the only change here.
  */
 export const TRUST_POINTS: readonly {
   readonly id: string;
@@ -328,7 +344,7 @@ export const TRUST_POINTS: readonly {
   {
     id: "no-ai",
     heading: "No AI touches the arithmetic",
-    lede: "Zero dependencies, no network, nothing for a model call to go through.",
+    lede: "No dependencies, no network, nothing to call through.",
     body: "The five engines are plain TypeScript with zero dependencies and no network access, so there is nothing for a model call to be made through. Two AI features are planned and neither is live: reading an uploaded document to fill a form in, and explaining a result in words. Neither would ever compute a figure you are shown.",
   },
   {
@@ -340,7 +356,7 @@ export const TRUST_POINTS: readonly {
   {
     id: "estimates",
     heading: "Estimates, not promises",
-    lede: "Irreversible choices are flagged in red before you make them.",
+    lede: "Irreversible choices are flagged in red first.",
     body: "Every figure is an estimate under current rules. Irreversible choices are flagged in red before you make them, and the site says plainly when a case is one to take to your servicer, your county or a licensed adviser.",
   },
 ];
@@ -349,6 +365,12 @@ export const TRUST_POINTS: readonly {
  * How a rule becomes a number. Four nodes, three steps, drawn once as a
  * horizontal run with hairline connectors. It is the site's whole method, and
  * it is the answer to the only question a sceptical reader has.
+ *
+ * One line each. The bodies were three and four lines apiece, which turned the
+ * closing figure of the trust band into four more grey paragraphs — the same
+ * defect as the tool cards, one band further down. Nothing was dropped that
+ * carries a claim: the primary-source rule, the citation contract, the integer
+ * cents and the link back to the regulation are all still stated.
  */
 export const RULE_PIPELINE: readonly {
   readonly step: string;
@@ -358,21 +380,21 @@ export const RULE_PIPELINE: readonly {
   {
     step: "01",
     title: "The regulation",
-    body: "A statute, a Federal Register notice, an IRS revenue procedure, an HHS guideline, a county assessor's own page. A secondary source may cross-check a value. It may never close one.",
+    body: "A statute, a Federal Register notice, an IRS procedure. A secondary source may cross-check a value, never close one.",
   },
   {
     step: "02",
     title: "A versioned rule file",
-    body: "The value goes into JSON with the date it takes effect, the date it stops, and a citation carrying a URL and the date somebody last opened it. Never into the code that uses it.",
+    body: "Into JSON with the dates it takes effect and stops, and a citation with a URL. Never into the code that uses it.",
   },
   {
     step: "03",
     title: "A deterministic engine",
-    body: "Plain TypeScript, no dependencies, no network. Money in integer cents and rates in basis points, because floating-point drift across 360 monthly iterations produces a wrong total.",
+    body: "Plain TypeScript, no dependencies, no network. Integer cents and basis points, because float drift over 360 iterations lies.",
   },
   {
     step: "04",
     title: "Your result",
-    body: "Every option priced under the same rules, ranked by what you actually pay, with the one-way doors marked and a link back to the regulation that decided it.",
+    body: "Every option priced under the same rules, ranked by what you pay, with a link back to the regulation that decided it.",
   },
 ];

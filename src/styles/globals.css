@@ -32,7 +32,13 @@
   --font-body: var(--font-public-sans), "Public Sans", system-ui, sans-serif;
   --font-data: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
 
-  /* 1.25 ratio, tight. Documents, not landing pages. */
+  /* 1.25 ratio, tight. Documents, not landing pages.
+     Steps 5 and 6 exist for the hub's display register only — a section title
+     and a headline that have to out-rank a card question by more than one step,
+     or the page reads as one undifferentiated column. They are the same
+     geometric series (×1.25 each), so a size on the home page is still a rung on
+     this ladder rather than a number somebody liked. NOTHING outside
+     home.module.css should reach for them: body h1/h2 stay at steps 3 and 2. */
   --text-step--2: 0.694rem;
   --text-step--1: 0.833rem;
   --text-step-0: 1rem;
@@ -40,6 +46,8 @@
   --text-step-2: 1.563rem;
   --text-step-3: 1.953rem;
   --text-step-4: 2.441rem;
+  --text-step-5: 3.052rem;
+  --text-step-6: 3.815rem;
 
   --spacing-1: 4px;
   --spacing-2: 8px;

@@ -11,6 +11,7 @@ import {
   counties,
 } from "@/engines/property";
 import { formatCents, formatNumber, formatPct } from "@/lib/property/format";
+import { ContentsRail } from "@/components/content";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/property/methodology" },
@@ -31,6 +32,8 @@ export default function MethodologyPage() {
         verdict, and a hearing officer could re-run the arithmetic by hand.
         This page documents each step.
       </p>
+
+      <ContentsRail />
 
       <section className="space-y-3">
         <h2>

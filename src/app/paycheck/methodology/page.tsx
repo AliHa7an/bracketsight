@@ -19,6 +19,7 @@ import type { HouseholdInput, PhaseOutRule } from "@/engines/paycheck";
 import { formatBps, formatCents, usd } from "@/lib/paycheck/format";
 import { rulesMeta, TAX_YEAR } from "@/lib/paycheck/rules-meta";
 import { AnswerBox, FactTable, LastVerified, SourceCitation } from "@/components/ui";
+import { ContentsRail } from "@/components/content";
 
 export const metadata: Metadata = {
   title: "OBBBA Deduction Methodology — Every Formula",
@@ -212,6 +213,7 @@ export default function MethodologyPage() {
           ruleSetVersion={meta.shortVersion}
           citation={{ label: meta.primary.label, url: meta.primary.url }}
         />
+        <ContentsRail />
       </header>
 
       <section className="density-reading">

@@ -25,30 +25,48 @@ import type { SectionSlug } from "@/lib/site";
  *             an estimate actually is before it is a price.
  */
 
-const PATHS: Record<SectionSlug, { soft: string; line: string; dot?: [number, number] }> = {
+/**
+ * OPTICAL WEIGHT IS PER-MARK, not one number for all five.
+ *
+ * At a single stroke width the five marks did not read as one set: the fork and
+ * the cliff are three strokes each and looked faint, while the pay stub and the
+ * framing square are a box plus four rules and looked twice as heavy. `w` is the
+ * crisp stroke for that mark, tuned so the ink each one lays down inside the
+ * same 40-unit box is comparable — the sparse marks carry a thicker line, the
+ * dense ones a thinner one. The soft underlay tracks it at ×2.
+ */
+const PATHS: Record<
+  SectionSlug,
+  { soft: string; line: string; w: number; dot?: [number, number] }
+> = {
   loans: {
     soft: "M20.5 37V22.5M20.5 22.5C20 16 16.5 12 8.5 9.5M20.5 22.5c.5-6.5 4.5-10.5 12-13",
     line: "M20 36.5V22M20 22c-.6-6.2-4-10-11.5-12.6M20 22c.4-6.3 4.2-10.2 11.5-12.8",
+    w: 2.15,
     dot: [32, 8.6],
   },
   paycheck: {
     soft: "M6.5 8.5h27v23h-27zM11 15.5h11M11 21h17M11 26.5h8",
     line: "M6 8h27v23H6zM10.5 15h11M10.5 20.5h17M10.5 26h8",
+    w: 1.8,
     dot: [30.5, 26],
   },
   aca: {
     soft: "M5.5 12.5c6 .5 10.5 3.5 15 9.5M20.5 22v11.5M20.5 33.5h14",
     line: "M5 12c6.2.6 10.8 3.7 15 9.8M20 21.8V33M20 33h14.5",
+    w: 2.15,
     dot: [20, 21.8],
   },
   property: {
     soft: "M5.5 30.5V13l9-5.5 9 5.5v17.5zM24 20.5h11v10H24",
     line: "M5 30V12.5L14 7l9 5.5V30zM23.5 20h11.5v10H23.5",
+    w: 1.95,
     dot: [14, 19],
   },
   trades: {
     soft: "M6.5 6.5v27h27M6.5 33.5 33 7M13 33.5v-4M20 33.5v-4M27 33.5v-4",
     line: "M6 6v27.5h27.5M6 33.5 33.5 6.5M12.5 33.5v-4.5M19.5 33.5v-4.5M26.5 33.5v-4.5",
+    w: 1.8,
   },
 };
 
@@ -66,19 +84,19 @@ export function ToolIcon({ slug, size = 40 }: { slug: SectionSlug; size?: number
       <path
         d={mark.soft}
         stroke="currentColor"
-        strokeOpacity="0.22"
-        strokeWidth="3.4"
+        strokeOpacity="0.2"
+        strokeWidth={mark.w * 2}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d={mark.line}
         stroke="currentColor"
-        strokeWidth="1.7"
+        strokeWidth={mark.w}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      {mark.dot ? <circle cx={mark.dot[0]} cy={mark.dot[1]} r="2.6" fill="currentColor" /> : null}
+      {mark.dot ? <circle cx={mark.dot[0]} cy={mark.dot[1]} r="2.7" fill="currentColor" /> : null}
     </svg>
   );
 }
@@ -100,7 +118,7 @@ const CLAIM_PATHS: Record<string, string> = {
   estimates: "M8 4.5H4.5v19H8M20 4.5h3.5v19H20M14 8v12M11 8h6M11 20h6",
 };
 
-export function ClaimIcon({ id, size = 26 }: { id: string; size?: number }) {
+export function ClaimIcon({ id, size = 30 }: { id: string; size?: number }) {
   const d = CLAIM_PATHS[id];
   if (!d) return null;
   return (
@@ -115,15 +133,15 @@ export function ClaimIcon({ id, size = 26 }: { id: string; size?: number }) {
       <path
         d={d}
         stroke="currentColor"
-        strokeOpacity="0.22"
-        strokeWidth="3"
+        strokeOpacity="0.2"
+        strokeWidth="3.2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d={d}
         stroke="currentColor"
-        strokeWidth="1.4"
+        strokeWidth="1.6"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

@@ -64,12 +64,28 @@ export function ToolCard({ card, index }: { card: ToolCardModel; index: number }
         className={`${styles.card} ${card.flagship ? styles.cardFlagship : ""}`}
         data-section={card.slug}
       >
+        {/*
+          The accent bleed. A flat wash of the section's own signal, painted by
+          a pseudo-element under the content and revealed on hover — so the
+          per-tool accent does more than draw a 3px rule at the top, and does it
+          with opacity on an existing box rather than with a new one. No
+          gradient, no shadow spread, no geometry change: nothing here can move
+          a pixel of layout, which is what keeps CLS at zero.
+        */}
+        <span className={styles.cardBleed} aria-hidden="true" />
+
         <div className={styles.cardMain}>
           <p className={styles.cardEyebrow}>
             <span>{card.eyebrow}</span>
             {card.flagship ? <span className={styles.cardBadge}>Start here</span> : null}
+            {/*
+              The mark sits on a plate. Five hand-drawn marks of different ink
+              density read as five different weights when they float free; a
+              fixed square with a hairline of the section accent gives all five
+              the same optical footprint, and gives the hover somewhere to go.
+            */}
             <span className={styles.cardArt}>
-              <ToolIcon slug={card.slug} size={card.flagship ? 40 : 34} />
+              <ToolIcon slug={card.slug} size={card.flagship ? 34 : 30} />
             </span>
           </p>
 

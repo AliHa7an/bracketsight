@@ -27,6 +27,7 @@ import {
   NumberInput,
   RadioGroup,
   Select,
+  StickyAnswer,
 } from "@/components/ui";
 import type { LiveWarning } from "@/components/ui";
 import { CalcTrace } from "@/components/paycheck/CalcTrace";
@@ -755,6 +756,19 @@ export function Calculator() {
         </div>
       </div>
       </div>
+
+      {/* The verdict sentence above is hoisted so the answer LEADS the page;
+          this keeps it there after the reader has scrolled into the form. The
+          paystub's own hero is the same figure, so the bar is the one number
+          being tracked rather than a second claim. */}
+      <StickyAnswer
+        label="Estimated federal tax saved"
+        value={result.tax.estimatedTaxSavedCents}
+        format={usd}
+        caption={`${formatCents(result.totalDeductionCents)} of OBBBA deductions`}
+        jumpTo="tax-saved"
+        jumpLabel="The paystub"
+      />
     </div>
   );
 }

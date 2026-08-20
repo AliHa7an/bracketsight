@@ -35,7 +35,9 @@ import {
   NumberInput,
   RadioGroup,
   Select,
+  StickyAnswer,
 } from "@/components/ui";
+import { verdict } from "@/lib/aca/verdict";
 import {
   agesError,
   completeness,
@@ -522,6 +524,25 @@ export function Planner() {
       </section>
 
       <LeverList analysis={analysis} />
+
+      {/* The cliff is a distance, and a distance is only frightening while you
+          can see it move. Pinned, it keeps counting down as income is typed
+          several screens above it — which is the whole point of this tool.
+          Flagged only once the household is actually over the edge, per the
+          flag law: red here means the credit is gone, not that it is close. */}
+      <StickyAnswer
+        label={verdict(analysis).heroLabel}
+        value={analysis.cliff.distanceToEdge}
+        format={(n) => formatUsd(Math.round(n))}
+        flagged={analysis.cliff.overCliff}
+        caption={
+          analysis.cliff.overCliff
+            ? `${formatUsd(analysis.cliff.creditAtStake)} of credit lost`
+            : `${formatUsd(analysis.cliff.creditAtStake)} of credit at stake`
+        }
+        jumpTo="distance-to-edge"
+        jumpLabel="Where you stand"
+      />
     </div>
   );
 }

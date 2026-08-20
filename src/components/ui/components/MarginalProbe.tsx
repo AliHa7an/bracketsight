@@ -37,7 +37,29 @@ export interface MarginalProbeProps {
    * `per` is the period it is quoted over: "/year", "a year", "per month".
    */
   derive: (v: number) => { delta: number; per: string };
+  /** Formats the LEVEL — the readout, the step label and the track's ends. */
   format: (n: number) => string;
+  /**
+   * Formats the DERIVATIVE, when it is not in the same unit as the level.
+   * Defaults to `format`, which is right for the income probes (dollars of
+   * income → dollars of credit). Trades slides a percentage and reads back
+   * dollars, so the two cannot share one formatter without printing the
+   * marginal cents as a percent.
+   */
+  formatDelta?: (n: number) => string;
+  /**
+   * The verb pair for a positive / negative `delta`. Defaults to the phase-out
+   * reading, where moving the probe up is something happening TO the reader:
+   * "each additional $1,000 of income costs you $340 a year."
+   *
+   * Trades inverts the subject — the contractor SETS the number rather than
+   * being subject to it — so it supplies "adds" / "takes off" and puts the
+   * object in `per`: "each additional 1.0% of margin adds $187 to the price."
+   * Only the verb is overridable; the sentence shape, the `aria-valuetext` and
+   * the describedby wiring stay identical, so the mechanic reads the same in
+   * every section and a screen reader gets the derivative either way.
+   */
+  verbs?: { up: string; down: string };
   className?: string;
 }
 
@@ -62,14 +84,16 @@ export function MarginalProbe({
   step,
   derive,
   format,
+  formatDelta,
+  verbs = { up: "costs you", down: "saves you" },
   className,
 }: MarginalProbeProps) {
   const id = useId();
   const sentenceId = `${id}-marginal`;
 
   const { delta, per } = derive(value);
-  const direction = delta > 0 ? "costs you" : delta < 0 ? "saves you" : null;
-  const magnitude = format(Math.abs(delta));
+  const direction = delta > 0 ? verbs.up : delta < 0 ? verbs.down : null;
+  const magnitude = (formatDelta ?? format)(Math.abs(delta));
   const stepLabel = format(step);
 
   const sentence = direction

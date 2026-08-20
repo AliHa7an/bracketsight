@@ -99,7 +99,12 @@ export default function ContractPage() {
                 <span className="num">{state.always}</span> always ·{" "}
                 <span className="num">{state.conditional}</span> conditional · threshold{" "}
                 <span className="num">{usd(state.threshold)}</span> ·{" "}
-                <Link href={`/trades/contracts/${state.id}`} className={`${link} text-ink`}>
+                {/* The only route from here to a state's clause list, tapped
+                    on a phone in a truck: a target, not a word in a sentence. */}
+                <Link
+                  href={`/trades/contracts/${state.id}`}
+                  className={`${link} text-ink inline-flex min-h-11 items-center`}
+                >
                   {state.name} rules
                 </Link>
               </>

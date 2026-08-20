@@ -107,7 +107,7 @@ export default function CountiesPage() {
                   the display face stays on an h2 and never on an inline child. */}
               <Link
                 href={`/property/counties/${county.state.toLowerCase()}/${slug}`}
-                className="rounded-atlas block underline decoration-rule underline-offset-4 hover:decoration-current"
+                className="rounded-atlas flex min-h-11 items-center underline decoration-rule underline-offset-4 hover:decoration-current"
               >
                 <h2>
                   {county.countyName}, {county.stateName}

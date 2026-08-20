@@ -49,6 +49,7 @@ import {
   Field,
   HeroNumber,
   LedgerTable,
+  MarginalProbe,
   NumberInput,
   RadioGroup,
   Select,
@@ -490,6 +491,37 @@ export default function TakeoffBuilder() {
               />
             </Field>
           </div>
+
+          {/* M3 — the marginal probe, the one mechanic this tool was missing.
+              Interaction spec §5 asks JobPaper for "a margin slider showing
+              profit at each price point", and this is the only place in the
+              portfolio where the reader SETS the rate rather than being subject
+              to it, so the probe reports what one more point puts on the
+              customer's price rather than what it costs them.
+
+              It drives the same `profitTenths` the field above does — two views
+              of one number, both live — and the running total is pinned to the
+              bottom of the viewport, so on a phone the figure the drag moves is
+              on screen while the thumb is still on the track.
+
+              The derivative is flat in the profit rate: one point is 100 bps of
+              (subtotal + overhead), and neither of those depends on profit. So
+              `derive` ignores its argument rather than pretending to a curve
+              the arithmetic does not have. */}
+          <MarginalProbe
+            className="hairline-t pt-4"
+            label="Profit margin"
+            unit="cents"
+            value={profitTenths}
+            onChange={setProfitTenths}
+            min={0}
+            max={400}
+            step={10}
+            format={(tenths) => formatPct(tenths / 10)}
+            formatDelta={formatCents}
+            derive={() => ({ delta: perPointCents, per: "to the price" })}
+            verbs={{ up: "adds", down: "takes off" }}
+          />
         </form>
 
         {/* ── the sheet ───────────────────────────────────────────────── */}
@@ -535,7 +567,13 @@ export default function TakeoffBuilder() {
                     </span>
                   </div>
 
-                  <div className="mt-2 grid grid-cols-3 gap-2">
+                  {/* Two columns on a phone, three from `sm`. At 390px a
+                      three-across split leaves each field about 100px, and a
+                      unit cost reads "$1,250.37" — nine mono glyphs plus the
+                      affix and both paddings. The field clipped its own value,
+                      and the one screen a contractor edits mid-job is the worst
+                      place on the site to lose a digit. */}
+                  <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
                     <Field label={`Qty (${li.unit})`} htmlFor={`m-qty-${li.id}`} className="min-w-0">
                       <NumberInput
                         id={`m-qty-${li.id}`}

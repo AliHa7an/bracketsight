@@ -52,8 +52,16 @@ export default function SourcesPage() {
                       {g.ruleSet}
                     </th>
                   )}
-                  <td className="px-3 py-2.5">
-                    <a href={c.url} rel="noopener noreferrer" className="underline underline-offset-4 hover:text-signal">
+                  <td className="px-3 py-1">
+                    {/* The cell's padding used to carry the row height while
+                        the link itself was a 17px strip. Moving the height onto
+                        the link makes the thing you tap the thing that is 44px,
+                        at the same row rhythm. */}
+                    <a
+                      href={c.url}
+                      rel="noopener noreferrer"
+                      className="rounded-atlas flex min-h-11 items-center underline underline-offset-4 hover:text-signal"
+                    >
                       {c.label}
                     </a>
                     {/* A Federal Register cite is an identifier, and the system

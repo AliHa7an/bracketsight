@@ -47,6 +47,22 @@ function cx(...parts: (string | false | null | undefined)[]): string {
 /** ~3.2:1 against --paper — meets WCAG 2.2 AA 1.4.11 for a control boundary. */
 const CONTROL_BORDER = "color-mix(in srgb, var(--ink) 55%, transparent)";
 
+/**
+ * A 16px FLOOR on phones; inherit again from `sm` up.
+ *
+ * iOS Safari zooms the viewport when focus lands in a field set below 16px, and
+ * a viewport that zooms on focus is a form you cannot fill one-handed — you tap
+ * in and the rest of the sheet is off-screen. Inside `.density-instrument` the
+ * inherited size is `--text-step--1` (13.3px), which tripped it on all 18
+ * fields of the trades takeoff sheet.
+ *
+ * `sm:[font-size:inherit]` rather than a fixed `sm:text-[…]`: the same
+ * component is used outside instrument density (loan balances, household
+ * income), where the inherited body 16px is correct and pinning it to 13.3px
+ * would shrink four tools' forms on desktop.
+ */
+const FONT_FLOOR = "text-[16px] sm:[font-size:inherit]";
+
 export type NumberUnit = "cents" | "bps" | "count" | "pct" | "year" | "hundredths";
 
 interface UnitSpec {
@@ -366,7 +382,10 @@ export function NumberInput({
         {spec.prefix ? (
           <span
             aria-hidden="true"
-            className="num pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-dim"
+            className={cx(
+              "num pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-dim",
+              FONT_FLOOR,
+            )}
           >
             {spec.prefix}
           </span>
@@ -396,6 +415,7 @@ export function NumberInput({
           onBlur={handleBlur}
           className={cx(
             "num w-full min-h-11 rounded-atlas text-right text-ink",
+            FONT_FLOOR,
             spec.prefix ? "pl-7" : "pl-3",
             spec.suffix ? "pr-7" : "pr-3",
             "placeholder:text-dim transition-colors",
@@ -413,7 +433,10 @@ export function NumberInput({
         {spec.suffix ? (
           <span
             aria-hidden="true"
-            className="num pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-dim"
+            className={cx(
+              "num pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-dim",
+              FONT_FLOOR,
+            )}
           >
             {spec.suffix}
           </span>

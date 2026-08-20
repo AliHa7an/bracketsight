@@ -185,7 +185,9 @@ export function EvidenceSummary({ check }: { check: AssessmentCheck }) {
                       key={form.id}
                       href={form.pdfUrl}
                       rel="noopener noreferrer"
-                      className="underline underline-offset-4 hover:text-ink"
+                      // A stacked list of PDF links is a set of targets, not a
+                      // sentence — one line of 13px text is a 17px tap area.
+                      className="rounded-atlas flex min-h-11 items-center justify-end underline underline-offset-4 hover:text-ink"
                     >
                       {form.name}
                     </a>

@@ -23,6 +23,7 @@ import {
 } from "@/components/ui";
 import { formatCents, formatDate } from "@/components/ui/format";
 import { renderableCitation } from "@/lib/trades/citation";
+import { ContentsRail } from "@/components/content";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/trades/pricing-methodology" },
@@ -196,6 +197,8 @@ export default function PricingMethodologyPage() {
           citation={{ label: primary.label, url: primary.url }}
         />
       ) : null}
+
+      <ContentsRail />
 
       <WarningStack
         warnings={[

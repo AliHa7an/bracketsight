@@ -119,6 +119,8 @@ function useCurve() {
 
 export function CliffPanel() {
   const [magi, setMagi] = React.useState<number>(ACA_DEMO.defaultMagi);
+  /** Narrow viewports only; the CSS ignores it from 560px up. See the grid. */
+  const [showAll, setShowAll] = React.useState(false);
   const curve = useCurve();
 
   const model = React.useMemo(() => {
@@ -257,22 +259,30 @@ export function CliffPanel() {
           </div>
         </div>
 
-        <div className={styles.readouts}>
+        {/*
+          SIX READOUTS DO NOT FIT IN A 358px COLUMN, and pretending otherwise is
+          what made this panel read as cramped rather than as dense. Below 560px
+          three are promoted — the credit, the room left, and what is at stake,
+          which between them are the cliff — and the other three sit behind the
+          disclosure underneath. From 560px up the toggle is `display: none` and
+          all six are on the face, as before.
+
+          THE COLLAPSED THREE STAY IN THE DOM. They are clipped with the
+          off-screen technique, not `display: none`, so a screen reader reads all
+          six figures in either state and the toggle only ever changes what is
+          painted. `aria-expanded` describes that visual state; nothing is
+          withheld from assistive technology at any point.
+        */}
+        <div
+          className={styles.readouts}
+          id="home-readouts"
+          data-collapsed={showAll ? "false" : "true"}
+        >
           <Cell
             label="Monthly credit"
             value={usd(model.monthly)}
             note="premium tax credit"
             accent
-          />
-          <Cell
-            label="Annual credit"
-            value={usd(model.annual)}
-            note={`benchmark ${usd(model.benchmark)}`}
-          />
-          <Cell
-            label="% of poverty line"
-            value={`${model.fplPct}%`}
-            note={`Form 8962 line 5 · ${model.formLine5}`}
           />
           <Cell
             label={model.overCliff ? "Over the edge by" : "Room before the edge"}
@@ -285,11 +295,49 @@ export function CliffPanel() {
             note="if income lands over"
           />
           <Cell
+            extra
+            label="Annual credit"
+            value={usd(model.annual)}
+            note={`benchmark ${usd(model.benchmark)}`}
+          />
+          <Cell
+            extra
+            label="% of poverty line"
+            value={`${model.fplPct}%`}
+            note={`Form 8962 line 5 · ${model.formLine5}`}
+          />
+          <Cell
+            extra
             label="Cost-sharing band"
             value={model.csr ? `${model.csr}% AV` : "none"}
             note={model.csr ? "silver plan actuarial value" : "above 250% FPL"}
           />
         </div>
+
+        <button
+          type="button"
+          className={styles.readoutsToggle}
+          aria-expanded={showAll}
+          aria-controls="home-readouts"
+          onClick={() => setShowAll((open) => !open)}
+        >
+          {showAll ? "Hide 3 more readouts" : "Show 3 more readouts"}
+          <svg
+            className={styles.readoutsChevron}
+            width="11"
+            height="11"
+            viewBox="0 0 12 12"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="m2.5 4.5 3.5 3.5 3.5-3.5" />
+          </svg>
+        </button>
 
         <div className={styles.scrub}>
           <label className={styles.scrubLabel} htmlFor="home-magi">
@@ -357,14 +405,17 @@ function Cell({
   value,
   note,
   accent = false,
+  extra = false,
 }: {
   label: string;
   value: string;
   note: string;
   accent?: boolean;
+  /** One of the three that collapse below 560px. Styled by the grid, not here. */
+  extra?: boolean;
 }) {
   return (
-    <div className={styles.readout}>
+    <div className={styles.readout} data-extra={extra ? "true" : undefined}>
       <p className={styles.readoutLabel}>{label}</p>
       <p className={`${styles.readoutValue} ${accent ? styles.readoutValueKey : ""}`}>{value}</p>
       <p className={styles.readoutNote}>{note}</p>
