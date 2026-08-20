@@ -29,6 +29,7 @@ import {
   formatPct,
   todayIso,
 } from "@/lib/property/format";
+import { ContentsRail } from "@/components/content";
 
 type Params = { state: string; county: string };
 
@@ -150,6 +151,8 @@ export default async function CountyPage({ params }: { params: Promise<Params> }
           url: rules.citations[0]?.url ?? "/property/sources",
         }}
       />
+
+      <ContentsRail className="mt-6" />
 
       {imminent && deadline.isoDate !== null && deadline.daysAway !== null ? (
         <WarningStack

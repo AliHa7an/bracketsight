@@ -5,6 +5,7 @@ import type { RuleEnvelope } from "@/engines/paycheck";
 import { formatDate } from "@/lib/paycheck/format";
 import { TAX_YEAR } from "@/lib/paycheck/rules-meta";
 import { ErrorState } from "@/components/ui";
+import { ContentsRail } from "@/components/content";
 
 export const metadata: Metadata = {
   title: "OBBBA Deduction Sources — IRS Citations, Dated",
@@ -96,6 +97,8 @@ export default function SourcesPage() {
           moves we edit one file, log it on the changelog, and every page updates together.
         </p>
       </header>
+
+      <ContentsRail />
 
       {unverified.length > 0 ? (
         <ErrorState

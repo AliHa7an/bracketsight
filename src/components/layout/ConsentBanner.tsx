@@ -63,6 +63,43 @@ export function ConsentBanner() {
 
   const open = record === null && !dismissed;
 
+  /**
+   * Publish the banner's height as `--consent-h` while it is open.
+   *
+   * The banner is fixed to the bottom of the viewport, and the tool pages park
+   * a sticky answer bar there too. Without this the banner sits on top of the
+   * answer on a first visit — the reader is asked to make a cookie decision
+   * while the number they came for is hidden behind it. The bar reads this
+   * variable, so it parks above the banner and drops back to the floor the
+   * moment the banner goes. Cleared on unmount so nothing is reserved for a
+   * banner that is no longer there.
+   */
+  React.useEffect(() => {
+    const root = document.documentElement;
+    if (!open) {
+      root.style.removeProperty("--consent-h");
+      return;
+    }
+    const node = containerRef.current;
+    if (!node) return;
+
+    const publish = () => {
+      root.style.setProperty("--consent-h", `${Math.ceil(node.getBoundingClientRect().height)}px`);
+    };
+    publish();
+
+    // The banner reflows between the stacked and side-by-side layouts, so its
+    // height is not a constant.
+    const observer =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(publish);
+    observer?.observe(node);
+
+    return () => {
+      observer?.disconnect();
+      root.style.removeProperty("--consent-h");
+    };
+  }, [open]);
+
   React.useEffect(() => {
     if (!open) return;
     const node = containerRef.current;

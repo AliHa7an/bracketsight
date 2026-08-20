@@ -96,7 +96,7 @@ export function ThemeToggle() {
       }}
       aria-label={mounted ? `${LABEL[choice]}. Switch to ${LABEL[next].toLowerCase()}` : "Theme"}
       title={mounted ? LABEL[choice] : undefined}
-      className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-atlas border border-rule text-dim transition-colors hover:border-ink hover:text-ink"
+      className="inline-flex size-11 shrink-0 items-center justify-center rounded-atlas border border-rule text-dim transition-colors hover:border-ink hover:text-ink"
       style={{ transitionDuration: "var(--dur-fast)" }}
     >
       {mounted ? <Glyph choice={choice} /> : <span className="block h-4 w-4" />}

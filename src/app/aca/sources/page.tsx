@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { allCitations, getRules } from "@/engines/aca";
 import { formatDate } from "@/components/ui/format";
+import { ContentsRail } from "@/components/content";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/aca/sources" },
@@ -79,6 +80,8 @@ export default function SourcesPage() {
         <span className="num">{files.length}</span> files carrying{" "}
         <span className="num">{allCites.length}</span> citations between them.
       </p>
+
+      <ContentsRail />
 
       <section className="space-y-2">
         <h2>A rules file carries six things, and the citation is only one of them</h2>

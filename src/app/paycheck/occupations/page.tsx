@@ -5,6 +5,7 @@ import { resolveRules } from "@/engines/paycheck";
 import { usd } from "@/lib/paycheck/format";
 import { AnswerBox, FactTable, LastVerified } from "@/components/ui";
 import { rulesMeta, TAX_YEAR } from "@/lib/paycheck/rules-meta";
+import { ContentsRail } from "@/components/content";
 
 export const metadata: Metadata = {
   title: "Qualified Tipped Occupations — Is Your Job on the IRS List?",
@@ -90,6 +91,8 @@ export default function OccupationsPage() {
           to see the deduction and the tax it saves.
         </p>
       </header>
+
+      <ContentsRail />
 
       <section className="density-reading">
         <h2>The test is what the occupation received, not what you received</h2>

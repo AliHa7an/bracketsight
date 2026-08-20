@@ -22,6 +22,7 @@ import {
   type LedgerRow,
 } from "@/components/ui";
 import { usd } from "@/components/ui/format";
+import { ContentsRail } from "@/components/content";
 
 export const dynamicParams = false;
 
@@ -249,6 +250,8 @@ export default async function StateContractPage({
           citation={{ label: primary.label, url: primary.url }}
         />
       ) : null}
+
+      <ContentsRail className="mt-6" />
 
       <WarningStack
         warnings={[

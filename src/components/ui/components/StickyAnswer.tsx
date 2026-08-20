@@ -70,8 +70,12 @@ export function StickyAnswer({
 }: StickyAnswerProps) {
   return (
     <div
-      className="hairline-t sticky bottom-0 z-20 -mx-4 mt-8 flex items-end justify-between gap-4 px-4 py-2.5 lg:hidden"
-      style={{ background: "var(--paper-raised)" }}
+      className="hairline-t sticky z-20 -mx-4 mt-8 flex items-end justify-between gap-4 px-4 py-2.5 lg:hidden"
+      /* The consent banner is fixed to the bottom on a first visit and would
+         sit on top of this bar. It publishes its own height as --consent-h, so
+         the answer parks above it and drops back to the floor the moment the
+         banner is dismissed. Falls back to 0 when there is no banner. */
+      style={{ background: "var(--paper-raised)", bottom: "var(--consent-h, 0px)" }}
     >
       <div className="min-w-0" aria-hidden="true">
         <p className="micro-label">{label}</p>

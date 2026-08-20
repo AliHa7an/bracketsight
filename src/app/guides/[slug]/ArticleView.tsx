@@ -9,6 +9,7 @@ import {
 import { jsonLd, loadArticleBody, relatedPosts, toolGuidesHref, type Post } from "@/lib/content";
 import { UNREVIEWED } from "@/lib/content/schema";
 import { SECTIONS, SITE_NAME, absoluteUrl, sectionHref } from "@/lib/site";
+import { ContentsRail } from "@/components/content";
 
 /**
  * One article.
@@ -105,6 +106,8 @@ export async function ArticleView({ post }: { post: Post }) {
             />
           </div>
         </header>
+
+        <ContentsRail className="mt-6" />
 
         <div className="density-reading mt-6" style={{ maxWidth: "none" }}>
           <Body components={articleComponents} />
