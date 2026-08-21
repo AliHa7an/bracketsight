@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Calculator } from "@/components/paycheck/Calculator";
+import { ToolShell } from "@/components/tool/ToolShell";
 import { AnswerBox, LastVerified } from "@/components/ui";
+import { formatDate } from "@/lib/paycheck/format";
 import { rulesMeta } from "@/lib/paycheck/rules-meta";
 import { absoluteUrl } from "@/lib/site";
 
@@ -60,33 +62,23 @@ export default function HomePage() {
   const meta = rulesMeta();
 
   return (
-    <div className="flex flex-col gap-10">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
-      {/* The hero is the instrument. One line of framing, then the tool. */}
-      <header className="flex flex-col gap-3">
-        <h1>Which OBBBA deductions does your household actually get?</h1>
-        <p className="text-dim" style={{ maxWidth: "var(--measure)" }}>
-          Four deductions, one shared MAGI, interacting phase-outs. Enter your household once
-          and read the whole picture off one pay statement.
-        </p>
+    /* One frame, shared with the other four tools. See ToolShell. */
+    <ToolShell
+      section="paycheck"
+      title="Which OBBBA deductions does your household actually get?"
+      standfirst="Four deductions, one shared MAGI, interacting phase-outs. Enter your household once and read the whole picture off one pay statement."
+      meta={
         <LastVerified
           date={meta.lastVerified}
           ruleSetVersion={meta.shortVersion}
           citation={{ label: meta.primary.label, url: meta.primary.url }}
         />
-      </header>
-
-      <Calculator />
-
-      <div className="hairline-t flex flex-col gap-8 pt-10">
-        <AnswerBox>
+      }
+      readingLabel="The workings"
+      readingMeta={"rules verified " + formatDate(meta.lastVerified)}
+      reading={
+        <div className="flex flex-col gap-8">
+          <AnswerBox>
           A single server earning{" "}
           <span className="num">$30,000</span> in wages plus <span className="num">$8,000</span>{" "}
           in reported tips deducts the full <span className="num">$8,000</span> and saves about{" "}
@@ -133,8 +125,20 @@ export default function HomePage() {
               Every formula, stated exactly as the engine runs it →
             </Link>
           </p>
-        </section>
-      </div>
-    </div>
+          </section>
+        </div>
+      }
+    >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      {/* The hero is the instrument. The verdict band leads it. */}
+      <Calculator />
+    </ToolShell>
   );
 }

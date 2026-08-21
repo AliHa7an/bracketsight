@@ -2,6 +2,7 @@
 
 import type { AssessmentCheck } from "@/engines/property";
 import { HeroNumber, LiveNumber, LiveWarnings, TraceDisclosure } from "@/components/ui";
+import { ToolVerdict } from "@/components/tool/ToolVerdict";
 import { formatCents, formatDateLong, formatNumber, formatPct, usd } from "@/lib/property/format";
 import { useCountUp } from "@/lib/property/signature";
 
@@ -52,15 +53,6 @@ export function VerdictBlock({ check }: { check: AssessmentCheck }) {
   const undetermined = verdict.kind === "CANNOT_DETERMINE";
   const statutoryIncrease = clr?.outcome === "INCREASE";
 
-  const accent =
-    verdict.kind === "STRONG_CASE"
-      ? "var(--signal)"
-      : verdict.kind === "WORTH_FILING"
-        ? "var(--ink)"
-        : statutoryIncrease
-          ? "var(--flag)"
-          : "var(--rule)";
-
   const imminent = deadline.daysAway !== null && deadline.daysAway <= IMMINENT_DAYS;
 
   const warnings = [
@@ -110,66 +102,89 @@ export function VerdictBlock({ check }: { check: AssessmentCheck }) {
   ];
 
   return (
-    <section
-      aria-labelledby="verdict-heading"
-      className="rounded-atlas"
-      style={{
-        borderRadius: "var(--radius-atlas)",
-        borderLeft: `2px solid ${accent}`,
-        background: "var(--paper-raised)",
-        padding: "20px 24px",
-      }}
-    >
-      {/* No "VERDICT" eyebrow above the verdict: a label that labels nothing
-          the heading has not already said is decoration. */}
-      <h2 id="verdict-heading" className="max-w-[42ch]">
-        {KIND_LABEL[verdict.kind] ?? "Verdict"}
-      </h2>
+    <div className="flex flex-col gap-6">
+      {/*
+       * THE VERDICT, ON INK. It used to be a paper-raised box with a 2px accent
+       * on its left edge, a grotesk h2 carrying the label and the engine's
+       * sentence set at `--text-step-1` — the size of a field hint. The answer
+       * now leads on the section's ink ground in Instrument Serif, with the
+       * three figures it rests on beneath it and the plat-book green as the
+       * accent. Everything the block used to say, it still says.
+       *
+       * `--flag` on this surface means one thing and appears at most once: a
+       * filing deadline close enough that missing it forfeits the year, or a
+       * Chapter 123 increase, which is the one outcome a homeowner cannot
+       * withdraw once the board has made the finding. Icon and word both.
+       */}
+      <ToolVerdict
+        label="The verdict"
+        status={KIND_LABEL[verdict.kind] ?? "Verdict"}
+        as="h2"
+        sentenceProps={{ id: "verdict-heading" }}
+        flag={
+          statutoryIncrease && clr?.statutoryAssessmentCents != null
+            ? {
+                word: "Filing raises it",
+                text: `Your ratio sits below ${clr.municipalityName}'s common level range, and the statute is symmetric — filing sets the assessment at ${formatCents(clr.statutoryAssessmentCents)}. This is the outcome, not a risk.`,
+              }
+            : imminent && deadline.isoDate !== null && deadline.daysAway !== null
+              ? {
+                  word: "Deadline",
+                  text: `${county.countyName}'s deadline is ${formatDateLong(deadline.isoDate)} — ${formatNumber(deadline.daysAway)} ${deadline.daysAway === 1 ? "day" : "days"} away. Miss it and this year's assessment stands.`,
+                }
+              : undefined
+        }
+        aside={<VerdictHero check={check} />}
+        below={
+          <div className="grid gap-6 sm:grid-cols-2">
+            <Figure
+              label="What that costs you a year"
+              value={verdict.estimatedAnnualOverpaymentCents}
+              sentence={
+                verdict.estimatedAnnualOverpaymentCents > 0
+                  ? `Roughly what you overpay in tax every year until the assessment is corrected, at ${county.countyName}'s estimated rate of ${formatPct(county.estimatedTaxRateOnAssessedBps / 100)} on assessed value.`
+                  : undetermined
+                    ? `Not calculable. In ${county.stateName} the recoverable amount is set by statute, not by the comparables, and the statutory input is missing.`
+                    : statutoryIncrease
+                      ? "There is nothing to recover. Filing would add to this year's bill, not reduce it."
+                      : clr?.outcome === "NO_RELIEF"
+                        ? "There is nothing to recover — the common level range bars a reduction on these numbers."
+                        : "There is nothing to recover — your assessment is not above what comparable homes suggest."
+              }
+            />
 
-      {/* The engine's own sentence, minus the label the heading already carries. */}
-      <p className="mt-2 max-w-[68ch]" style={{ fontSize: "var(--text-step-1)", lineHeight: 1.45 }}>
+            <div className="flex flex-col gap-1">
+              <span className="micro-label">How good the evidence is</span>
+              <span
+                className="num text-ink"
+                style={{ fontSize: "var(--text-step-2)", fontWeight: 500 }}
+              >
+                {confidence.score}
+                <span className="text-dim">/100</span>
+              </span>
+              <p className="text-dim" style={{ fontSize: "var(--text-step--1)", lineHeight: 1.45 }}>
+                {confidence.level === "HIGH"
+                  ? "High. The comparables are numerous, close together, and recent — the kind of evidence a board takes seriously."
+                  : confidence.level === "MEDIUM"
+                    ? "Medium. The comparables support the number, but expect the board to push back on some of them."
+                    : "Low. There is not enough agreement between the comparables to file on this alone."}
+              </p>
+            </div>
+          </div>
+        }
+      >
+        {/* The engine's own sentence, minus the label the status already
+            carries. Never reworded, never re-rounded. */}
         {sentenceCase(
           verdict.headline.replace(/^(Strong case|Worth filing|Cannot determine —)\s*:?\s*/, ""),
         )}
-      </p>
+      </ToolVerdict>
 
-      <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <VerdictHero check={check} />
-
-        <Figure
-          label="What that costs you a year"
-          value={verdict.estimatedAnnualOverpaymentCents}
-          sentence={
-            verdict.estimatedAnnualOverpaymentCents > 0
-              ? `Roughly what you overpay in tax every year until the assessment is corrected, at ${county.countyName}'s estimated rate of ${formatPct(county.estimatedTaxRateOnAssessedBps / 100)} on assessed value.`
-              : undetermined
-                ? `Not calculable. In ${county.stateName} the recoverable amount is set by statute, not by the comparables, and the statutory input is missing.`
-                : statutoryIncrease
-                  ? "There is nothing to recover. Filing would add to this year's bill, not reduce it."
-                  : clr?.outcome === "NO_RELIEF"
-                    ? "There is nothing to recover — the common level range bars a reduction on these numbers."
-                    : "There is nothing to recover — your assessment is not above what comparable homes suggest."
-          }
-        />
-
-        <div className="flex flex-col gap-1">
-          <span className="micro-label">How good the evidence is</span>
-          <span className="num text-ink" style={{ fontSize: "var(--text-step-2)", fontWeight: 500 }}>
-            {confidence.score}
-            <span className="text-dim">/100</span>
-          </span>
-          <p className="text-dim" style={{ fontSize: "var(--text-step--1)", lineHeight: 1.45 }}>
-            {confidence.level === "HIGH"
-              ? "High. The comparables are numerous, close together, and recent — the kind of evidence a board takes seriously."
-              : confidence.level === "MEDIUM"
-                ? "Medium. The comparables support the number, but expect the board to push back on some of them."
-                : "Low. There is not enough agreement between the comparables to file on this alone."}
-          </p>
-        </div>
-      </div>
-
-      {/* The deadline. Real dates, real countdown, never manufactured. */}
-      <div className="mt-6 hairline-t pt-4">
+      {/* The evidence, on paper. The deadline, the reasons, the traces — the
+          working behind the answer, which is a different register from it. */}
+      <section aria-label="What the verdict rests on">
+        {/* The deadline. Real dates, real countdown, never manufactured. */}
+        <div>
         {deadline.isoDate !== null && deadline.daysAway !== null ? (
           <p className="max-w-[68ch]">
             {county.countyName}&apos;s deadline is{" "}
@@ -301,7 +316,8 @@ export function VerdictBlock({ check }: { check: AssessmentCheck }) {
           lastVerified: county.citations[0]?.lastVerified ?? check.meta.asOfDate,
         }}
       />
-    </section>
+      </section>
+    </div>
   );
 }
 

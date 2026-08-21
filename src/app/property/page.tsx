@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { counties, filingFeeSummary } from "@/engines/property";
 import { CheckTool } from "@/components/property/CheckTool";
+import { ToolShell } from "@/components/tool/ToolShell";
 import { FactTable } from "@/components/ui";
 import { absoluteUrl } from "@/lib/site";
 
@@ -39,24 +40,16 @@ const jsonLd = {
 
 export default function HomePage() {
   return (
-    <div className="mx-auto max-w-5xl px-4">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <section className="pt-8 pb-10">
-        <h1 className="max-w-[20ch]">Is your home over-assessed?</h1>
-        <p className="mt-3 max-w-[68ch]" style={{ fontSize: "var(--text-step-1)" }}>
-          Change a detail and the verdict below changes with it. Most homeowners will read
-          &ldquo;your assessment looks fair&rdquo; — that is the point. A tool that talks you out of
-          filing is the one to believe when it tells you to file.
-        </p>
-        <div className="mt-8">
-          <CheckTool variant="compact" />
-        </div>
-      </section>
-
-      <section className="hairline-t py-10">
+    /* One frame, shared with the other four tools. See ToolShell. */
+    <ToolShell
+      section="property"
+      title="Is your home over-assessed?"
+      standfirst="Change a detail and the verdict changes with it. Most homeowners will read “your assessment looks fair” — that is the point. A tool that talks you out of filing is the one to believe when it tells you to file."
+      readingLabel="The workings"
+      readingMeta={`${counties.length} counties encoded`}
+      reading={
+        <>
+          <section>
         <h2>How the check works</h2>
         <p className="mt-2 max-w-[68ch] text-dim">
           Four steps, all arithmetic. No model, no estimate, no AI anywhere near a number — the
@@ -94,7 +87,7 @@ export default function HomePage() {
         </ol>
       </section>
 
-      <section className="hairline-t py-10">
+      <section className="hairline-t mt-10 pt-10">
         <h2>County playbooks</h2>
         <p className="mt-2 max-w-[68ch] text-dim">
           Every county has its own deadline, fee, forms and evidence standard, and getting one
@@ -145,7 +138,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="hairline-t py-10">
+      <section className="hairline-t mt-10 pt-10">
         <div className="density-reading">
           <h2>Why this is free</h2>
           <p className="text-dim">
@@ -162,8 +155,19 @@ export default function HomePage() {
             </Link>{" "}
             before you rely on a number, and confirm your deadline with the county before you file.
           </p>
-        </div>
-      </section>
-    </div>
+          </div>
+          </section>
+        </>
+      }
+    >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {/* The hero is data, not a headline: the check is the first thing after
+          the masthead, because the visitor arrived with a question and watching
+          the answer form is a stronger opening than promising one. */}
+      <CheckTool variant="compact" />
+    </ToolShell>
   );
 }

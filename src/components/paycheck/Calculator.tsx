@@ -30,6 +30,8 @@ import {
   StickyAnswer,
 } from "@/components/ui";
 import type { LiveWarning } from "@/components/ui";
+import { InputPanel, ToolStrip } from "@/components/tool/InputPanel";
+import { ToolVerdict } from "@/components/tool/ToolVerdict";
 import { CalcTrace } from "@/components/paycheck/CalcTrace";
 import { OvertimeDiagram } from "@/components/paycheck/OvertimeDiagram";
 import { Paystub } from "@/components/paycheck/Paystub";
@@ -348,13 +350,24 @@ function OccupationPicker({
 
 /* ───────────────────────────────────────────────────────────── the tool ── */
 
+/**
+ * A ruled group, not a box.
+ *
+ * Four hairline rectangles stacked inside a fifth is not a hierarchy — it is
+ * five borders competing at the same weight, which is what made the input
+ * column read as a form rather than as a panel. The panel now owns the box
+ * (see <InputPanel>); a fieldset is a rule and a label, which is what a group
+ * of fields inside a panel should be.
+ */
 function Fieldset({ legend, children }: { legend: string; children: React.ReactNode }) {
   return (
-    <fieldset
-      className="rounded-atlas hairline-all m-0 flex min-w-0 flex-col gap-3 px-4 pt-2 pb-4"
-      style={{ borderRadius: "var(--radius-atlas)" }}
-    >
-      <legend className="micro-label px-1">{legend}</legend>
+    <fieldset className="m-0 flex min-w-0 flex-col gap-3 border-0 p-0 pt-4 first:pt-0">
+      <legend
+        className="micro-label mb-1 w-full pb-1.5"
+        style={{ borderBottom: "var(--hairline)" }}
+      >
+        {legend}
+      </legend>
       {children}
     </fieldset>
   );
@@ -448,23 +461,27 @@ export function Calculator() {
        * sentence that already carries the answer's number keeps that true at
        * 375 without making the reader scroll past their own inputs to reach it.
        */}
-      <div style={{ maxWidth: "var(--measure)" }}>
-        <p aria-live="polite" className="text-ink" style={{ fontSize: "var(--text-step-1)" }}>
-          {verdictSentence(result)}
-        </p>
+      <ToolVerdict label="The answer" sentenceProps={{ "aria-live": "polite" }}>
+        {verdictSentence(result)}
+      </ToolVerdict>
+
+      {/* The third surface. Recessed, so the paystub beside it reads as the
+          lit one. */}
+      <ToolStrip>
         <ConfidenceMeter
-          className="mt-3"
           filled={progress.filled}
           total={progress.total}
           missingLabel={progress.missingLabel}
         />
-      </div>
+      </ToolStrip>
 
       <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,23rem)_minmax(0,1fr)]">
       {/* ───────────────────────────────────────────────────── the inputs ── */}
-      <form
+      <InputPanel
+        as="form"
         aria-label="Your household"
-        className="flex min-w-0 flex-col gap-4"
+        label="Your household"
+        meta={`${progress.filled} of ${progress.total} details`}
         onSubmit={(event) => event.preventDefault()}
       >
         <Fieldset legend="Household">
@@ -694,7 +711,7 @@ export function Calculator() {
             </>
           ) : null}
         </Fieldset>
-      </form>
+      </InputPanel>
 
       {/* ──────────────────────────────────────────────────── the answer ── */}
       <div className="flex min-w-0 flex-col gap-8">

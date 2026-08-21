@@ -223,7 +223,7 @@ export default async function StateContractPage({
   }));
 
   return (
-    <article className="mx-auto max-w-3xl space-y-6">
+    <article className="mx-auto max-w-3xl space-y-6 px-4 py-6">
       <h1>
         What does a {rules.stateName} home improvement contract have to include?
       </h1>

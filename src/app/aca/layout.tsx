@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { getRules } from "@/engines/aca";
+import { SectionRail } from "@/components/tool/SectionRail";
 
 /**
  * The ACA section — "the clinical margin".
@@ -50,6 +51,8 @@ export default function AcaSectionLayout({ children }: { children: ReactNode }) 
 
   return (
     <div data-section="aca" className="flex min-h-full flex-1 flex-col">
+      <SectionRail section="aca" label="Health cover section" />
+
       <div className="flex-1">{children}</div>
 
       <div className="hairline-t mt-16">

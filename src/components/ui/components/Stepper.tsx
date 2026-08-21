@@ -10,6 +10,24 @@
  *
  * It wraps rather than scrolls at 375px — a horizontal scrollbar in a progress
  * header hides where the user is.
+ *
+ * THE CURRENT STEP IS THE SECTION'S ACCENT, NOT INK.
+ *
+ * It used to be a 22px ink chip and an ink label, which made the step you are
+ * on the same colour as the six labels, four hints and two buttons around it —
+ * so the one piece of state the header exists to communicate was the one thing
+ * it did not signal. `--signal` is the right token for it: it is the colour of
+ * "this is the answer / this is the live one" everywhere else in the system,
+ * and using it here is the same accent doing the same job. Three signals
+ * carry the state, not one: the filled chip, the label going semibold, and a
+ * 2px rule under the label — so it survives greyscale and it survives colour
+ * blindness. `--paper` on `--signal` is 5.40:1 at the thinnest (aca) and 8.45
+ * in dark; the ratios are recorded per section in globals.css.
+ *
+ * The marker is 24px rather than 22px and the label steps up from
+ * `--text-step--1` to `--text-step-0` on the current step only, which is the
+ * other half of "small and weak": at 13.3px in a 22px chip the whole header
+ * measured smaller than the field hints beneath it.
  */
 
 import * as React from "react";
@@ -76,17 +94,18 @@ export function Stepper({
             <span
               aria-hidden="true"
               className={cx(
-                "num inline-flex size-[22px] shrink-0 items-center justify-center rounded-atlas",
-                isCurrent && "bg-ink text-paper",
-                !isCurrent && isComplete && "text-ink",
+                "num inline-flex size-6 shrink-0 items-center justify-center rounded-atlas",
+                isCurrent && "bg-signal text-paper",
+                !isCurrent && isComplete && "text-signal",
                 !isVisited && "text-dim",
               )}
               style={{
                 fontSize: "var(--text-step--2)",
+                fontWeight: 500,
                 border: isCurrent
-                  ? "1px solid var(--ink)"
+                  ? "1px solid var(--signal)"
                   : isComplete
-                    ? "var(--hairline-strong)"
+                    ? "1px solid color-mix(in srgb, var(--signal) 45%, transparent)"
                     : "var(--hairline)",
               }}
             >
@@ -100,7 +119,11 @@ export function Stepper({
                 <span
                   aria-hidden="true"
                   className="hidden h-px w-6 sm:block"
-                  style={{ backgroundColor: "var(--rule)" }}
+                  style={{
+                    backgroundColor: isVisited
+                      ? "color-mix(in srgb, var(--signal) 55%, transparent)"
+                      : "var(--rule)",
+                  }}
                 />
               ) : null}
 
@@ -111,16 +134,27 @@ export function Stepper({
                   aria-current={isCurrent ? "step" : undefined}
                   className={cx(
                     "inline-flex min-h-11 items-center gap-2 rounded-atlas px-1 transition-colors",
-                    isCurrent ? "font-medium text-ink" : "text-ink hover:text-ink/70",
+                    isCurrent ? "font-semibold text-ink" : "text-ink hover:text-ink/70",
                   )}
                   style={{
-                    fontSize: "var(--text-step--1)",
+                    fontSize: isCurrent ? "var(--text-step-0)" : "var(--text-step--1)",
                     transitionDuration: "var(--dur-fast)",
                     transitionTimingFunction: "var(--ease)",
                   }}
                 >
                   {marker}
-                  <span>{step.label}</span>
+                  {/* The rule under the label is the third signal. Drawn with a
+                      box-shadow rather than a border so it cannot add a pixel
+                      to the button's box when the step changes. */}
+                  <span
+                    style={
+                      isCurrent
+                        ? { boxShadow: "inset 0 -2px 0 0 var(--signal)", paddingBottom: 2 }
+                        : undefined
+                    }
+                  >
+                    {step.label}
+                  </span>
                   <span className="sr-only">
                     {isComplete ? " (completed)" : " (current step)"}
                   </span>

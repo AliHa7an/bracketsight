@@ -64,7 +64,7 @@ export default function OccupationsPage() {
   const qualifyingCount = occupations.filter((occupation) => occupation.qualified).length;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-8">
       <header className="flex flex-col gap-3">
         <h1>Is your job a qualified tipped occupation?</h1>
         <AnswerBox>

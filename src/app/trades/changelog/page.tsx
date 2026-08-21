@@ -48,7 +48,7 @@ export default function ChangelogPage() {
   );
 
   return (
-    <article className="mx-auto max-w-3xl space-y-6">
+    <article className="mx-auto max-w-3xl space-y-6 px-4 py-6">
       <h1>Changelog</h1>
       <p className="text-dim" style={{ maxWidth: "var(--measure)" }}>
         Rule changes land here within 48 hours, with the ruleset version and the citation.

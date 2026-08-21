@@ -15,7 +15,7 @@ const link =
 
 export default function AboutPage() {
   return (
-    <article className="flex flex-col gap-8">
+    <article className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-8">
       <h1>About the deduction engine</h1>
 
       <div className="density-reading">

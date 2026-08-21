@@ -26,6 +26,7 @@ import {
   LiveWarnings,
   TraceDisclosure,
 } from "@/components/ui";
+import { ToolVerdict, verdictFigures } from "@/components/tool/ToolVerdict";
 import { ResultsTable, type RankMode } from "./ResultsTable";
 import { ForkTimeline } from "./ForkTimeline";
 
@@ -87,11 +88,26 @@ function toLiveWarnings(warnings: Warning[]) {
     );
 }
 
-export function Results({ result }: { result: SimulationResult }) {
-  const [mode, setMode] = React.useState<RankMode>("total");
-
-  const asOfIso = result.meta.asOfDate;
+/**
+ * THE VERDICT, HOISTED OUT OF THE RESULTS COLUMN AND ONTO INK.
+ *
+ * This sentence is the emotional peak of the product — the one line the reader
+ * came for, computed from their own loans and rewritten on every keystroke — and
+ * it was set as a grotesk h2 at the weight of the field labels beside it, in the
+ * right-hand column, below a progress meter. It now leads the tool at every
+ * width, in Instrument Serif on the section's ink ground, with the lifetime cost
+ * beside it and the one-way door flagged in the section's own oxide.
+ *
+ * It is a separate export rather than part of `<Results>` because it spans the
+ * whole workbench and the ranked ledger does not. Both take the same
+ * `SimulationResult`, so the sentence and the table cannot disagree.
+ *
+ * `#lifetime-cost` moved with the figure, deliberately: it is the anchor the
+ * phone's sticky answer bar jumps to.
+ */
+export function ResultsVerdict({ result }: { result: SimulationResult }) {
   const story = verdict(result);
+  const asOfIso = result.meta.asOfDate;
 
   const byCost = React.useMemo(
     () =>
@@ -102,42 +118,35 @@ export function Results({ result }: { result: SimulationResult }) {
   );
 
   const winner = byCost[0];
-  const smallestPayment = result.plans.find(
-    (p) => p.planId === result.recommendation.lowestMonthlyPayment,
-  );
   const runnerUp = byCost[1];
-
-  const warnings = React.useMemo(() => toLiveWarnings(result.globalWarnings), [result]);
-  const crossover =
-    smallestPayment && winner ? findCrossover(smallestPayment, winner) : null;
-  const oneWayDoor = result.globalWarnings.find((w) => w.id === "RAP_ONE_WAY_DOOR");
-
   if (!winner) return null;
 
   const rules = resolveRules(asOfIso);
   const taxCitation = rules.tax.citations[0];
-  // The freshness date is the ruleset's own, never today's. A date that moves
-  // when nothing changed is fake freshness, and both readers and search engines
-  // detect it.
-  const verifiedOn =
-    [rules.rap, rules.planTerms, rules.tieredStandard, rules.poverty, rules.tax]
-      .flatMap((family) => family.citations.map((c) => c.lastVerified))
-      .sort()
-      .pop() ?? asOfIso;
+  const oneWayDoor = result.globalWarnings.find((w) => w.id === "RAP_ONE_WAY_DOOR");
 
   return (
-    <div className="flex flex-col gap-8">
-      <header>
-        {/* M8 — this sentence is generated from the engine result and rewritten
-            whenever the result changes. No template survives an input change. */}
-        <h2 aria-live="polite">{story.headline}</h2>
-
+    <ToolVerdict
+      label="The answer"
+      status={`${byCost.length} of ${result.plans.length} plans open to you`}
+      as="h2"
+      sentenceProps={{ "aria-live": "polite" }}
+      note={story.tradeoff ?? undefined}
+      subNote={story.forgiveness ?? undefined}
+      /* Oxide, once, on the only thing here that cannot be undone. Icon and
+         word both, per the flag law — never colour on its own. */
+      flag={
+        oneWayDoor
+          ? { word: "Irreversible", text: oneWayDoor.message }
+          : undefined
+      }
+      aside={
         <HeroNumber
-          className="mt-4"
           id="lifetime-cost"
           label={`What ${PLAN_NAMES[winner.planId]} costs you in total`}
           value={winner.totalLifetimeCost}
           format={usd}
+          tween
           delta={
             runnerUp
               ? {
@@ -176,15 +185,54 @@ export function Results({ result }: { result: SimulationResult }) {
             />
           }
         />
+      }
+    >
+      {verdictFigures(story.headline)}
+    </ToolVerdict>
+  );
+}
 
-        {story.tradeoff ? (
-          <p className="mt-4 max-w-[var(--measure)] text-ink">{story.tradeoff}</p>
-        ) : null}
-        {story.forgiveness ? (
-          <p className="mt-2 max-w-[var(--measure)] text-dim">{story.forgiveness}</p>
-        ) : null}
-      </header>
+export function Results({ result }: { result: SimulationResult }) {
+  const [mode, setMode] = React.useState<RankMode>("total");
 
+  const asOfIso = result.meta.asOfDate;
+
+  const byCost = React.useMemo(
+    () =>
+      result.plans
+        .filter((p) => p.eligible)
+        .sort((a, b) => a.totalLifetimeCost - b.totalLifetimeCost),
+    [result],
+  );
+
+  const winner = byCost[0];
+  const smallestPayment = result.plans.find(
+    (p) => p.planId === result.recommendation.lowestMonthlyPayment,
+  );
+
+  const warnings = React.useMemo(() => toLiveWarnings(result.globalWarnings), [result]);
+  const crossover =
+    smallestPayment && winner ? findCrossover(smallestPayment, winner) : null;
+  const oneWayDoor = result.globalWarnings.find((w) => w.id === "RAP_ONE_WAY_DOOR");
+
+  if (!winner) return null;
+
+  const rules = resolveRules(asOfIso);
+  // The freshness date is the ruleset's own, never today's. A date that moves
+  // when nothing changed is fake freshness, and both readers and search engines
+  // detect it.
+  const verifiedOn =
+    [rules.rap, rules.planTerms, rules.tieredStandard, rules.poverty, rules.tax]
+      .flatMap((family) => family.citations.map((c) => c.lastVerified))
+      .sort()
+      .pop() ?? asOfIso;
+
+  return (
+    <div className="flex flex-col gap-8">
+      {/* The verdict sentence and the hero figure used to open this column.
+          They lead the whole workbench now — see <ResultsVerdict> above. What
+          is left here is the evidence for them, in the order it is read: the
+          ranked ledger, the warnings, the Fork, the provenance. */}
       <section aria-labelledby="ranking-heading">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <h3 id="ranking-heading">All nine plans, ranked</h3>
@@ -213,8 +261,8 @@ export function Results({ result }: { result: SimulationResult }) {
         {/*
          * Removed in the final pass: a line reading "switch the ranking and
          * watch the recommended row move…". It restated the trade-off sentence
-         * that already sits under the hero figure, and narrating the reorder is
-         * weaker than letting the reorder happen.
+         * the verdict band already carries, and narrating the reorder is weaker
+         * than letting the reorder happen.
          */}
         <div className="mt-3">
           <ResultsTable result={result} mode={mode} />

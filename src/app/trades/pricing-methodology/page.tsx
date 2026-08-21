@@ -177,7 +177,7 @@ export default function PricingMethodologyPage() {
   const narrowestBand = bandWidths[bandWidths.length - 1];
 
   return (
-    <article className="mx-auto max-w-3xl space-y-6">
+    <article className="mx-auto max-w-3xl space-y-6 px-4 py-6">
       <h1>How Bracketsight prices a job</h1>
 
       <AnswerBox>

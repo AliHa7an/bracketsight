@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { formatUsd, fplFor, getRules, magiAtPctEdge } from "@/engines/aca";
 import { Planner } from "@/components/aca/Planner";
+import { ToolShell } from "@/components/tool/ToolShell";
 import { AnswerBox, FactTable, LastVerified, SourceCitation } from "@/components/ui";
 import { absoluteUrl } from "@/lib/site";
 
@@ -114,33 +115,16 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
-
-      {/*
-       * The hero is the instrument. One line of title, one line of orientation,
-       * then the live MAGI builder and an answer that is already on screen —
-       * because the reader arrived from a search result with one question, and
-       * showing the answer forming beats promising it. Everything written is
-       * below the tool.
-       */}
-      <h1>How close are you to the ACA subsidy cliff?</h1>
-      <p className="mt-1 mb-6 text-dim" style={{ fontSize: "var(--text-step-1)" }}>
-        Your income, the 400% edge, and every legal lever back under it — recomputed as you
-        type.
-      </p>
-
-      <Planner />
-
-      <div className="hairline-t mt-16 pt-10">
-        <AnswerBox>
+    /* One frame, shared with the other four tools. See ToolShell. */
+    <ToolShell
+      section="aca"
+      title="How close are you to the ACA subsidy cliff?"
+      standfirst="Your income, the 400% edge, and every legal lever back under it — recomputed as you type."
+      readingLabel="The workings"
+      readingMeta={`rules verified ${primary?.lastVerified ?? "2026-08-08"}`}
+      reading={
+        <>
+          <AnswerBox>
           At <span className="num">400%</span> of the federal poverty line —{" "}
           <span className="num">{formatUsd(magiAtPctEdge(fpl1, 400, rules))}</span> for one person in
           2026 — the premium tax credit stops completely. There is no phase-out: one dollar
@@ -272,8 +256,25 @@ export default function HomePage() {
               for every formula, including the iterative self-employed health-insurance case.
             </p>
           </section>
-        </article>
-      </div>
-    </div>
+          </article>
+        </>
+      }
+    >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
+      {/*
+       * The hero is the instrument, and the verdict band leads it — the reader
+       * arrived from a search result with one question, and showing the answer
+       * forming beats promising it. Everything written is below the tool.
+       */}
+      <Planner />
+    </ToolShell>
   );
 }

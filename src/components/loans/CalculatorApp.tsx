@@ -45,10 +45,11 @@ import {
   Stepper,
   useScenarioPins,
 } from "@/components/ui";
+import { InputPanel, ToolStrip } from "@/components/tool/InputPanel";
 import { LoanEntryForm } from "./LoanEntryForm";
 import { HouseholdStep } from "./HouseholdStep";
 import { GoalsStep } from "./GoalsStep";
-import { Results } from "./Results";
+import { Results, ResultsVerdict } from "./Results";
 
 /*
  * Five sections now share one origin, so every key this section writes is
@@ -257,15 +258,36 @@ export function CalculatorApp() {
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-8">
+      {/* THE ANSWER LEADS, AT EVERY WIDTH. It used to open the right-hand
+          column, under a progress meter, which put the sentence the reader
+          came for below the fold on a phone and level with the field labels on
+          a laptop. It is now the ink band across the top of the workbench. */}
+      {result ? <ResultsVerdict result={result} /> : null}
+
       <div className="grid items-start gap-8 lg:grid-cols-[minmax(19rem,22rem)_minmax(0,1fr)] lg:gap-10">
         <FormProvider {...form}>
-          <form
+          <InputPanel
+            as="form"
             noValidate
             onSubmit={(event) => event.preventDefault()}
             aria-label="Your loans, household and goals"
-            className="hairline-all rounded-atlas p-4 sm:p-5"
-            style={{ background: "var(--paper-raised)" }}
+            label="Your details"
+            meta={`step ${stepIndex + 1} of ${STEPS.length}`}
+            foot={
+              <>
+                {stepIndex > 0 ? (
+                  <Button variant="secondary" onClick={() => setStep(STEPS[stepIndex - 1]!.id)}>
+                    Back to {STEPS[stepIndex - 1]!.label.toLowerCase()}
+                  </Button>
+                ) : null}
+                {stepIndex < STEPS.length - 1 ? (
+                  <Button onClick={() => setStep(STEPS[stepIndex + 1]!.id)}>
+                    Continue to {STEPS[stepIndex + 1]!.label.toLowerCase()}
+                  </Button>
+                ) : null}
+              </>
+            }
           >
             <Stepper
               steps={STEPS.map((s) => ({ id: s.id, label: s.label }))}
@@ -282,37 +304,29 @@ export function CalculatorApp() {
               {step === "household" ? <HouseholdStep result={result} asOf={asOf} /> : null}
               {step === "goals" ? <GoalsStep result={result} asOf={asOf} /> : null}
             </div>
-
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              {stepIndex > 0 ? (
-                <Button variant="secondary" onClick={() => setStep(STEPS[stepIndex - 1]!.id)}>
-                  Back to {STEPS[stepIndex - 1]!.label.toLowerCase()}
-                </Button>
-              ) : null}
-              {stepIndex < STEPS.length - 1 ? (
-                <Button onClick={() => setStep(STEPS[stepIndex + 1]!.id)}>
-                  Continue to {STEPS[stepIndex + 1]!.label.toLowerCase()}
-                </Button>
-              ) : null}
-            </div>
-          </form>
+          </InputPanel>
         </FormProvider>
 
         <div className="min-w-0">
-          <ConfidenceMeter
-            filled={filled}
-            total={details.length}
-            missingLabel={firstMissing ? `${firstMissing.ask} for an exact answer` : undefined}
-          />
+          {/* The third surface: what the page can say about how complete the
+              reader's own inputs are. Recessed, so the ranked ledger below it
+              reads as the lit one. */}
+          <ToolStrip>
+            <ConfidenceMeter
+              filled={filled}
+              total={details.length}
+              missingLabel={firstMissing ? `${firstMissing.ask} for an exact answer` : undefined}
+            />
 
-          {filled === 0 ? (
-            <p className="mt-2 text-dim" style={{ fontSize: "var(--text-step--1)" }}>
-              Nothing entered yet, so this models an example borrower —{" "}
-              <span className="num">$38,500</span> at <span className="num">6.39%</span> on{" "}
-              <span className="num">$55,000</span> of income. Change any field and the answer
-              below becomes yours.
-            </p>
-          ) : null}
+            {filled === 0 ? (
+              <p className="mt-2 text-dim" style={{ fontSize: "var(--text-step--1)" }}>
+                Nothing entered yet, so this models an example borrower —{" "}
+                <span className="num">$38,500</span> at <span className="num">6.39%</span> on{" "}
+                <span className="num">$55,000</span> of income. Change any field and the answer
+                above becomes yours.
+              </p>
+            ) : null}
+          </ToolStrip>
 
           <div className="mt-6">
             {result ? (

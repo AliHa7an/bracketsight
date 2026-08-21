@@ -28,7 +28,7 @@ const link = "rounded-atlas underline underline-offset-4 hover:text-ink";
 
 export default function InvoicePage() {
   return (
-    <div className="space-y-6">
+    <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6">
       <div className="no-print space-y-6">
         <h1>Your invoice</h1>
 

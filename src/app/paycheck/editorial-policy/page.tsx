@@ -15,7 +15,7 @@ const link =
 
 export default function EditorialPolicyPage() {
   return (
-    <article className="flex flex-col gap-8">
+    <article className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-8">
       <h1>Editorial policy</h1>
 
       <section className="density-reading">

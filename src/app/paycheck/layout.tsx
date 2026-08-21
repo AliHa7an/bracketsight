@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { formatDate } from "@/lib/paycheck/format";
 import { rulesMeta } from "@/lib/paycheck/rules-meta";
+import { SectionRail } from "@/components/tool/SectionRail";
 
 /**
  * The paycheck section.
@@ -15,41 +16,23 @@ import { rulesMeta } from "@/lib/paycheck/rules-meta";
  * to be.
  */
 
-const SECTION_NAV = [
-  { href: "/paycheck", label: "The tool" },
-  { href: "/paycheck/occupations", label: "Occupations" },
-  { href: "/paycheck/methodology", label: "Methodology" },
-  { href: "/paycheck/sources", label: "Sources" },
-  { href: "/paycheck/changelog", label: "Changelog" },
-  { href: "/paycheck/editorial-policy", label: "Editorial policy" },
-  { href: "/paycheck/about", label: "About" },
-];
-
 export default function PaycheckLayout({ children }: { children: React.ReactNode }) {
   const meta = rulesMeta();
 
   return (
     <div data-section="paycheck" className="flex min-h-full flex-col">
-      <nav aria-label="Paycheck section" className="hairline-b">
-        <ul className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-0 px-4">
-          {SECTION_NAV.map((item) => (
-            <li key={item.href}>
-              {/* min-h-11 clears the 44px touch floor. */}
-              <Link
-                href={item.href}
-                className="rounded-atlas inline-flex min-h-11 items-center text-dim underline-offset-4 hover:text-ink hover:underline"
-                style={{ fontSize: "var(--text-step--1)" }}
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <SectionRail section="paycheck" label="Paycheck section" />
 
-      {/* The measure the section was designed at. Its pages carry no container
-          of their own — they were written inside one. */}
-      <div className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">{children}</div>
+      {/*
+        NO CONTAINER HERE ANY MORE. The section used to supply one measure for
+        all seven of its pages, which meant the tool page could not lay out a
+        band of its own — a masthead and an ink verdict inside a 64rem column
+        with 16px of padding are a box, not a band. Every other page in the
+        section now carries the same `max-w-5xl px-4 py-8` it was written
+        inside, stated on its own root element, which is what /loans, /aca and
+        /property already did.
+      */}
+      <div className="flex-1">{children}</div>
 
       <div className="hairline-t mt-16">
         <div

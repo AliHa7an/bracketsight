@@ -47,7 +47,7 @@ export default function ContractPage() {
   const blockedStates = states.filter((state) => state.blocked > 0);
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6">
       <div className="no-print space-y-6">
         <h1>Your contract template</h1>
 

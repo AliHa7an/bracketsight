@@ -22,6 +22,7 @@ import {
   TraceDisclosure,
   FactTable,
 } from "@/components/ui";
+import { ToolVerdict } from "@/components/tool/ToolVerdict";
 import { numerify } from "@/lib/aca/numerify";
 import { verdict } from "@/lib/aca/verdict";
 
@@ -33,22 +34,52 @@ const CITATION = {
 
 const money = (n: number): string => formatUsd(Math.round(n));
 
-export function ResultsPanel({ analysis }: { analysis: CliffAnalysis }) {
-  const { ptc, csr, cliff, clawback } = analysis;
+/**
+ * THE VERDICT, ON INK, LEADING THE TOOL.
+ *
+ * The sentence and the distance to the edge used to sit at the top of the
+ * answer column, in the body face at `--text-step-1` — the same size as a
+ * field hint in the form beside them, on the same pale ground as everything
+ * else on the page. They now lead the planner in Instrument Serif on the
+ * section's ink band, with aca blue as the accent and oxide reserved for the
+ * one fact here that cannot be undone after 31 December: being over the edge.
+ *
+ * `#distance-to-edge` travelled with the figure. It is the anchor the phone's
+ * sticky answer bar jumps to, and the label association goes with it.
+ *
+ * Split out of `<ResultsPanel>` rather than left inside it because the verdict
+ * spans the whole workbench and the credit detail below does not. Both read
+ * the same `CliffAnalysis`, so the sentence and the table cannot disagree.
+ */
+export function AcaVerdict({ analysis }: { analysis: CliffAnalysis }) {
+  const { ptc, cliff } = analysis;
   const v = verdict(analysis);
 
   return (
-    <section aria-labelledby="verdict-heading" className="mt-6">
-      <h2 id="verdict-heading" className="sr-only">
-        Where you stand
-      </h2>
-
-      <div className="grid gap-6 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] sm:items-start">
+    <ToolVerdict
+      label="Where you stand"
+      status={numerify(`${(ptc.fplBps / 100).toFixed(1)}% of the poverty line`)}
+      as="h2"
+      sentenceProps={{ id: "verdict-heading", "aria-live": "polite" }}
+      flag={
+        cliff.overCliff
+          ? {
+              word: "Past the cliff",
+              text: numerify(
+                `Modified AGI is ${formatUsd(cliff.distanceToEdge)} over the ${formatUsd(
+                  cliff.cliffEdgeMagi,
+                )} edge. There is no phase-out in 2026, and after 31 December it cannot be undone.`,
+              ),
+            }
+          : undefined
+      }
+      aside={
         <HeroNumber
           id="distance-to-edge"
           label={v.heroLabel}
           value={cliff.distanceToEdge}
           format={money}
+          tween
           /*
            * Design review §7.12, "remove one thing": the hero carried a delta
            * line reading "−$8,756 a year at stake on one dollar" — the exact
@@ -73,13 +104,19 @@ export function ResultsPanel({ analysis }: { analysis: CliffAnalysis }) {
             />
           }
         />
+      }
+    >
+      {numerify(v.sentence)}
+    </ToolVerdict>
+  );
+}
 
-        <p className="text-ink" style={{ fontSize: "var(--text-step-1)", lineHeight: 1.5 }}>
-          {numerify(v.sentence)}
-        </p>
-      </div>
+export function ResultsPanel({ analysis }: { analysis: CliffAnalysis }) {
+  const { ptc, csr, cliff, clawback } = analysis;
 
-      <div className="hairline-t mt-6 grid gap-6 pt-6 sm:grid-cols-2 sm:items-start">
+  return (
+    <section aria-label="Your credit, in detail" className="mt-6">
+      <div className="grid gap-6 sm:grid-cols-2 sm:items-start">
         <div>
           <p className="micro-label">Your estimated premium tax credit</p>
           <p className="mt-1 flex flex-wrap items-baseline gap-x-2">

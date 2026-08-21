@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { listRuleCitations } from "@/engines/repayment";
+import { SectionRail } from "@/components/tool/SectionRail";
 
 /**
  * The loans section.
@@ -13,17 +14,13 @@ import { listRuleCitations } from "@/engines/repayment";
  * the loans tool needs this section's methodology, not the site index of five.
  * It also keeps every trust page two clicks from every other one, which is the
  * internal-linking floor the publish gates ask for.
+ *
+ * The rail is `<SectionRail>` now rather than a list written out here. Five
+ * sections had three hand-written rails between them, in three different
+ * orders, and two had none at all; the shared one derives its items from
+ * `SECTION_PAGES`, so a page cannot ship without appearing in it. See the
+ * component for why it is a recessed band rather than a ruled row.
  */
-
-const SECTION_NAV = [
-  { href: "/loans", label: "The tool" },
-  { href: "/loans/methodology", label: "Methodology" },
-  { href: "/loans/sources", label: "Sources" },
-  { href: "/loans/changelog", label: "Changelog" },
-  { href: "/loans/editorial-policy", label: "Editorial policy" },
-  { href: "/loans/about", label: "About" },
-  { href: "/loans/privacy", label: "Your loan data" },
-];
 
 export default function LoansLayout({ children }: { children: React.ReactNode }) {
   const citations = listRuleCitations(new Date().toISOString().slice(0, 10));
@@ -34,23 +31,7 @@ export default function LoansLayout({ children }: { children: React.ReactNode })
 
   return (
     <div data-section="loans" className="flex min-h-full flex-col">
-      <nav aria-label="Student loans section" className="hairline-b">
-        <ul className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-0 px-4">
-          {SECTION_NAV.map((item) => (
-            <li key={item.href}>
-              {/* min-h-11 clears the 44px touch floor — a 17px line of text is
-                  a legal link and an unusable one on a phone. */}
-              <Link
-                href={item.href}
-                className="rounded-atlas inline-flex min-h-11 items-center text-dim underline-offset-4 hover:text-ink hover:underline"
-                style={{ fontSize: "var(--text-step--1)" }}
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <SectionRail section="loans" label="Student loans section" />
 
       <div className="flex-1">{children}</div>
 

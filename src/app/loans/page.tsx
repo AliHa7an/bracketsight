@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { resolveRules } from "@/engines/repayment";
 import { CalculatorApp } from "@/components/loans/CalculatorApp";
+import { ToolShell } from "@/components/tool/ToolShell";
 import { AnswerBox, FactTable, LastVerified, SourceCitation } from "@/components/ui";
 import { formatDate, usd } from "@/components/ui";
 import { absoluteUrl } from "@/lib/site";
@@ -137,31 +138,20 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
-
-      {/*
-       * The hero is the instrument. One line of title, one line of orientation,
-       * then the first input and a live answer — because the reader arrived from
-       * a search result with one question, and showing the answer forming beats
-       * promising it. Everything written is below the tool.
-       */}
-      <h1>Which repayment plan actually costs you least?</h1>
-      <p className="mt-1 mb-6 text-dim" style={{ fontSize: "var(--text-step-1)" }}>
-        Nine federal plans, your loans, thirty years of arithmetic — ranked as you type.
-      </p>
-
-      <CalculatorApp />
-
-      <div className="hairline-t mt-16 pt-10">
-        <AnswerBox>
+    /*
+     * The frame is <ToolShell>, shared with the other four tools — masthead,
+     * workbench, reading band — so the loans page cannot drift away from them
+     * again. The words are still this page's own; the shell adds no content.
+     */
+    <ToolShell
+      section="loans"
+      title="Which repayment plan actually costs you least?"
+      standfirst="Nine federal plans, your loans, thirty years of arithmetic — ranked as you type."
+      readingLabel="The workings"
+      readingMeta={`rules verified ${formatDate(primaryCitation?.lastVerified ?? asOf)}`}
+      reading={
+        <>
+          <AnswerBox>
           Under RAP a single borrower earning <span className="num">$55,000</span> pays about{" "}
           <span className="num">$229</span> a month — <span className="num">5%</span> of AGI
           divided by <span className="num">12</span>, minus <span className="num">$50</span>{" "}
@@ -307,8 +297,25 @@ export default function HomePage() {
               ))}
             </ol>
           </section>
-        </article>
-      </div>
-    </div>
+          </article>
+        </>
+      }
+    >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
+      {/*
+       * The hero is the instrument, and the answer is the first thing in it —
+       * the reader arrived from a search result with one question, and showing
+       * the answer forming beats promising it. Everything written is below.
+       */}
+      <CalculatorApp />
+    </ToolShell>
   );
 }

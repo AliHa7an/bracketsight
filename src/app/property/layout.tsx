@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { counties } from "@/engines/property";
+import { SectionRail } from "@/components/tool/SectionRail";
 
 /**
  * The property-tax section — "the plat book".
@@ -33,6 +34,8 @@ export const metadata: Metadata = {
 export default function PropertySectionLayout({ children }: { children: ReactNode }) {
   return (
     <div data-section="property" className="flex min-h-full flex-1 flex-col">
+      <SectionRail section="property" label="Property tax section" />
+
       <div className="flex-1">{children}</div>
 
       <div className="hairline-t mt-16">

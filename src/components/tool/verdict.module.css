@@ -1,0 +1,323 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+ * THE VERDICT — the one ink object on a tool page.
+ *
+ * "Standard 10-year costs you $746 less than Old IBR over the life of your
+ * loans" is the emotional peak of the entire product: the single sentence the
+ * reader came for, computed from their own numbers and rewritten on every
+ * keystroke (M8). It was set as a grotesk h2 at the same weight as the field
+ * labels around it. This is the fix.
+ *
+ * IT IS AN INK GROUND, LIKE THE HUB'S TWO. `--panel` sinks below the page in
+ * light and rises above it in dark, so it is the same object either way — and
+ * it gives a tool page the centre of gravity the hub gets from its instrument
+ * panel and its trust band. It is a CONTAINED panel rather than a full-bleed
+ * band on purpose: a tool page's bands live inside a centred measure, and
+ * `margin-inline: calc(50% - 50vw)` overflows by the width of a classic
+ * scrollbar, which is the one thing the 390px budget cannot spend.
+ *
+ * ── THE TOKEN REMAP IS THE WHOLE MECHANISM ─────────────────────────────────
+ *
+ * Everything inside this panel — HeroNumber, LiveNumber, TraceDisclosure,
+ * LiveWarnings, Button, FactTable — reads the six semantic colour tokens and
+ * nothing else. That is the contract the design system was built on, and it is
+ * what lets an ink band happen here without touching a single component: this
+ * block redefines the six for its own subtree, exactly as `[data-section]`
+ * does one level up, and every ported component re-themes itself.
+ *
+ * BOTH FAMILIES, AGAIN. `--color-*` for the Tailwind utilities (`text-ink`,
+ * `bg-paper`, `border-rule`, `bg-ink/5`) and the bare names for the components
+ * that write `var(--ink)` directly. Redefining only one family re-themes half
+ * the panel and leaves the other half painting navy on navy — which is
+ * invisible in review and glaring on screen. The composites are re-derived for
+ * the third time in this codebase for the reason recorded in globals.css: a
+ * custom property whose value contains `var()` resolves on the element that
+ * declares it, so an inherited `--hairline` is already a resolved navy.
+ *
+ * SIGNAL AND FLAG STAY THE SECTION'S OWN. `--panel-accent` and `--panel-alert`
+ * resolve to this section's dark signal and dark flag (globals.css), so the ink
+ * band is loans teal, paycheck amber, aca blue, property green, trades blue —
+ * not one shared teal. That is the point: the hub gives each tool a confident
+ * identity and the tool page must not throw it away.
+ *
+ * CONTRAST, against both panel grounds (#101A2B light, #18222F dark):
+ *   panel-text  15.83 / 14.57      panel-dim   7.10 / 6.54
+ *   loans       signal 8.04 / 7.40   flag 6.82 / 6.28
+ *   paycheck    signal 7.90 / 7.27   flag 7.89 / 7.26
+ *   aca         signal 8.12 / 7.48   flag 6.82 / 6.28
+ *   property    signal 8.22 / 7.57   flag 6.55 / 6.03
+ *   trades      signal 7.01 / 6.45   flag 6.56 / 6.04
+ * Worst case 6.03. Every one clears AA; all but two clear AAA.
+ * ═════════════════════════════════════════════════════════════════════════ */
+
+.verdict {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ink) 55%, var(--panel));
+  border-radius: var(--radius-atlas);
+  background: var(--panel);
+  box-shadow:
+    0 1px 2px rgb(6 10 18 / 10%),
+    0 14px 34px -20px rgb(6 10 18 / 42%),
+    0 34px 60px -40px rgb(6 10 18 / 38%);
+
+  /* ---- the remap. See the header. ---- */
+  --color-paper: var(--panel);
+  --color-ink: var(--panel-text);
+  --color-rule: color-mix(in srgb, var(--panel-text) 16%, transparent);
+  --color-dim: var(--panel-dim);
+  --color-signal: var(--panel-accent);
+  --color-flag: var(--panel-alert);
+  --band: color-mix(in srgb, var(--panel-text) 6%, var(--panel));
+
+  --paper: var(--color-paper);
+  --ink: var(--color-ink);
+  --rule: var(--color-rule);
+  --dim: var(--color-dim);
+  --signal: var(--color-signal);
+  --flag: var(--color-flag);
+
+  --hairline: 1px solid color-mix(in srgb, var(--panel-text) 14%, transparent);
+  --hairline-strong: 1px solid color-mix(in srgb, var(--panel-text) 26%, transparent);
+  --paper-raised: color-mix(in srgb, var(--panel-text) 5%, var(--panel));
+  --paper-sunken: color-mix(in srgb, var(--panel-text) 9%, var(--panel));
+
+  color: var(--panel-text);
+}
+
+/* The drafting grid, at the hub's 30px pitch and the hub's 6% ink. Two static
+   background-images behind everything; nothing animates, so there is nothing
+   here to switch off for reduced motion. */
+.grid {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--panel-text) 6%, transparent) 0 1px,
+      transparent 1px 30px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--panel-text) 6%, transparent) 0 1px,
+      transparent 1px 30px
+    );
+}
+
+/* Three labels, one line where there is room and stacked where there is not —
+   the hub's `.panelHead`, at the same size and the same tracking. */
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--panel-hair);
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--panel-dim);
+}
+
+/* The section's accent, doing a real job: it names what this band is. */
+.headMark {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--panel-accent);
+}
+
+.headDot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--panel-accent);
+}
+
+.body {
+  padding: 18px 16px 20px;
+}
+
+@media (min-width: 720px) {
+  .body {
+    padding: 24px 22px 26px;
+  }
+}
+
+/*
+ * THE SENTENCE.
+ *
+ * Instrument Serif, on the same rung ladder as the hub's section titles and
+ * one rung under its display — it is the biggest piece of type on the page
+ * after the h1, and on a wide screen it is bigger. `line-height: 1.08` and
+ * `-0.02em` because a display serif needs less air between letters the larger
+ * it is set; the hub's headline records the same reasoning at 48.8px.
+ *
+ * NO `text-wrap: balance`. The sentence is regenerated on every keystroke and
+ * changes length as it goes; balancing re-broke every line as the reader
+ * typed, which is motion nobody asked for on the one element that must feel
+ * settled. A measure does the job instead.
+ */
+.sentence {
+  margin: 0;
+  max-width: 26ch;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(var(--text-step-2), 3.1vw, var(--text-step-4));
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--panel-text);
+}
+
+@media (min-width: 720px) {
+  .sentence {
+    max-width: 30ch;
+  }
+
+  /* No figure beside it, so the sentence gets the room the figure would have
+     taken. A 30ch serif line in a 1152px band leaves half the ink empty, which
+     reads as an unfinished layout rather than as a measure. */
+  .sentenceWide {
+    max-width: 42ch;
+  }
+}
+
+/*
+ * A figure inside the sentence — the number the sentence turns on — in the
+ * section's accent and the data face. Colour is never the only signal: the
+ * number is the only monospaced run in the line, at the only size it is.
+ *
+ * `:global(.num)` is the same rule for the tools whose verdict copy already
+ * arrives with its figures wrapped — paycheck writes `<N>` around every one,
+ * aca runs its engine sentence through `numerify`. Both produce `.num`, and
+ * neither should have to know it is being rendered inside an ink band.
+ */
+.figure,
+.sentence :global(.num) {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 0.9em;
+  letter-spacing: -0.03em;
+  color: var(--panel-accent);
+}
+
+/*
+ * The split: the sentence, and the figure it is about, side by side once there
+ * is room for both. Below 900px the figure stacks under the sentence with a
+ * hairline between them, because a 26ch serif line and a 39px number sharing a
+ * 358px column leaves neither of them room to be the answer.
+ */
+.split {
+  display: grid;
+  gap: 18px;
+}
+
+@media (min-width: 900px) {
+  .split {
+    grid-template-columns: minmax(0, 1.25fr) minmax(230px, 0.75fr);
+    gap: 30px;
+    align-items: start;
+  }
+}
+
+.aside {
+  padding-top: 16px;
+  border-top: 1px solid var(--panel-hair);
+}
+
+@media (min-width: 900px) {
+  .aside {
+    padding-top: 0;
+    padding-left: 30px;
+    border-top: 0;
+    border-left: 1px solid var(--panel-hair);
+  }
+}
+
+/* Supporting figures under the sentence, ruled off from it. */
+.below {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--panel-hair);
+}
+
+/* Anything the caller hangs under the sentence: a trade-off line, a forgiveness
+   note. Dim on ink, which is 7.10 / 6.54. */
+.note {
+  margin: 14px 0 0;
+  max-width: 54ch;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--panel-dim);
+}
+
+.noteStrong {
+  color: var(--panel-text);
+}
+
+/*
+ * `--flag` marks only irreversible or high-stakes facts, and always with an
+ * icon AND a word — never colour alone. On the ink ground that is
+ * `--panel-alert`, which is this section's own oxide/amber/stamp.
+ */
+.flagRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 16px 0 0;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--panel-alert) 42%, transparent);
+  border-radius: var(--radius-atlas);
+  background: color-mix(in srgb, var(--panel-alert) 12%, transparent);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--panel-text);
+}
+
+.flagIcon {
+  flex: none;
+  margin-top: 1px;
+  color: var(--panel-alert);
+}
+
+.flagWord {
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--panel-alert);
+}
+
+/* The provenance strip at the foot of the band. Rule-set identifiers are long
+   unbroken tokens and they break rather than scroll. */
+.foot {
+  overflow-wrap: anywhere;
+  padding: 10px 16px 12px;
+  border-top: 1px solid var(--panel-hair);
+  font-family: var(--font-data);
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--panel-dim);
+}
+
+.foot a {
+  color: var(--panel-dim);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.foot a:hover {
+  color: var(--panel-text);
+}
+
+/* The focus ring resolves against `--signal`, which inside this panel is the
+   accent on ink — but a 2px accent ring on an ink ground is thinner than the
+   same ring on paper, so it is given the panel's own text colour instead. */
+.verdict :focus-visible {
+  outline-color: var(--panel-text);
+}

@@ -50,7 +50,8 @@ import {
 } from "@/lib/aca/schema";
 import { CliffMeter } from "./CliffMeter";
 import { LeverList } from "./LeverList";
-import { ResultsPanel } from "./ResultsPanel";
+import { InputPanel } from "@/components/tool/InputPanel";
+import { AcaVerdict, ResultsPanel } from "./ResultsPanel";
 
 /**
  * Storage keys are namespaced `bracketsight.<section>.<thing>.<version>`.
@@ -147,25 +148,37 @@ export function Planner() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-8">
+      {/* THE ANSWER LEADS, AT EVERY WIDTH. The phone used to get income, then
+          answer, then details; the ink band now puts the sentence and the
+          distance to the edge above all three, which is where a reader who
+          arrived from a search result with one question needs them. */}
+      <AcaVerdict analysis={analysis} />
+
       {/*
        * Three siblings, ordered for the phone and placed for the desktop. On a
        * narrow screen the reader gets the income they came to type, then the
-       * answer, then the household details — so the hero number is one screen
-       * away rather than seven fields away. On a wide screen the form stacks
-       * down the left rail and the answer holds the right column throughout.
+       * detail behind the answer, then the household — so nothing they need is
+       * seven fields away. On a wide screen the form stacks down the left rail
+       * and the answer holds the right column throughout.
        */}
       {/* `grid-rows-[auto_1fr]` matters: the answer column spans both rows, and
           without it the browser splits its height between them and opens a gap
           in the middle of the form. */}
-      <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[19rem_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:items-start">
+      <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[19rem_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:items-start lg:gap-x-10">
         {/* The MAGI builder. The hero of this page is the live model, not a headline. */}
-        <form
+        <InputPanel
+          as="form"
           aria-label="Your income"
-          className="order-1 min-w-0 space-y-4 lg:col-start-1 lg:row-start-1"
+          label="Your income"
+          meta="modified AGI"
+          className="order-1 min-w-0 lg:col-start-1 lg:row-start-1"
           noValidate
           onSubmit={(e) => e.preventDefault()}
         >
+          {/* `space-y-4` moved here from the <form>: the panel supplies the
+              padding now, and the rhythm belongs to the fields inside it. */}
+          <div className="space-y-4">
           <div {...seen("agi")}>
             <Field
               label="Adjusted gross income"
@@ -236,12 +249,12 @@ export function Planner() {
 
           <div className="hairline-t pt-4">
             <p className="micro-label">Modified AGI</p>
-            <p className="num mt-1 text-ink" style={{ fontSize: "var(--text-step-1)", fontWeight: 500 }}>
+            <p className="num mt-1 text-signal" style={{ fontSize: "var(--text-step-2)", fontWeight: 500 }}>
               {formatUsd(magi)}
             </p>
           </div>
-
-        </form>
+          </div>
+        </InputPanel>
 
         {/* The answer, and the drawing that makes it physical. */}
         <div className="order-2 min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-2">
@@ -288,12 +301,16 @@ export function Planner() {
           </section>
         </div>
 
-        <form
+        <InputPanel
+          as="form"
           aria-label="Your household"
-          className="order-3 min-w-0 space-y-4 lg:col-start-1 lg:row-start-2"
+          label="Your household"
+          meta={`${progress.filled} of ${progress.total} details`}
+          className="order-3 min-w-0 lg:col-start-1 lg:row-start-2"
           noValidate
           onSubmit={(e) => e.preventDefault()}
         >
+          <div className="space-y-4">
           <div {...seen("familySize")}>
             <Field
               label="Tax family size"
@@ -367,7 +384,8 @@ export function Planner() {
             total={progress.total}
             missingLabel={progress.next ?? undefined}
           />
-        </form>
+          </div>
+        </InputPanel>
       </div>
 
       {/* What the levers are allowed to be. Below the answer, because the

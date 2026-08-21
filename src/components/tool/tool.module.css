@@ -1,0 +1,342 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+ * THE TOOL PAGE — the home page's language, carried onto the five instruments.
+ *
+ * WHY THIS FILE EXISTS. The hub was redesigned and the five tool pages were
+ * not. Put `/` and `/loans` side by side at 1440 and they read as two products:
+ * the hub leads with Instrument Serif at 48.8px, moves paper → ruled strip →
+ * cards → ink → colophon, and gives each tool a confident accent; `/loans` led
+ * with a grotesk h1, ran one continuous pale surface from the header to the
+ * footer, and spent its teal on a single hairline. This file is the missing
+ * half, and it is ONE file used by all five tools so the five cannot drift
+ * apart again — which is exactly how they got here.
+ *
+ * WHAT IS QUOTED FROM home.module.css, deliberately and near-verbatim:
+ *
+ *   • THE MASTHEAD is the hub's hero, minus the panel. Hairline eyebrow rule +
+ *     10.5px mono small caps, a serif h1 on the SAME rung ladder the hub's
+ *     section titles use, a dim lead at 16px, a mono claim strip with the
+ *     separator owned by the item BEFORE it, and the whole thing closed by a
+ *     1px ink rule — `.hero` does the same.
+ *   • THE INK GROUND. The hub has two centres of gravity that are not its
+ *     headline: the instrument panel and the trust band, both `--panel` with
+ *     their own hairline grid. A tool page gets one, and it is the verdict —
+ *     the sentence the reader came for. See ToolVerdict.tsx for the token
+ *     remap that makes every ported component render correctly on it.
+ *   • THE BANDS ARE NOT ALL THE SAME WEIGHT. masthead (most air) → verdict
+ *     (ink) → workbench (paper, tightest) → reading (a colophon). The numbers
+ *     below are that crescendo, in the same order as `.heroInner`'s.
+ *
+ * WHAT IS NOT QUOTED: the drafting grid behind the hero. Full-bleed is what
+ * makes it read as a ground rather than as a rectangle, and a tool page's bands
+ * live inside a centred measure. It appears where it CAN be full-bleed of its
+ * own box — inside the verdict panel — and nowhere else.
+ *
+ * NO COLOUR VALUE APPEARS IN THIS FILE. Every one is a token from globals.css,
+ * which is where both themes and every contrast ratio are recorded. The page
+ * takes its accent from `data-section` on the section layout's wrapper, so all
+ * five identities come out of one stylesheet.
+ * ═════════════════════════════════════════════════════════════════════════ */
+
+.root {
+  --hair: color-mix(in srgb, var(--ink) 15%, transparent);
+  --hair-soft: color-mix(in srgb, var(--ink) 7%, transparent);
+}
+
+/*
+ * ONE MEASURE FOR THE WHOLE PAGE, and it is the shell's own.
+ *
+ * `max-w-6xl px-4` is what the breadcrumb trail, the section rail and the
+ * section footer are already set to. Anything else here puts the h1 eight
+ * pixels off the crumb above it, which is the kind of misalignment nobody can
+ * name and everybody can see. The five tools were previously split between
+ * max-w-5xl and max-w-6xl; they are now one.
+ */
+.shell {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+
+/* Small caps mono: the label voice of the whole page, lifted from `.tag`. */
+.tag {
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+/* ──────────────────────────────────────────────────────────── masthead ── */
+
+/*
+ * THE STACK HAD TO GET SHORTER BEFORE IT COULD GET BIGGER.
+ *
+ * Breadcrumb, then a sub-nav band, then an h1, then a standfirst: four ruled
+ * rows before the tool, and the h1 was the smallest thing on the hub's ladder.
+ * The rail now sits INSIDE this band rather than above it as a band of its own
+ * (see `.rail`), which buys back a hairline and a row of padding, and the h1
+ * spends it — up two rungs, in the serif.
+ */
+/*
+ * FULL-BLEED, LIKE THE HUB'S HERO. The rule that closes this band runs to the
+ * edge of the viewport and the type inside it sits on the shell's measure —
+ * `.hero` in home.module.css does exactly that, and it is what makes a band
+ * read as a band rather than as a wide box.
+ */
+.masthead {
+  border-bottom: 1px solid var(--ink);
+}
+
+.mastheadInner {
+  padding-block: clamp(14px, 2.2vw, 26px) clamp(14px, 2vw, 24px);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 11px;
+}
+
+.eyebrowRule {
+  flex: 0 0 34px;
+  height: 1px;
+  background: var(--ink);
+}
+
+/*
+ * AUTHORITY WITHOUT WEIGHT — the hub's note, applied one rung lower.
+ *
+ * Instrument Serif ships weight 400 only, so size and fit have to do the work:
+ * the tracking closes as it grows, and there is no synthesised bold anywhere
+ * near it. This runs one rung under the hub's display (which is a hub headline,
+ * not a page title) and one rung OVER the section titles beneath it, so a tool
+ * page has the same three-tier ladder the hub does rather than an h1 and an h2
+ * three pixels apart.
+ */
+.title {
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(var(--text-step-3), 4.2vw, var(--text-step-5));
+  line-height: 1.02;
+  letter-spacing: -0.028em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 13px 0 0;
+  max-width: 52ch;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--dim);
+}
+
+/* The claim strip. The separator belongs to the item BEFORE it — written the
+   other way round, a strip that wraps starts its second line with a floating
+   hairline. */
+.claims {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 0;
+  margin: 14px 0 0;
+  padding: 9px 0 0;
+  border-top: 1px solid var(--hair);
+  list-style: none;
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.claims li:not(:last-child)::after {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 9px;
+  margin-inline: 11px;
+  vertical-align: -1px;
+  background: var(--hair);
+}
+
+.mastheadMeta {
+  margin-top: 14px;
+}
+
+/* ──────────────────────────────────────────────────────────────── rail ── */
+
+/*
+ * The section rail, folded into the masthead.
+ *
+ * It used to be its own hairline-ruled band under the breadcrumb — a third
+ * horizontal rule in the first 130px of the page — and two of the five sections
+ * had no rail at all, so `/aca` and `/property` were one click further from
+ * their own methodology than `/loans` was. One component, every section, one
+ * fewer band.
+ *
+ * `min-height: 44px` on the link is the touch floor and is not negotiable; the
+ * saving comes from the row's own padding, not from the target.
+ */
+.rail {
+  border-bottom: 1px solid var(--rule);
+}
+
+/* `.railList` carries `.shell` as well, and `.shell` is declared FIRST in this
+   file — so a bare `margin: 0` here silently won its `margin-inline: auto` and
+   pinned the whole rail to the left edge while the breadcrumb above it stayed
+   centred. Only the block margins are reset. */
+.railList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 18px;
+  margin-block: 0;
+  list-style: none;
+}
+
+.railLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--dim);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.railLink:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* The page you are on, marked in the section's own accent and by a rule under
+   it — colour never does the work alone. */
+.railLinkCurrent {
+  color: var(--ink);
+  box-shadow: inset 0 -2px 0 0 var(--signal);
+}
+
+/* ─────────────────────────────────────────────────────────── workbench ── */
+
+/* The tightest band on the page: this is where the reader works, and air
+   between a field and the answer it moves is air between cause and effect. */
+.workbench {
+  padding-block: clamp(20px, 2.6vw, 30px) clamp(24px, 3vw, 36px);
+}
+
+/* ────────────────────────────────────────────────────── the input panel ── */
+
+/*
+ * A DESIGNED PANEL, NOT A BORDERED BOX.
+ *
+ * The complaint that started the hub redesign was "it reads like a form", and
+ * the input column was still exactly that: one hairline rectangle with fields
+ * in it and no internal hierarchy at all. Three things changed and none of them
+ * is decoration — a ruled head that names what the panel is and how far through
+ * it you are, a recessed `--band` ground so the answer beside it reads as the
+ * lit surface, and a 2px accent seam on the leading edge that ties the panel to
+ * the section it belongs to.
+ */
+.panel {
+  position: relative;
+  border: 1px solid var(--rule);
+  border-inline-start: 2px solid var(--signal);
+  border-radius: var(--radius-atlas);
+  background: var(--band);
+}
+
+.panelHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 14px;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-data);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.panelHeadName {
+  color: var(--ink);
+}
+
+.panelBody {
+  padding: 16px;
+}
+
+@media (min-width: 640px) {
+  .panelBody {
+    padding: 18px 20px 20px;
+  }
+}
+
+/* A hairline-ruled foot for the panel's own actions, so Continue/Back read as
+   the panel's controls rather than as two buttons that happen to be nearby. */
+.panelFoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+
+/* ────────────────────────────────────────────────────── the ruled strip ── */
+
+/*
+ * The hub's proof row, at a tool page's scale: a recessed strip carrying what
+ * the page can say about ITSELF — how complete the inputs are, when the rules
+ * were last checked. It is the third surface, and it is what stops the page
+ * being paper, ink, paper.
+ */
+.strip {
+  padding: 12px 16px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-atlas);
+  background: var(--band);
+}
+
+/* ──────────────────────────────────────────────────────────── reading ── */
+
+/* The colophon. It closes the page; it does not restate it. */
+.reading {
+  padding-block: clamp(24px, 3vw, 40px);
+  border-top: 1px solid var(--hair-soft);
+}
+
+/*
+ * SERIF STAYS RATIONED — TWO PLACES ON A TOOL PAGE.
+ *
+ * The h1 and the verdict, and that is the whole list. The hub allows itself
+ * four because it has no instrument on it; a tool page has nine plans, a ranked
+ * ledger and a timeline to keep legible, and a third serif register competing
+ * with those would be the "three people built this" failure in reverse. The
+ * prose h2s below stay in the display face at `--text-step-2`, which is where
+ * globals.css puts them and where a body heading belongs.
+ *
+ * What the reading band gets instead is the hub's `.sectionHead` rule: a mono
+ * label and a 1px ink line, so the colophon is announced rather than merely
+ * arriving.
+ */
+.readingHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 24px;
+  margin: 0 0 22px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink);
+}

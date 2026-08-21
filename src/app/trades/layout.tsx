@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { TRADE_IDS, TRADE_RULES } from "@/engines/trades";
+import { SectionRail } from "@/components/tool/SectionRail";
 
 /* Layout, touch and print behaviour only — no tokens, no colour values. The
    section's identity still comes entirely from `data-section` + globals.css.
@@ -42,7 +43,12 @@ export default function TradesSectionLayout({ children }: { children: ReactNode 
      * to nine page files.
      */
     <div data-section="trades" className="flex min-h-full flex-1 flex-col">
-      <div className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">{children}</div>
+      <SectionRail section="trades" label="Trades section" />
+
+      {/* The container moved onto the pages. See the note in paycheck/layout —
+          a tool page cannot lay out a band from inside somebody else's column,
+          and this section's nine pages each already knew their own measure. */}
+      <div className="flex-1">{children}</div>
 
       {/*
         Every page in this section carries the pricing warning, not just the

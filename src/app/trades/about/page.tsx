@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <article className="density-reading mx-auto">
+    <article className="density-reading mx-auto px-4 py-6">
       <h1>About the trades document engine</h1>
       <p>
         Bracketsight exists because solo and small-crew contractors quote jobs in text

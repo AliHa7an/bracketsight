@@ -182,6 +182,20 @@
   --panel-flag: #e4714a;
   --panel-hair: color-mix(in srgb, var(--panel-text) 14%, transparent);
 
+  /* THE SECTION'S OWN ACCENT, ON THE INK GROUND.
+     `--panel-teal` and `--panel-flag` are fixed: they belong to the hub's one
+     instrument panel, which is the same object on every page. A tool page's ink
+     band is not — it is that tool's answer, and it has to carry that tool's
+     identity or the ink ground erases the very thing the five sections exist to
+     express. These two resolve to the section's DARK signal and DARK flag,
+     which are already tuned for a dark ground and are never theme-swapped, so
+     the ink band reads the same in both themes exactly as `--panel` does.
+     Measured against both panel grounds (#101A2B light, #18222F dark), worst
+     case trades signal 6.45 and property flag 6.03 — every one clears AA, and
+     all but two clear AAA. See the ratio table above for the tokens. */
+  --panel-accent: var(--dk-signal);
+  --panel-alert: var(--dk-flag);
+
   --paper: var(--color-paper);
   --ink: var(--color-ink);
   --rule: var(--color-rule);
@@ -250,6 +264,12 @@
   --hairline-strong: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
   --paper-raised: color-mix(in srgb, var(--ink) 3%, var(--paper));
   --paper-sunken: color-mix(in srgb, var(--ink) 5%, var(--paper));
+
+  /* Re-derived here for the same reason the composites are: a custom property
+     whose value contains `var()` resolves on the element that declares it, so
+     the `:root` copy would hand every section the shell's teal. */
+  --panel-accent: var(--dk-signal);
+  --panel-alert: var(--dk-flag);
 }
 
 /* Loans — "federal ledger, redrawn". */

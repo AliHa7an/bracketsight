@@ -4,6 +4,7 @@ import Link from "next/link";
 import { STATE_IDS, STATE_RULES, TRADE_IDS, TRADE_RULES } from "@/engines/trades";
 
 import TakeoffBuilder from "@/components/trades/TakeoffBuilder";
+import { ToolShell } from "@/components/tool/ToolShell";
 import { LastVerified } from "@/components/ui";
 import { formatDate } from "@/components/ui/format";
 import { absoluteUrl } from "@/lib/site";
@@ -41,34 +42,25 @@ export default function HomePage() {
   const citation = rawCitation ? renderableCitation(rawCitation) : undefined;
 
   return (
-    <div className="space-y-8">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      {/* The hero is the tool. One line of orientation, then the sheet. */}
-      <div className="no-print">
-        <h1>Price the job on a takeoff sheet</h1>
-        <p className="text-dim mt-1" style={{ maxWidth: "var(--measure)" }}>
-          Set the trade and the measurements; every line prices itself. Edit any figure and
-          the total moves with it — and the sheet you build is the document your customer
-          receives.
-        </p>
-      </div>
-
-      <TakeoffBuilder />
-
-      {/* Everything below the fold is prose, at reading density. */}
-      <div className="no-print density-reading hairline-t pt-8">
-        {citation ? (
+    /* One frame, shared with the other four tools. See ToolShell. */
+    <ToolShell
+      section="trades"
+      title="Price the job on a takeoff sheet"
+      standfirst="Set the trade and the measurements; every line prices itself. Edit any figure and the total moves with it — and the sheet you build is the document your customer receives."
+      meta={
+        citation ? (
           <LastVerified
             date={citation.lastVerified}
             ruleSetVersion={TRADE_RULES.decks.ruleSetVersion}
             citation={{ label: citation.label, url: citation.url }}
           />
-        ) : null}
-
-        <h2>How this estimate is built</h2>
+        ) : undefined
+      }
+      readingLabel="The workings"
+      readingMeta={`prices verified ${formatDate(citation?.lastVerified ?? "")}`}
+      reading={
+        <div className="no-print density-reading">
+          <h2>How this estimate is built</h2>
         <p>
           Each job decomposes into standard assemblies — a deck becomes footings, framing,
           decking, railing and stairs — and each assembly carries a quantity formula, a
@@ -129,7 +121,15 @@ export default function HomePage() {
           <span className="num">{formatDate(citation?.lastVerified ?? "")}</span>. Nothing
           you enter leaves your browser.
         </p>
-      </div>
-    </div>
+        </div>
+      }
+    >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {/* The hero is the tool. The estimate band leads it. */}
+      <TakeoffBuilder />
+    </ToolShell>
   );
 }

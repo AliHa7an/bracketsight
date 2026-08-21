@@ -60,6 +60,8 @@ import {
 } from "@/components/ui";
 import { formatCents, formatDate, formatPct, usd } from "@/components/ui/format";
 import { DUR_BASE, DUR_SIGNATURE, prefersReducedMotion } from "@/components/ui/motion";
+import { InputPanel } from "@/components/tool/InputPanel";
+import { ToolVerdict, VerdictFigure } from "@/components/tool/ToolVerdict";
 import { saveEstimate } from "@/lib/trades/store";
 import { renderableCitation } from "@/lib/trades/citation";
 
@@ -367,14 +369,52 @@ export default function TakeoffBuilder() {
   } · ${ACCESS_OPTIONS.find((a) => a.value === access)?.label ?? ""}`;
 
   return (
-    <div className="relative">
+    <div className="relative flex flex-col gap-6">
+      {/*
+       * THE ESTIMATE, ON INK — and framed as an estimate every time it is
+       * shown. The band leads the tool; the sheet below keeps its own header
+       * range because the sheet is the document that prints and the band is
+       * `no-print`. The word "estimate" is in the label, in the sentence and in
+       * the flag, because this is the one figure on the site a reader might
+       * mistake for a commitment to a customer.
+       *
+       * `--flag` is trades orange and marks unverified pricing, which is what
+       * every ruleset in this section still is. Icon and word both.
+       */}
+      <ToolVerdict
+        className="no-print"
+        label="Estimated range"
+        status={`${rules.label} — ${jobType.label}`}
+        sentenceProps={{ "aria-live": "polite" }}
+        note={
+          <>
+            At <span className="num">{formatPct(estimate.profitBps / 100)}</span> profit you
+            clear <span className="num">{formatCents(estimate.totals.profitCents)}</span> on
+            this job — <span className="num">{formatCents(perPointCents)}</span> for each
+            point you add.
+          </>
+        }
+        flag={{
+          word: "Unverified pricing",
+          text: "Every unit cost, labour hour and multiplier here is placeholder reference data. This is an estimate, never a binding quote — actual costs vary with site conditions.",
+        }}
+      >
+        This {jobType.label.toLowerCase()} estimates at{" "}
+        <VerdictFigure>{usd(estimate.range.lowCents)}</VerdictFigure> to{" "}
+        <VerdictFigure>{usd(estimate.range.highCents)}</VerdictFigure>.
+      </ToolVerdict>
+
       <div className="takeoff-grid grid gap-6 lg:grid-cols-[minmax(0,15rem)_minmax(0,1fr)]">
         {/* ── the job ─────────────────────────────────────────────────── */}
-        <form
-          className="no-print flex flex-col gap-5"
+        <InputPanel
+          as="form"
+          className="no-print"
+          label="The job"
+          meta={REGION_LABELS[region]}
           aria-label="Describe the job"
           onSubmit={(e) => e.preventDefault()}
         >
+          <div className="flex flex-col gap-5">
           <Field label="Trade" htmlFor="trade">
             <RadioGroup
               name="trade"
@@ -522,7 +562,8 @@ export default function TakeoffBuilder() {
             derive={() => ({ delta: perPointCents, per: "to the price" })}
             verbs={{ up: "adds", down: "takes off" }}
           />
-        </form>
+          </div>
+        </InputPanel>
 
         {/* ── the sheet ───────────────────────────────────────────────── */}
         <section aria-labelledby="sheet-heading" className="min-w-0">

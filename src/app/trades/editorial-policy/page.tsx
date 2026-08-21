@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function EditorialPolicyPage() {
   return (
-    <article className="density-reading mx-auto">
+    <article className="density-reading mx-auto px-4 py-6">
       <h1>Editorial policy</h1>
 
       <h2>What decides, what explains</h2>

@@ -27,6 +27,7 @@ import {
 } from "@/components/ui";
 import { CompMap } from "./CompMap";
 import { EvidenceSummary } from "./EvidenceSummary";
+import { InputPanel } from "@/components/tool/InputPanel";
 import { VerdictBlock } from "./VerdictBlock";
 import { formatNumber, todayIso, usd } from "@/lib/property/format";
 
@@ -197,8 +198,30 @@ export function CheckTool({
   const taxBps = county?.estimatedTaxRateOnAssessedBps ?? 0;
 
   return (
-    <div className="flex flex-col gap-10">
-      {/* ---- The inputs -------------------------------------------------- */}
+    <div className="flex flex-col gap-8">
+      {/*
+       * THE VERDICT LEADS. It used to sit under eleven parcel fields and a
+       * probe, which meant the one thing the visitor came for — file, or do
+       * not bother — was a screen and a half down on a laptop and four screens
+       * down on a phone. The check still opens on the sample parcel's real
+       * numbers, so there is an answer to lead with from the first frame.
+       */}
+      {result === null ? (
+        <ErrorState
+          cause="A detail below is outside the range the comparable filters can use."
+          fix="Correct the highlighted field and the verdict comes straight back — nothing is lost."
+        />
+      ) : "error" in result ? (
+        <ErrorState
+          cause={result.error}
+          fix={`Widen the details — living area within ±20% of your neighbours' is the usual sticking point — or pick a different starting parcel. ${county?.countyName ?? "This county"} needs at least three usable comparables before any number is honest.`}
+        />
+      ) : (
+        <VerdictBlock check={result.check} />
+      )}
+
+      {/* ---- The inputs, in a panel rather than loose on the page --------- */}
+      <InputPanel label="Your home" meta="the details on your notice">
       <div className="grid gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
         <Field
           htmlFor="county"
@@ -363,6 +386,7 @@ export function CheckTool({
           </p>
         </div>
       </div>
+      </InputPanel>
 
       {/* M3 — the derivative, not the level. Drag it and the verdict follows. */}
       {county ? (
@@ -388,22 +412,10 @@ export function CheckTool({
         </div>
       ) : null}
 
-      {/* ---- The answer -------------------------------------------------- */}
+      {/* ---- The evidence behind it --------------------------------------- */}
       <div className="flex flex-col gap-10">
-        {result === null ? (
-          <ErrorState
-            cause="A detail above is outside the range the comparable filters can use."
-            fix="Correct the highlighted field and the verdict comes straight back — nothing is lost."
-          />
-        ) : "error" in result ? (
-          <ErrorState
-            cause={result.error}
-            fix={`Widen the details — living area within ±20% of your neighbours' is the usual sticking point — or pick a different starting parcel. ${county?.countyName ?? "This county"} needs at least three usable comparables before any number is honest.`}
-          />
-        ) : (
+        {result !== null && "check" in result ? (
           <>
-            <VerdictBlock check={result.check} />
-
             <section aria-labelledby="comp-map-heading">
               <h2 id="comp-map-heading">The Comp Map</h2>
               <p className="mt-2 mb-4 max-w-[68ch] text-dim">
@@ -428,7 +440,7 @@ export function CheckTool({
               </p>
             )}
           </>
-        )}
+        ) : null}
       </div>
 
       <p

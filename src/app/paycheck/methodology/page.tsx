@@ -199,7 +199,7 @@ export default function MethodologyPage() {
   });
 
   return (
-    <article className="flex flex-col gap-8">
+    <article className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-8">
       <header className="flex flex-col gap-3">
         <h1>Methodology</h1>
         <AnswerBox>
