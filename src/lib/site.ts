@@ -49,11 +49,43 @@ function normalizeOrigin(raw: string | undefined): string | null {
 
 /**
  * The canonical origin, with no trailing slash: "https://example.com".
- * Falls back to localhost when unset, which is correct in development and
- * loudly wrong in production — the failure a missing env var should produce.
+ *
+ * In development a missing value falls back to localhost, which is correct.
+ *
+ * In production it FAILS THE BUILD, and that is not defensive programming —
+ * it is a fix for something that actually happened. `NEXT_PUBLIC_*` is inlined
+ * by the bundler at build time, not read at runtime, so setting this only on
+ * the running server does nothing at all. When the first deploy went out
+ * without it, the build succeeded and the site served every canonical, every
+ * `og:url`, the `robots.txt` sitemap line and all 53 sitemap entries as
+ * `http://localhost:3000`. Search Console reported 53 errors out of 53 URLs,
+ * and every page was quietly telling Google that its real address was one no
+ * crawler can reach.
+ *
+ * A silent wrong origin is worse than a failed build, because the build looks
+ * fine and the damage only surfaces days later in someone else's dashboard.
+ * So: fail here, at the only moment the value can still be corrected.
  */
-export const SITE_URL: string =
-  normalizeOrigin(process.env.NEXT_PUBLIC_SITE_URL) ?? DEV_ORIGIN;
+function resolveSiteUrl(): string {
+  const configured = normalizeOrigin(process.env.NEXT_PUBLIC_SITE_URL);
+  if (configured) return configured;
+
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "NEXT_PUBLIC_SITE_URL is not set, so canonicals, og:url, robots.txt and " +
+        "sitemap.xml would all be emitted as " +
+        DEV_ORIGIN +
+        ". It is inlined at BUILD time — setting it on the running server has " +
+        "no effect. Set it in the build environment (on Vercel: Project " +
+        "Settings > Environment Variables, Production, then redeploy) as " +
+        "e.g. https://bracketsight.com",
+    );
+  }
+
+  return DEV_ORIGIN;
+}
+
+export const SITE_URL: string = resolveSiteUrl();
 
 /** Absolute URL for a root-relative path. `absoluteUrl("/contact")`. */
 export function absoluteUrl(path: string): string {
