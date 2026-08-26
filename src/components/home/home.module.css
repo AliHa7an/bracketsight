@@ -1624,3 +1624,20 @@
      how the closed and open panel are told apart at a glance. It simply
      arrives rather than turning. */
 }
+
+/* ──────────────────────────────────────────────────────────── ad slot ── */
+
+/*
+ * The hub's single mapped placement, at the foot of the page. Measure and
+ * rhythm only — the reserved height belongs to `AdSlot`.
+ *
+ * Applied to the slot itself rather than to a wrapper: with
+ * NEXT_PUBLIC_ADS_MODE=off the placement renders no element, so the hub's
+ * markup is unchanged from the page that has never carried an ad.
+ */
+.adSlot {
+  max-width: 1280px;
+  margin-inline: auto;
+  margin-block: 0 clamp(28px, 3.4vw, 44px);
+  padding-inline: var(--gutter);
+}

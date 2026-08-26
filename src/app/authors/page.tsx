@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
+
+import { POLICY_UPDATED, pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
 import { PolicyPage, type PolicySection } from "@/components/layout/PolicyPage";
 import { FactTable } from "@/components/ui";
 import { CONTACT_EMAIL, MAINTAINER, SECTIONS, SITE_NAME, sectionHref } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Who writes and checks this — authorship, review and verification",
-  description:
-    "Who is accountable for every figure here, how a value is verified against a primary source, what 315 checked rows found, and which reviews are still outstanding.",
-  alternates: { canonical: "/authors" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/authors");
 
 /**
  * Authors and reviewers.
@@ -32,7 +34,11 @@ export const metadata: Metadata = {
  * when the page was re-laid-out. The "Not engaged" column in particular stays
  * exactly as it is until a reviewer is actually engaged.
  */
-const UPDATED = "2026-08-19";
+/* The visible "Last updated" stamp AND the sitemap's <lastmod> for this
+   page, from one constant. Four policy pages each held their own copy of this
+   date, which is four chances for the stamp a reader sees to disagree with the
+   date submitted to a crawler. See src/lib/seo/routes.ts. */
+const UPDATED = POLICY_UPDATED;
 
 /* VERIFICATION-STATUS.md → "Totals". Rows are individual numeric constants and
    encoded legal rules; one row, one primary source or the word UNRESOLVED. */

@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
 import { CONTACT_EMAIL, DISCLAIMER, SITE_NAME } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Contact — report a wrong figure or a changed rule",
-  description:
-    "Email a correction, a rule that has changed, or a figure that looks wrong. Every report is checked against the primary source and the fix is logged in the changelog.",
-  alternates: { canonical: "/contact" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/contact");
 
 /**
  * Contact.

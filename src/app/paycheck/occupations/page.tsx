@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { OccupationsExplorer } from "@/components/paycheck/OccupationsExplorer";
 import { resolveRules } from "@/engines/paycheck";
@@ -6,13 +8,14 @@ import { usd } from "@/lib/paycheck/format";
 import { AnswerBox, FactTable, LastVerified } from "@/components/ui";
 import { rulesMeta, TAX_YEAR } from "@/lib/paycheck/rules-meta";
 import { ContentsRail } from "@/components/content";
+import { AdPlacement } from "@/lib/ads";
 
-export const metadata: Metadata = {
-  title: "Qualified Tipped Occupations — Is Your Job on the IRS List?",
-  description:
-    "Search the IRS qualified tipped occupation list. Only tips earned in a listed occupation qualify for the OBBBA tips deduction — check your job and its code.",
-  alternates: { canonical: "/paycheck/occupations" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/paycheck/occupations");
 
 const link =
   "text-ink underline decoration-rule underline-offset-4 hover:decoration-current";
@@ -225,6 +228,11 @@ export default function OccupationsPage() {
           published strings as well as the codes do.
         </p>
       </section>
+
+      {/* Foot only: the explorer and the whole occupation list are above, and
+          nothing stands between a reader and the code they came to look up.
+          See src/lib/ads/placements.ts, "index-foot". */}
+      <AdPlacement id="index-foot" />
     </div>
   );
 }

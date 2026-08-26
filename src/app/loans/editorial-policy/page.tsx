@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { ErrorState } from "@/components/ui";
 import { CONTACT_EMAIL } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Editorial Policy — Student Loan Rule Verification",
-  description:
-    "Standards behind the student loan engine: primary sources only, credentialed review before launch, a public corrections process, full funding disclosure.",
-  alternates: { canonical: "/loans/editorial-policy" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/loans/editorial-policy");
 
 export default function EditorialPolicyPage() {
   return (

@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { counties, filingFeeSummary, nextDeadline } from "@/engines/property";
 import { AnswerBox, FactTable, LastVerified } from "@/components/ui";
 import { formatDateLong, formatNumber, todayIso } from "@/lib/property/format";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/property/counties" },
-  title: "Property Tax Appeal Rules by County — Deadlines, Fees, Forms",
-  description:
-    "County-by-county appeal playbooks: deadline, filing fee, appeal body, forms, and evidence standard — each rule cited to the county authority.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/property/counties");
 
 export default function CountiesPage() {
   const asOf = todayIso();

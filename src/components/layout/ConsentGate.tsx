@@ -15,22 +15,23 @@ import { type ConsentRecord, readConsent, subscribeToConsent } from "@/lib/conse
  * requested, not after.
  *
  * ── Where the AdSense loader goes ──────────────────────────────────────────
- * It is deliberately not here. Nothing in this repository loads an ad network,
- * and the site has never served an ad. When it does, exactly one thing is
- * added, and it is added inside this component's children:
+ * Here, and nowhere else. `src/lib/ads/AdsRuntime.tsx` is the single mount
+ * point, it is rendered once from the root layout, and all it does is:
  *
  *   <ConsentGate>
- *     <Script
- *       async
- *       strategy="afterInteractive"
- *       crossOrigin="anonymous"
- *       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-…"
- *     />
+ *     <AdSenseLoader />
  *   </ConsentGate>
  *
- * With no ad script anywhere on the page, an <AdSlot> renders its reserved,
- * labelled, empty box and nothing else — which is why none is placed on any
- * page before approval.
+ * TODAY THAT SUBTREE DOES NOT EXIST. `AdsRuntime` returns `null` unless
+ * `NEXT_PUBLIC_ADS_MODE=on`, which is a build-time constant and is unset — so
+ * this build contains no ad loader, emits no script tag, and contacts no
+ * third-party origin. The site has never served an ad. See MONETISATION.md for
+ * the exact steps that change it and for the crawl that verifies the claim.
+ *
+ * Two gates, deliberately independent. The switch decides whether an ad
+ * network is part of the product at all; this gate decides whether a
+ * particular reader has agreed to it. Neither one substitutes for the other,
+ * and the loader is behind both.
  *
  * ── Withdrawal ─────────────────────────────────────────────────────────────
  * The gate is subscribed, not read once. A reader who clears their choice from

@@ -5,6 +5,9 @@ build/
 dist/
 .turbo/
 *.tsbuildinfo
+
+# Written by `npm run seo:report` — a build artefact, never a source of truth.
+seo-report.json
 next-env.d.ts
 .DS_Store
 .vercel

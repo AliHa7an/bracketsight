@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import {
   ENGINE_VERSION,
@@ -11,12 +13,12 @@ import {
 import { FactTable } from "@/components/ui";
 import { formatDate } from "@/components/ui/format";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/aca/changelog" },
-  title: "ACA Changelog — Rule Changes, Dated and Cited",
-  description:
-    "How the subsidy ruleset is versioned, what triggers an entry, which rule files carry which dates, and every dated change made so far.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/aca/changelog");
 
 export default function ChangelogPage() {
   const rules = getRules();

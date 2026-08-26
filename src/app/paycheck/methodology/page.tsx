@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import {
   computeCarLoanDeduction,
@@ -21,12 +23,12 @@ import { rulesMeta, TAX_YEAR } from "@/lib/paycheck/rules-meta";
 import { AnswerBox, FactTable, LastVerified, SourceCitation } from "@/components/ui";
 import { ContentsRail } from "@/components/content";
 
-export const metadata: Metadata = {
-  title: "OBBBA Deduction Methodology — Every Formula",
-  description:
-    "The exact formulas behind the OBBBA tips, overtime, senior and car-loan deductions: caps, shared-MAGI phase-outs, the bracket table, and integer-cent rounding.",
-  alternates: { canonical: "/paycheck/methodology" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/paycheck/methodology");
 
 const link =
   "text-ink underline decoration-rule underline-offset-4 hover:decoration-current";

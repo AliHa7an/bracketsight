@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { CONTACT_EMAIL } from "@/lib/site";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/trades/editorial-policy" },
-  title: "Trades Editorial Policy — Corrections, Review, Funding",
-  description:
-    "How the pricing and state-law pages are written, reviewed, corrected and funded. Deterministic code decides; humans review; errors get logged.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/trades/editorial-policy");
 
 export default function EditorialPolicyPage() {
   return (

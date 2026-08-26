@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { TRADE_IDS, TRADE_RULES } from "@/engines/trades";
@@ -20,16 +19,6 @@ import "./takeoff-sheet.css";
  * This is the phone-in-a-truck section: the ported components keep their larger
  * touch targets and their stacked full-size inputs below `md`.
  */
-
-export const metadata: Metadata = {
-  title: {
-    default: "Free Estimate Builder for Trades — Itemised, With Ranges",
-    template: "%s · Trades · Bracketsight",
-  },
-  description:
-    "Build an itemised takeoff with honest price ranges, turn it into an invoice that matches to the cent, and see which clauses your state requires.",
-};
-
 export default function TradesSectionLayout({ children }: { children: ReactNode }) {
   return (
     /*

@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { CONTACT_EMAIL } from "@/lib/site";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/aca/editorial-policy" },
-  title: "ACA Editorial Policy — Review, Corrections, Funding",
-  description:
-    "How the subsidy cliff pages are written, who reviews the tax rules, how a correction reaches the changelog, and exactly where the money comes from.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/aca/editorial-policy");
 
 export default function EditorialPolicyPage() {
   return (

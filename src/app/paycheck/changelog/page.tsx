@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { formatDate } from "@/lib/paycheck/format";
 import { rulesMeta } from "@/lib/paycheck/rules-meta";
 import { ErrorState } from "@/components/ui";
 
-export const metadata: Metadata = {
-  title: "OBBBA Deduction Changelog — Dated, Cited Changes",
-  description:
-    "Every rule change behind the OBBBA deduction numbers, dated and cited. When IRS guidance moves, this page says exactly what changed in the engine and when.",
-  alternates: { canonical: "/paycheck/changelog" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/paycheck/changelog");
 
 const link =
   "text-ink underline decoration-rule underline-offset-4 hover:decoration-current";

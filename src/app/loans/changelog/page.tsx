@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
-export const metadata: Metadata = {
-  title: "Student Loan Rule Changelog — Dated and Cited",
-  description:
-    "Dated record of every rule change, verification and correction in the federal repayment engine, each entry carrying its own primary citation.",
-  alternates: { canonical: "/loans/changelog" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/loans/changelog");
 
 interface Entry {
   date: string;

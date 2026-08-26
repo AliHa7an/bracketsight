@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { counties } from "@/engines/property";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/property/sources" },
-  title: "Property Tax Sources — County Rules, Cited and Dated",
-  description:
-    "The primary sources behind every county deadline, fee, form and evidence standard, with last-verified dates. Unverified values stay flagged until confirmed.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/property/sources");
 
 export default function SourcesPage() {
   return (

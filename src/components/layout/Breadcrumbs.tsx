@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { absoluteUrl, breadcrumbTrail } from "@/lib/site";
+import { breadcrumbList, renderJsonLd } from "@/lib/seo/schema";
+import { breadcrumbTrail } from "@/lib/site";
 
 /**
  * Breadcrumbs, on every page except the hub.
@@ -26,24 +27,21 @@ export function Breadcrumbs() {
   const trail = breadcrumbTrail(pathname);
   if (trail.length === 0) return null;
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: trail.map((crumb, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      name: crumb.label,
-      // The final crumb is the page itself; Google's guidance allows it to omit
-      // the URL, and omitting it is the honest signal that it is not a link.
-      ...(index === trail.length - 1 ? {} : { item: absoluteUrl(crumb.href) }),
-    })),
-  };
+  /*
+   * Built by `src/lib/seo/schema.ts` from the same `trail` the <ol> below
+   * renders, so the markup can never describe a hierarchy the reader cannot
+   * see. The builder validates the node before serialising it, and it omits
+   * the final crumb's `item` — Google's guidance allows that for the page
+   * itself, and omitting it is the honest signal that the last crumb is not a
+   * link, which is exactly how it is rendered.
+   */
+  const markup = renderJsonLd(breadcrumbList(trail));
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: markup }}
       />
 
       <nav aria-label="Breadcrumb" className="mx-auto max-w-6xl px-4 pt-3">

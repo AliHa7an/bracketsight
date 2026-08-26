@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { allCitations, getRules } from "@/engines/aca";
 import { formatDate } from "@/components/ui/format";
 import { ContentsRail } from "@/components/content";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/aca/sources" },
-  title: "ACA Sources — Every Threshold, Cited and Dated",
-  description:
-    "The primary sources behind every poverty line, applicable percentage and repayment rule in the subsidy engine, with verification status and the gaps still open.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/aca/sources");
 
 /** What each rules file is, in the reader's terms rather than the engine's. */
 const TITLES: Record<string, string> = {

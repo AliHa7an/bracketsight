@@ -21,6 +21,7 @@ import {
   SourceCitation,
   WarningStack,
 } from "@/components/ui";
+import { AdPlacement } from "@/lib/ads";
 import {
   formatCents,
   formatDate,
@@ -30,6 +31,7 @@ import {
   todayIso,
 } from "@/lib/property/format";
 import { ContentsRail } from "@/components/content";
+import { countyRoute, routeMetadata } from "@/lib/seo";
 
 type Params = { state: string; county: string };
 
@@ -42,6 +44,16 @@ export function generateStaticParams(): Params[] {
 
 export const dynamicParams = false;
 
+/**
+ * Built through the shared registry builder, which asserts the same 60/155
+ * bounds every static route is held to. A county whose name is long enough to
+ * push the title past 60 characters fails the build with the county named,
+ * rather than shipping a title Google will rewrite.
+ *
+ * The canonical stays relative — the root layout owns `metadataBase`, so the
+ * origin is never repeated and a preview deployment never canonicalises to
+ * production.
+ */
 export async function generateMetadata({
   params,
 }: {
@@ -50,13 +62,19 @@ export async function generateMetadata({
   const { state, county } = await params;
   const rules = getCountyBySlug(state, county);
   if (!rules) return {};
-  return {
-    title: `${rules.countyName} Property Tax Appeal — Deadline, Fee, Forms`,
-    description: `How to appeal a ${rules.countyName} assessment: the deadline rule, the ${filingFeeSummary(rules)} filing fee, where to file, and the evidence that works — cited.`,
-    // Relative: the root layout owns `metadataBase`, so the origin is never
-    // repeated — and a preview deployment never canonicalises to production.
-    alternates: { canonical: `/property/counties/${state}/${county}` },
-  };
+
+  return routeMetadata(
+    countyRoute({
+      state,
+      county,
+      countyName: rules.countyName,
+      stateName: rules.stateName,
+      feeSummary: filingFeeSummary(rules),
+      // Only the sitemap consumes this, and it derives its own — see
+      // `src/lib/seo/freshness.ts`. Nothing in the <head> reads it.
+      lastModified: null,
+    }),
+  );
 }
 
 /** A deadline this close is the one high-stakes fact on the page. */
@@ -292,6 +310,15 @@ export default async function CountyPage({ params }: { params: Promise<Params> }
           </p>
         </section>
       )}
+
+      {/*
+        The county page's only slot, and it is mid-page rather than at the foot
+        on purpose: this page ENDS in a citation ledger, so a foot slot would
+        sit against the evidence. Mid also keeps it clear of the deadline
+        WarningStack near the top, which is a --flag block — the fact table and
+        a full prose section stand between them. See placements.ts.
+      */}
+      <AdPlacement id="reference-mid" className="mt-10" />
 
       <section className="mt-10">
         <h2>What are the appeal levels in {rules.countyName}?</h2>

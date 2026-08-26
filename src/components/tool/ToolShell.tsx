@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { ToolBoundary } from "@/components/ui";
+import { AdPlacement } from "@/lib/ads";
 import { SECTIONS, type SectionSlug } from "@/lib/site";
 
 import styles from "./tool.module.css";
@@ -29,6 +31,28 @@ import styles from "./tool.module.css";
  * The h1 and the standfirst are still each page's own words, and every link,
  * citation and disclosure the pages carried is passed straight through. This
  * component adds a frame; it does not edit a page's content.
+ *
+ * ── WHERE ADVERTISING MAY GO ON A TOOL PAGE, AND WHY IT IS DECIDED HERE ────
+ * Two slots, both after the workbench closes: `tool-below-answer` on the seam
+ * between the instrument and the reading band, `tool-foot` at the end of the
+ * written matter. Their reserved heights, permitted creative sizes and reasons
+ * are in `src/lib/ads/placements.ts`; nothing about them is decided in this
+ * file beyond where they sit.
+ *
+ * They are wired HERE rather than in the five section layouts, which is the
+ * more obvious place and the wrong one: a section layout wraps the tool page
+ * AND that section's methodology, sources, changelog and editorial policy, all
+ * of which are ad-free by rule. A slot in `loans/layout.tsx` would appear on
+ * every one of them. `ToolShell` is used by the five instruments and by
+ * nothing else, so a slot placed here lands on exactly the pages the map says
+ * it may.
+ *
+ * THE WORKBENCH IS WRAPPED IN `<ToolBoundary>`. That is the enforcement half
+ * of "never inside the input → result flow": an `<AdSlot>` rendered anywhere
+ * inside the instrument — by a tool, by a component a tool uses, by a future
+ * edit that looked harmless — throws in development naming the slot. The rule
+ * stops being a convention someone has to remember and becomes a property of
+ * the layout. See AdSlot.tsx.
  */
 
 export type ToolShellProps = {
@@ -102,7 +126,18 @@ export function ToolShell({
         </div>
       </header>
 
-      <div className={`${styles.shell} ${styles.workbench}`}>{children}</div>
+      {/* Everything the engine computes lives in here, and an ad cannot. */}
+      <ToolBoundary>
+        <div className={`${styles.shell} ${styles.workbench}`}>{children}</div>
+      </ToolBoundary>
+
+      {/* On the far side of the workbench's closing edge: after the answer,
+          after the ledger, after the trace, after the warnings. The class is
+          the page's own measure, applied to the slot itself rather than to a
+          wrapper — with the switch off the placement returns null and there is
+          no element on the page at all, which is what the pre-approval crawl
+          checks for. */}
+      <AdPlacement id="tool-below-answer" className={styles.adSlot} />
 
       {reading ? (
         <div className={`${styles.shell} ${styles.reading}`}>
@@ -113,6 +148,8 @@ export function ToolShell({
           {reading}
         </div>
       ) : null}
+
+      <AdPlacement id="tool-foot" className={styles.adSlot} />
     </div>
   );
 }

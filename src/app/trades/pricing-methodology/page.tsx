@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
 import {
@@ -25,12 +27,12 @@ import { formatCents, formatDate } from "@/components/ui/format";
 import { renderableCitation } from "@/lib/trades/citation";
 import { ContentsRail } from "@/components/content";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/trades/pricing-methodology" },
-  title: "Pricing Methodology — Where Every Number Comes From",
-  description:
-    "How Bracketsight estimates are computed: assemblies, waste factors, regional multipliers, overhead and profit — and the honest status of the v1 placeholder pricing data.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/trades/pricing-methodology");
 
 const REGION_IDS = Object.keys(REGION_LABELS) as RegionId[];
 

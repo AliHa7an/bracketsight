@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { listRuleCitations, resolveRules } from "@/engines/repayment";
 import { formatDate, formatMonths, usd } from "@/components/ui";
 
-export const metadata: Metadata = {
-  title: "Student Loan Rule Sources — Every Citation Dated",
-  description:
-    "The primary sources behind every rate, bracket, and threshold in the student loan repayment engine: what each one settles, what it does not, and when it was last read.",
-  alternates: { canonical: "/loans/sources" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/loans/sources");
 
 export default function SourcesPage() {
   const asOf = new Date().toISOString().slice(0, 10);

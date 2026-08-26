@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import {
   ENGINE_VERSION,
@@ -14,12 +16,12 @@ import {
 import { FactTable } from "@/components/ui";
 import { ContentsRail } from "@/components/content";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/aca/methodology" },
-  title: "Methodology — How the Premium Tax Credit Is Computed",
-  description:
-    "Every formula the subsidy engine runs: MAGI, the poverty-guideline lag, applicable-percentage interpolation, the benchmark, CSR bands, reconciliation, simplifications.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/aca/methodology");
 
 /** Percent formatted from basis points to a hundredth — the Form 8962 grain. */
 function pct(bps: number): string {

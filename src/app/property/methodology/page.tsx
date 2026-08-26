@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import {
   CONFIDENCE_HIGH_MIN,
@@ -13,12 +15,12 @@ import {
 import { formatCents, formatNumber, formatPct } from "@/lib/property/format";
 import { ContentsRail } from "@/components/content";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/property/methodology" },
-  title: "Methodology — The Statistics Behind the Assessment Check",
-  description:
-    "Every formula: comparable selection filters, median assessment ratios, the IAAO coefficient of dispersion, confidence scoring, and the verdict thresholds.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/property/methodology");
 
 export default function MethodologyPage() {
   return (

@@ -1,71 +1,64 @@
 import type { Metadata } from "next";
+
+import { faqPage, pageMetadata, renderJsonLdAll, webApplication } from "@/lib/seo";
 import Link from "next/link";
 import { formatUsd, fplFor, getRules, magiAtPctEdge } from "@/engines/aca";
 import { Planner } from "@/components/aca/Planner";
+import { ToolLinks } from "@/components/content";
 import { ToolShell } from "@/components/tool/ToolShell";
 import { AnswerBox, FactTable, LastVerified, SourceCitation } from "@/components/ui";
-import { absoluteUrl } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "ACA Subsidy Cliff Calculator — Distance to 400% FPL",
-  description:
-    "See exactly how far your household is from the 400% FPL subsidy cliff, what one more dollar of income costs, and which legal levers pull you back under. Free, no signup.",
-  alternates: { canonical: "/aca" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/aca");
 
-const webAppJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
+/*
+ * The tool, and the questions this page visibly answers.
+ *
+ * Both go through the builders in `src/lib/seo/schema.ts`, which validate the
+ * node before it is serialised and fail the build on a missing property. Every
+ * FAQ entry below is one of this page's own H2s and the paragraph under it, so
+ * a reader sees every sentence that is marked up — `scripts/seo-check.mjs`
+ * re-checks that against the emitted HTML after the build.
+ */
+const TOOL_APP = webApplication({
   name: "Bracketsight ACA subsidy cliff planner",
-  applicationCategory: "FinanceApplication",
-  operatingSystem: "Any",
-  // The origin is configuration, never a literal — a hardcoded production
-  // hostname here would make every preview deployment claim to be production.
-  url: absoluteUrl("/aca"),
+  path: "/aca",
+  category: "FinanceApplication",
   description:
     "Computes a household's position against the 400% federal poverty line subsidy cliff, the premium tax credit at stake, the advance-credit repayment risk, and every legal MAGI-reduction lever ranked by dollars of credit recovered.",
-  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-};
-
-/* Only questions this page visibly answers are marked up. */
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "What happens if I go one dollar over 400% of the federal poverty line?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For 2026 the premium tax credit stops completely. There is no phase-out above 400% of the poverty line: a household at 400.00% receives a credit and a household at 400.01% receives nothing. For an older couple that single dollar can cost more than $10,000 a year.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What counts as MAGI for an ACA subsidy?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Marketplace MAGI is adjusted gross income plus tax-exempt interest, excluded foreign earned income, and the non-taxable portion of Social Security benefits. Municipal bond interest and untaxed Social Security count even though neither appears in taxable income, which is how households cross the cliff by accident.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Do I have to pay back my advance premium tax credit?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For 2026, yes — all of it, at any income. The statutory repayment limitation that used to cap the damage below 400% of the poverty line was repealed for tax years after 2025 (Pub. L. 119-21 §71305), so Form 8962 reclaims every excess advance dollar whether you finish at 250% or at 405%.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How can I lower my MAGI before 31 December?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Traditional 401(k), HSA, deductible IRA and SEP-IRA contributions each reduce MAGI dollar for dollar. Self-employed people can also claim the health-insurance deduction, which is circular with the credit and has to be solved iteratively. Income timing is a professional conversation, not a computed move.",
-      },
-    },
+  features: [
+    "Plots a household's exact distance to the 400% FPL subsidy cliff",
+    "States what one more dollar of income costs in lost credit",
+    "Ranks every legal MAGI-reduction lever by credit recovered",
   ],
-};
+});
+
+const FAQ_ITEMS = [
+  {
+    question: "What happens if I go one dollar over 400% of the federal poverty line?",
+    answer:
+      "For 2026 the premium tax credit stops completely. There is no phase-out above 400% of the poverty line: a household at 400.00% receives a credit and a household at 400.01% receives nothing. For an older couple that single dollar can cost more than $10,000 a year.",
+  },
+  {
+    question: "What counts as MAGI for the marketplace?",
+    answer:
+      "Marketplace MAGI is adjusted gross income plus tax-exempt interest, excluded foreign earned income, and the non-taxable portion of Social Security benefits. Municipal bond interest and untaxed Social Security count even though neither appears in taxable income, which is how households cross the cliff by accident.",
+  },
+  {
+    question: "Do I have to pay back my advance premium tax credit?",
+    answer:
+      "For 2026, yes — all of it, at any income. The statutory repayment limitation that used to cap the damage below 400% of the poverty line was repealed for tax years after 2025 (Pub. L. 119-21 §71305), so Form 8962 reclaims every excess advance dollar whether you finish at 250% or at 405%.",
+  },
+  {
+    question: "How do I lower my MAGI before 31 December?",
+    answer:
+      "Traditional 401(k), HSA, deductible IRA and SEP-IRA contributions each reduce MAGI dollar for dollar. Self-employed people can also claim the health-insurance deduction, which is circular with the credit and has to be solved iteratively. Income timing is a professional conversation, not a computed move.",
+  },
+] as const;
 
 const SOURCES = [
   {
@@ -257,16 +250,17 @@ export default function HomePage() {
             </p>
           </section>
           </article>
+
+          {/* The pillar end of the internal link model: this tool's guides, the
+              glossary terms it uses, and its own workings — all resolved from
+              metadata, never a hand-kept list. See src/lib/seo/links.ts. */}
+          <ToolLinks tool="aca" />
         </>
       }
     >
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: renderJsonLdAll([TOOL_APP, faqPage(FAQ_ITEMS)]) }}
       />
 
       {/*

@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
 import { FigureTable, KeyFigure } from "@/components/content";
 import { formatDate } from "@/components/ui/format";
-import { jsonLd } from "@/lib/content";
+import { AdPlacement } from "@/lib/ads";
 import {
   GLOSSARY,
   GLOSSARY_IDS,
   glossaryAlphabetical,
   type GlossaryEntry,
 } from "@/lib/content/glossary";
-import { SECTIONS, absoluteUrl, sectionHref } from "@/lib/site";
+import { definedTermSet, renderJsonLd } from "@/lib/seo";
+import { SECTIONS, sectionHref } from "@/lib/site";
 
 /**
  * /glossary — every term the five tools use, defined once.
@@ -29,12 +32,12 @@ import { SECTIONS, absoluteUrl, sectionHref } from "@/lib/site";
  * the same number in an article.
  */
 
-export const metadata: Metadata = {
-  title: "Glossary — the terms these rules are written in",
-  description:
-    "Plain-English definitions of MAGI, FPL, RAP, IBR, the applicable percentage, the common level range and every other term the five Bracketsight tools use.",
-  alternates: { canonical: "/glossary" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/glossary");
 
 const TOOL_NAMES = new Map(SECTIONS.map((section) => [section.slug, section.name]));
 const TOOL_HREFS = new Map(SECTIONS.map((section) => [section.slug, sectionHref(section)]));
@@ -61,24 +64,31 @@ export default function GlossaryPage() {
   assertCrossReferences();
   const entries = glossaryAlphabetical();
 
-  const markup = {
-    "@context": "https://schema.org",
-    "@type": "DefinedTermSet",
-    name: "Bracketsight glossary",
-    url: absoluteUrl("/glossary"),
-    inLanguage: "en-US",
-    hasDefinedTerm: entries.map((entry) => ({
-      "@type": "DefinedTerm",
-      "@id": `${absoluteUrl("/glossary")}#${entry.id}`,
-      name: entry.term,
-      description: entry.definition(),
-      inDefinedTermSet: absoluteUrl("/glossary"),
-    })),
-  };
+  /*
+   * `DefinedTermSet`, built and validated by `src/lib/seo/schema.ts`.
+   *
+   * Every term's `description` is `entry.definition()` — the same call the
+   * `<Entry>` below renders as the visible paragraph, resolved from the same
+   * cited rule files. So a definition cannot be marked up in one form and
+   * shown in another, which is the check `scripts/seo-check.mjs` then applies
+   * to the emitted HTML: each marked-up term name has to appear in the page's
+   * visible text, and every one of them is an <h2>.
+   */
+  const markup = renderJsonLd(
+    definedTermSet({
+      name: "Bracketsight glossary",
+      path: "/glossary",
+      terms: entries.map((entry) => ({
+        id: entry.id,
+        term: entry.term,
+        definition: entry.definition(),
+      })),
+    }),
+  );
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(markup) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: markup }} />
 
       <header className="density-reading">
         <h1>Glossary</h1>
@@ -134,6 +144,10 @@ export default function GlossaryPage() {
         </Link>
         .
       </p>
+
+      {/* One slot, at the foot, below the whole A–Z. Nothing sits between a
+          reader and the term they came to look up. See placements.ts. */}
+      <AdPlacement id="index-foot" className="mt-10" />
     </div>
   );
 }

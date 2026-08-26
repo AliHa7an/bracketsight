@@ -37,8 +37,16 @@ import * as React from "react";
  * Fails silent: if `render` throws, the slot renders nothing. No error text, no
  * broken frame — just the reserved space, which is what the layout was promised.
  *
- * v1 wires no ad network and has zero usages. What exists is the reserved,
- * labelled, guarded placeholder.
+ * ── How it is used ─────────────────────────────────────────────────────────
+ * Never directly. This is the primitive; `<AdPlacement>` in `src/lib/ads` is
+ * the only caller, and it takes a placement id from a typed registry rather
+ * than a height — so a position that is not on the map cannot be expressed. It
+ * also decides whether this component renders at all: with the ad switch off
+ * (the default, and production today) `AdPlacement` returns null before
+ * reaching here, so there is no box, no label and no element on the page.
+ *
+ * The `render` prop is still empty in every configuration except
+ * `NEXT_PUBLIC_ADS_MODE=on`. No ad network is wired into this build.
  */
 
 /**

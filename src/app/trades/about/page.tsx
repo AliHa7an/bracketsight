@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/trades/about" },
-  title: "About the Trades Document Engine — Free, State-Aware",
-  description:
-    "Why a free estimate, invoice and contract engine exists for solo and small-crew contractors: no signup, state-aware clauses, every number traceable.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/trades/about");
 
 export default function AboutPage() {
   return (

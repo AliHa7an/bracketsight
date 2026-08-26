@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -21,16 +20,6 @@ import { SectionRail } from "@/components/tool/SectionRail";
  * uncertainty is in the rate, not the comps. Saying so on every page in the
  * section is the only honest way to show the figure at all.
  */
-
-export const metadata: Metadata = {
-  title: {
-    default: "Property Tax Assessment Check — Is Your Home Over-Assessed?",
-    template: "%s · Property tax · Bracketsight",
-  },
-  description:
-    "Compare your assessment against comparable homes using the median-ratio statistics assessors use, then get your county's deadline, fee and forms. Free.",
-};
-
 export default function PropertySectionLayout({ children }: { children: ReactNode }) {
   return (
     <div data-section="property" className="flex min-h-full flex-1 flex-col">

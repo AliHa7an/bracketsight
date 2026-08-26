@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { CheckTool } from "@/components/property/CheckTool";
 import { AnswerBox } from "@/components/ui";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/property/check" },
-  title: "Is My Property Assessment Too High? Free 2-Minute Check",
-  description:
-    "Compare your assessment to comparable homes with the ratio statistics assessors use. Honest verdict, confidence score, and your county's deadline — free, no signup.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/property/check");
 
 export default function CheckPage() {
   return (

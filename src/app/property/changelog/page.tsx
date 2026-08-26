@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { counties } from "@/engines/property";
 import { formatDate } from "@/lib/property/format";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/property/changelog" },
-  title: "Property Tax Changelog — Rule Changes, Dated",
-  description:
-    "A dated record of every county rules change, methodology change and correction to the assessment check, each carrying its citation.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/property/changelog");
 
 const ENTRIES = [
   {

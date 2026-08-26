@@ -11,6 +11,8 @@ import {
   type StateId,
 } from "@/engines/trades";
 
+import { AdPlacement } from "@/lib/ads";
+
 import {
   AnswerBox,
   Button,
@@ -23,6 +25,7 @@ import {
 } from "@/components/ui";
 import { usd } from "@/components/ui/format";
 import { ContentsRail } from "@/components/content";
+import { routeMetadata, stateContractRoute } from "@/lib/seo";
 
 export const dynamicParams = false;
 
@@ -87,13 +90,18 @@ export async function generateMetadata({
   const { state } = await params;
   const rules = ruleForParam(state);
   if (!rules) return {};
-  return {
-    title: `${rules.stateName} Home Improvement Contract Requirements (2026)`,
-    description: `The clauses ${rules.stateName} law requires in a home improvement contract, each with its statute cite, plus a generator that assembles them. Not legal advice.`,
-    // Relative — the root layout owns `metadataBase`. `rules.stateId` rather
-    // than the raw param so the canonical is always the prerendered casing.
-    alternates: { canonical: `/trades/contracts/${rules.stateId}` },
-  };
+
+  return routeMetadata(
+    stateContractRoute({
+      // `rules.stateId`, never the raw param, so the canonical is always the
+      // prerendered casing. It stays relative: the root layout owns
+      // `metadataBase` and the origin is written in exactly one place.
+      stateId: rules.stateId,
+      stateName: rules.stateName,
+      // The sitemap derives its own from this state's ruleset citations.
+      lastModified: null,
+    }),
+  );
 }
 
 export default async function StateContractPage({
@@ -520,6 +528,14 @@ export default async function StateContractPage({
           </ul>
         </section>
       ) : null}
+
+      {/*
+        Mid-page, at a section boundary. The page ends in a Sources ledger and
+        a related-pages nav, so a foot slot would sit against the evidence; the
+        WarningStack near the top is a --flag block and is four sections above.
+        See src/lib/ads/placements.ts, "reference-mid".
+      */}
+      <AdPlacement id="reference-mid" />
 
       <section className="space-y-3">
         <h2>Who actually read the {rules.stateName} statute</h2>

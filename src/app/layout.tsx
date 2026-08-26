@@ -12,7 +12,8 @@ import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { ConsentBanner } from "@/components/layout/ConsentBanner";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
-import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
+import { AdsRuntime } from "@/lib/ads";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 /*
  * Four faces, four roles. `next/font/google` downloads at BUILD time and
@@ -95,53 +96,39 @@ const plexMono = IBM_Plex_Mono({
  * src/app/icon.svg and emits the <link> itself. Declaring it here would
  * produce a duplicate tag pointing at a path that no longer content-hashes.
  */
+/*
+ * NO `title.template` HERE ANY MORE.
+ *
+ * There used to be one — `"%s · Bracketsight"` — and three of the section
+ * layouts carried a second, `"%s · Health cover · Bracketsight"`. A page author
+ * writing a 51-character title therefore shipped an 82-character one, with no
+ * way to see it from inside the file that chose the words, and 43 of the site's
+ * 55 routes were over the length Google renders. Every page now declares its
+ * whole title through `src/lib/seo/routes.ts`, where all 55 are measured
+ * against each other at build time, and emits it with `title.absolute`.
+ *
+ * The site-level title is `absolute` too, so there is no template anywhere in
+ * the tree for a page to inherit. It is the fallback for a route that somehow
+ * reaches render without registry metadata, and it should never be seen.
+ *
+ * The brand is still machine-readable: `applicationName` here, `og:site_name`
+ * on every page, and the `WebSite`/`Organization` nodes on the home page —
+ * which is where a search engine reads a site name from, rather than from a
+ * suffix on every title.
+ */
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: {
-    default: `${SITE_NAME} — decision engines for US money rules`,
-    template: `%s · ${SITE_NAME}`,
-  },
+  title: { absolute: `${SITE_NAME} — decision engines for US money rules` },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
-  alternates: { canonical: "/" },
-  openGraph: {
-    type: "website",
-    siteName: SITE_NAME,
-    url: "/",
-    title: `${SITE_NAME} — decision engines for US money rules`,
-    description: SITE_DESCRIPTION,
-    locale: "en_US",
-  },
+  openGraph: { type: "website", siteName: SITE_NAME, locale: "en_US" },
+  twitter: { card: "summary_large_image" },
   robots: {
     index: true,
     follow: true,
     googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large" },
   },
   formatDetection: { telephone: false, address: false, email: false },
-};
-
-/**
- * Site-level Organization markup. Only claims things a visitor can verify on
- * the page: the name, the origin, and an email address that is rendered as
- * visible text in the footer and on /contact.
- */
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: SITE_NAME,
-  url: SITE_URL,
-  email: CONTACT_EMAIL,
-  description:
-    "Independent decision engines for US federal and local money rules. Every rule is cited to its primary source and dated. Nothing a visitor enters is stored.",
-  contactPoint: [
-    {
-      "@type": "ContactPoint",
-      contactType: "corrections and support",
-      email: CONTACT_EMAIL,
-      url: absoluteUrl("/contact"),
-      availableLanguage: ["en"],
-    },
-  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -184,10 +171,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-        />
+        {/*
+          THE `Organization` NODE IS NOT HERE ANY MORE.
+
+          It used to be emitted from this layout, which meant 55 copies of one
+          fact — and 55 places for it to be wrong if the contact address ever
+          changed. Google's guidance is to describe the publisher once, on a
+          single page, and let it stand for the site. It now lives on the home
+          page alongside `WebSite`, both built by `src/lib/seo/schema.ts`.
+
+          What stays site-wide is `BreadcrumbList`, emitted by <Breadcrumbs />
+          below from the same trail it renders visibly — because that one is
+          genuinely per-page and describes a different hierarchy on each.
+        */}
 
         {/*
           The skip link is the first focusable thing on every page. Off-screen
@@ -217,6 +213,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           server and nothing on the first client paint — see the component.
         */}
         <ConsentBanner />
+
+        {/*
+          The ONLY mount point for anything third-party about advertising, and
+          today it renders nothing at all: `AD_SERVING` is a build-time
+          constant that is false unless NEXT_PUBLIC_ADS_MODE=on, so no ad
+          loader exists in this build and no third-party origin is contacted.
+
+          When the switch is flipped, what appears here is a <ConsentGate>
+          wrapping the AdSense loader — which means the loader cannot run
+          before an explicit accept, and unmounts the instant a reader
+          withdraws. See src/lib/ads/AdsRuntime.tsx and MONETISATION.md.
+        */}
+        <AdsRuntime />
       </body>
     </html>
   );

@@ -22,6 +22,19 @@ import { absoluteUrl } from "@/lib/site";
  * now the live home page, so the routes have been deleted rather than hidden.
  * A `Disallow` for a path that 404s is a line in the first file a reviewer
  * opens that describes something the site does not have.
+ *
+ * THE `Disallow: /api/` LINE IS GONE FOR THAT SAME REASON. There is no `/api`
+ * segment in `src/app` and no route handler anywhere in the tree — the site is
+ * 55 prerendered documents and nothing else. The rule was written against a
+ * JSON surface that was never built, so it protected no crawl budget and
+ * described a shape the site does not have, in the one file every reviewer and
+ * every ad network opens first. Add it back on the same commit that adds the
+ * first route handler, not before.
+ *
+ * The result is a robots.txt with no `Disallow` at all, which is the correct
+ * answer for a site where every URL is a document worth indexing.
+ * `scripts/seo-check.mjs` asserts it: any `Disallow` that matches a route that
+ * was actually built fails the run.
  */
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -29,7 +42,6 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/"],
       },
     ],
     sitemap: absoluteUrl("/sitemap.xml"),

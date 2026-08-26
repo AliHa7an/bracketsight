@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/aca/about" },
-  title: "About the ACA Cliff Planner — Independent, Cited",
-  description:
-    "Who builds the subsidy cliff planner, what it refuses to do, and the credentialed review it will not launch without. No insurance sales, ever.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/aca/about");
 
 export default function AboutPage() {
   return (

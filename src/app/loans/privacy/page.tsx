@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { CONTACT_EMAIL } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Privacy — Your Loan Data Never Leaves Your Browser",
-  description:
-    "Nothing about your loans is stored server-side: balances, income and results live in your browser's localStorage and in the link fragment you choose to share.",
-  alternates: { canonical: "/loans/privacy" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/loans/privacy");
 
 export default function PrivacyPage() {
   return (

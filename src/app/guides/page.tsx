@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 
@@ -13,6 +15,7 @@ import {
   listPosts,
   toolGuidesHref,
 } from "@/lib/content";
+import { AdPlacement } from "@/lib/ads";
 import { SECTIONS, sectionHref } from "@/lib/site";
 
 /**
@@ -40,12 +43,12 @@ import { SECTIONS, sectionHref } from "@/lib/site";
  * write about yet.
  */
 
-export const metadata: Metadata = {
-  title: "Guides — how the US money rules actually work",
-  description:
-    "Guides to student loan repayment, OBBBA deductions, ACA subsidies, property tax and trade contracts — how each one is built, cited and kept current.",
-  alternates: { canonical: "/guides" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/guides");
 
 const CELL: CSSProperties = {
   padding: "var(--cell-pad-y) var(--cell-pad-x)",
@@ -378,6 +381,11 @@ export default function GuidesIndexPage() {
           definitions of one term start disagreeing the first time one of them is edited.
         </p>
       </section>
+
+      {/* Foot only. An index page's job is to route someone onward, and an ad
+          between a reader and the link they are scanning for is an obstruction
+          before it is a design problem. See placements.ts, "index-foot". */}
+      <AdPlacement id="index-foot" className="mt-12" />
     </div>
   );
 }

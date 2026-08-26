@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
 import { getStateRules, STATE_IDS, untranscribedClauses } from "@/engines/trades";
@@ -8,12 +10,12 @@ import { usd } from "@/components/ui/format";
 
 import ContractView from "@/components/trades/ContractView";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/trades/contract" },
-  title: "Contract Template — State-Required Clauses, Cited",
-  description:
-    "A home improvement contract template carrying the clauses your state requires for a job this size, each with its statute. A template, not legal advice.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/trades/contract");
 
 /**
  * The contract generator.

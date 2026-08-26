@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
+
+import { POLICY_UPDATED, pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
 import { PolicyPage, type PolicySection } from "@/components/layout/PolicyPage";
 import { FactTable } from "@/components/ui";
 import { CONTACT_EMAIL, MAINTAINER, SECTIONS, SITE_NAME, sectionHref } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "About — who builds these engines and how the rules get verified",
-  description:
-    "How five US money-rule engines are built, funded and corrected: deterministic arithmetic, cited primary sources, and a published register of 55 unverified items.",
-  alternates: { canonical: "/about" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/about");
 
 /**
  * The site-level About page.
@@ -31,7 +33,11 @@ export const metadata: Metadata = {
  * comment there. A fabricated name on a YMYL finance site is a worse failure
  * than an empty field, and the empty field is at least honest.
  */
-const UPDATED = "2026-08-19";
+/* The visible "Last updated" stamp AND the sitemap's <lastmod> for this
+   page, from one constant. Four policy pages each held their own copy of this
+   date, which is four chances for the stamp a reader sees to disagree with the
+   date submitted to a crawler. See src/lib/seo/routes.ts. */
+const UPDATED = POLICY_UPDATED;
 
 /* The gap register, summarised from KNOWN-GAPS.md (compiled 2026-08-15). The
    counts are transcribed, not computed, so they carry the compile date rather

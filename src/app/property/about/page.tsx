@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/property/about" },
-  title: "About the Appeal Toolkit — Assistance, Not Advice",
-  description:
-    "What the property tax appeal toolkit is, what it is not, and the launch bar it holds itself to — credentialed review of every method and county playbook.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/property/about");
 
 export default function AboutPage() {
   return (

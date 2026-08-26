@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { getPost, listPosts, toolIndexIsIndexable, toolsWithPosts } from "@/lib/content";
-import { SECTIONS, absoluteUrl, type Section } from "@/lib/site";
+import { articleRoute, routeMetadata, toolIndexRoute } from "@/lib/seo";
+import { SECTIONS, type Section } from "@/lib/site";
 import { ArticleView } from "./ArticleView";
 import { ToolIndexView } from "./ToolIndexView";
 
@@ -35,6 +36,18 @@ export function generateStaticParams(): { slug: string }[] {
   ];
 }
 
+/**
+ * Both shapes go through the same registry builders as every other route, so
+ * an article title over 60 characters or a tool index whose description
+ * collides with another page's fails the build here rather than in a crawl.
+ *
+ * A tool index that lists fewer than `TOOL_INDEX_MIN_POSTS` articles asks not
+ * to be indexed: everything on it also appears on `/guides`, so as a search
+ * result it is a URL holding links. `follow` stays on, because the articles it
+ * points at are the pages that should rank. `sitemap.ts` reads the same
+ * predicate through the same `indexable` flag, so the directive and the
+ * sitemap cannot drift apart.
+ */
 export async function generateMetadata({
   params,
 }: {
@@ -44,49 +57,40 @@ export async function generateMetadata({
 
   const section = toolSection(slug);
   if (section) {
-    /*
-     * A tool index that lists fewer than `TOOL_INDEX_MIN_POSTS` articles is
-     * asked not to be indexed: everything on it also appears on `/guides`, so
-     * as a search result it is a URL holding links. `follow` stays on, because
-     * the articles it points at are the pages that should rank. `sitemap.ts`
-     * reads the same predicate, so the directive and the sitemap cannot drift.
-     */
-    const indexable = toolIndexIsIndexable(section.slug);
-
-    return {
-      title: `${section.name} guides`,
-      description: `Every Bracketsight guide to ${section.name.toLowerCase()}: ${section.tagline}`,
-      alternates: { canonical: `/guides/${slug}` },
-      ...(indexable
-        ? {}
-        : {
-            robots: {
-              index: false,
-              follow: true,
-              googleBot: { index: false, follow: true },
-            },
-          }),
-    };
+    return routeMetadata(
+      toolIndexRoute({
+        slug: section.slug,
+        name: section.name,
+        tagline: section.tagline,
+        indexable: toolIndexIsIndexable(section.slug),
+        lastModified: null,
+      }),
+    );
   }
 
   const post = getPost(slug);
   if (!post) return {};
 
-  return {
-    title: post.title,
-    description: post.description,
-    keywords: [post.primaryKeyword, ...post.secondaryKeywords],
-    alternates: { canonical: post.href },
-    openGraph: {
-      type: "article",
-      url: absoluteUrl(post.href),
+  const tool = SECTIONS.find((candidate) => candidate.slug === post.tool);
+
+  return routeMetadata(
+    articleRoute({
+      slug: post.slug,
       title: post.title,
       description: post.description,
-      publishedTime: post.publishedAt,
-      modifiedTime: post.updatedAt,
-      authors: [post.author],
+      tool: post.tool,
+      toolName: tool?.name ?? post.tool,
+      updatedAt: post.updatedAt,
+      primaryKeyword: post.primaryKeyword,
+    }),
+    {
+      publishedAt: post.publishedAt,
+      updatedAt: post.updatedAt,
+      author: post.author,
+      sectionName: tool?.name ?? post.tool,
+      keywords: [post.primaryKeyword, ...post.secondaryKeywords],
     },
-  };
+  );
 }
 
 export default async function GuidePage({ params }: { params: Promise<{ slug: string }> }) {

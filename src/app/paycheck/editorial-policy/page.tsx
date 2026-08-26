@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { ErrorState } from "@/components/ui";
 import { CONTACT_EMAIL } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Editorial Policy — OBBBA Rule Verification",
-  description:
-    "How these pages are written, reviewed, corrected and funded — primary sources only, credentialed review before launch, and corrections within 48 hours.",
-  alternates: { canonical: "/paycheck/editorial-policy" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/paycheck/editorial-policy");
 
 const link =
   "text-ink underline decoration-rule underline-offset-4 hover:decoration-current";

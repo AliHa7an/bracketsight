@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { organization, pageMetadata, renderJsonLdAll, webSite } from "@/lib/seo";
 import Link from "next/link";
 
 import { CliffPanel } from "@/components/home/CliffPanel";
@@ -15,15 +17,16 @@ import {
 } from "@/components/home/data";
 import styles from "@/components/home/home.module.css";
 
+import { AdPlacement } from "@/lib/ads";
 import { formatProofDate, getProof } from "@/lib/proof";
 import { SECTIONS, SECTION_PAGES } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Five decision engines for US money rules (2026)",
-  description:
-    "Compare 9 federal loan repayment plans, check OBBBA deductions, measure your distance to the 400% ACA cliff, test a property assessment, price a trade job. Free, cited.",
-  alternates: { canonical: "/" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/");
 
 /**
  * The hub.
@@ -48,8 +51,27 @@ export const metadata: Metadata = {
 export default function HubPage() {
   const proof = getProof();
 
+  /*
+   * The publisher and the site, declared once, here and nowhere else.
+   *
+   * Both used to be absent — the site had `Organization` repeated on all 55
+   * pages from the root layout and no `WebSite` node at all. Google reads a
+   * publisher from one page, so 55 copies were 54 chances to drift and no
+   * additional signal.
+   *
+   * `WebSite` deliberately carries NO `SearchAction`: this site has no search
+   * endpoint. Declaring a sitelinks searchbox against a `?q=` URL that 404s is
+   * a claim about a feature that does not exist. See src/lib/seo/schema.ts.
+   */
+  const siteMarkup = renderJsonLdAll([organization(), webSite()]);
+
   return (
     <div className={styles.root}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: siteMarkup }}
+      />
+
       {/* ────────────────────────────────────────────────────────── hero ── */}
 
       <section className={styles.hero}>
@@ -279,6 +301,16 @@ export default function HubPage() {
           </p>
         </div>
       </section>
+
+      {/*
+        The hub's only placement, and it is the last thing on the page.
+        Everything above it earns the visit: a live ACA engine on the first
+        screen, the proof strip, five tool cards, the trust band, the colophon.
+        A routing page monetises badly wherever the unit goes, so the choice is
+        between earning a little and looking like a portal — see
+        src/lib/ads/placements.ts, "hub-foot".
+      */}
+      <AdPlacement id="hub-foot" className={styles.adSlot} />
     </div>
   );
 }

@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
+
+import { pageMetadata, renderJsonLd, webApplication } from "@/lib/seo";
 import Link from "next/link";
 import { counties, filingFeeSummary } from "@/engines/property";
 import { CheckTool } from "@/components/property/CheckTool";
+import { ToolLinks } from "@/components/content";
 import { ToolShell } from "@/components/tool/ToolShell";
 import { FactTable } from "@/components/ui";
-import { absoluteUrl } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Is Your Home Over-Assessed? Free Property Tax Check",
-  description:
-    "Run your assessment against comparable homes with the same median-ratio statistics an assessor uses. Most people are told not to file — that is the point.",
-  alternates: { canonical: "/property" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/property");
 
 /**
  * The hero is data, not a headline: the check is the first thing on the page,
@@ -26,17 +28,18 @@ export const metadata: Metadata = {
  * statements rather than questions, and marking up an FAQ that is not visibly
  * an FAQ is exactly the structured-data abuse the policy prohibits.
  */
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
+const TOOL_APP = webApplication({
   name: "Property Tax Assessment Check",
-  applicationCategory: "FinanceApplication",
-  operatingSystem: "Any",
-  url: absoluteUrl("/property"),
+  path: "/property",
+  category: "FinanceApplication",
   description:
     "Compares a home's assessment against comparable assessments using the median-ratio statistics assessors use, scores the confidence, and returns one verdict: strong case, worth filing, or not worth the fee.",
-  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-};
+  features: [
+    "Selects comparable homes with the filters an assessor applies",
+    "Computes the median assessment ratio and the implied value",
+    "Returns one verdict: strong case, worth filing, or not worth the fee",
+  ],
+});
 
 export default function HomePage() {
   return (
@@ -157,12 +160,17 @@ export default function HomePage() {
           </p>
           </div>
           </section>
+
+          {/* The pillar end of the internal link model: this tool's guides, the
+              glossary terms it uses, and its own workings — all resolved from
+              metadata, never a hand-kept list. See src/lib/seo/links.ts. */}
+          <ToolLinks tool="property" />
         </>
       }
     >
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: renderJsonLd(TOOL_APP) }}
       />
       {/* The hero is data, not a headline: the check is the first thing after
           the masthead, because the visitor arrived with a question and watching

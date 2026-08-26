@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
 import {
@@ -16,12 +18,12 @@ import { formatDate } from "@/components/ui/format";
    first time a ruleset was corrected — which is the opposite of a changelog. */
 const V1_STATE_VERSIONS = "states-ca-2026-08, states-tx-2026-08, states-fl-2026-08, states-ny-2026-08, states-pa-2026-08";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/trades/changelog" },
-  title: "Trades Changelog — Pricing and State Rule Changes",
-  description:
-    "Every change to the pricing rulesets and the state contract rulesets, dated and cited — including the states contract generation is blocked for.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/trades/changelog");
 
 export default function ChangelogPage() {
   const launched = TRADE_RULES.decks.effectiveFrom;

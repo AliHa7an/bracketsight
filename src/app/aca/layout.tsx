@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { getRules } from "@/engines/aca";
@@ -19,16 +18,6 @@ import { SectionRail } from "@/components/tool/SectionRail";
  * the section's paper fill the viewport when it is; either way the attribute
  * repaints the ground under everything below it.
  */
-
-export const metadata: Metadata = {
-  title: {
-    default: "ACA Subsidy Cliff Calculator — Distance to 400% FPL",
-    template: "%s · Health cover · Bracketsight",
-  },
-  description:
-    "Your household's exact distance to the 400% federal poverty line subsidy cliff, what one more dollar costs, and every legal lever back under it. Free, no signup.",
-};
-
 /**
  * The section footer.
  *

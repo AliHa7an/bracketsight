@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
-export const metadata: Metadata = {
-  title: "Student Loan Plan Methodology — Every Formula",
-  description:
-    "How all 9 federal repayment plans are simulated: the exact payment formulas, rounding rules, integer-cent arithmetic, and every documented simplification.",
-  alternates: { canonical: "/loans/methodology" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/loans/methodology");
 
 function Formula({ children }: { children: React.ReactNode }) {
   return (

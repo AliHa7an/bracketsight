@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { ErrorState } from "@/components/ui";
 import { CONTACT_EMAIL } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "About the Student Loan Repayment Engine",
-  description:
-    "How this section simulates all nine federal repayment plans from your real loan mix and ranks them by lifetime cost. Every rule cited. No lender pays us.",
-  alternates: { canonical: "/loans/about" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/loans/about");
 
 export default function AboutPage() {
   return (

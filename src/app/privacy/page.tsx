@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
+
+import { POLICY_UPDATED, pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
 import { PolicyPage, type PolicySection } from "@/components/layout/PolicyPage";
 import { CONTACT_EMAIL } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Privacy and cookies — nothing you enter leaves your browser",
-  description:
-    "Every calculation runs in your browser: no account, no database, no server-side storage. What is stored, what advertising changes, and how to refuse it.",
-  alternates: { canonical: "/privacy" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/privacy");
 
 /**
  * Privacy and cookies.
@@ -26,7 +28,11 @@ export const metadata: Metadata = {
  * the future tense once ads are serving would be a false statement about
  * personal data.
  */
-const UPDATED = "2026-08-19";
+/* The visible "Last updated" stamp AND the sitemap's <lastmod> for this
+   page, from one constant. Four policy pages each held their own copy of this
+   date, which is four chances for the stamp a reader sees to disagree with the
+   date submitted to a crawler. See src/lib/seo/routes.ts. */
+const UPDATED = POLICY_UPDATED;
 
 export default function PrivacyPage() {
   const sections: readonly PolicySection[] = [

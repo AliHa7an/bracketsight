@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { ErrorState } from "@/components/ui";
 import { CONTACT_EMAIL } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "About the OBBBA Deduction Engine",
-  description:
-    "A deterministic OBBBA deduction engine: tips, overtime, senior and car-loan deductions on one household MAGI, every rule cited to its primary source.",
-  alternates: { canonical: "/paycheck/about" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/paycheck/about");
 
 const link =
   "text-ink underline decoration-rule underline-offset-4 hover:decoration-current";

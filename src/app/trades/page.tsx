@@ -1,21 +1,23 @@
 import type { Metadata } from "next";
+
+import { pageMetadata, renderJsonLd, webApplication } from "@/lib/seo";
 import Link from "next/link";
 
 import { STATE_IDS, STATE_RULES, TRADE_IDS, TRADE_RULES } from "@/engines/trades";
 
 import TakeoffBuilder from "@/components/trades/TakeoffBuilder";
+import { ToolLinks } from "@/components/content";
 import { ToolShell } from "@/components/tool/ToolShell";
 import { LastVerified } from "@/components/ui";
 import { formatDate } from "@/components/ui/format";
-import { absoluteUrl } from "@/lib/site";
 import { renderableCitation } from "@/lib/trades/citation";
 
-export const metadata: Metadata = {
-  title: "Free Estimate Builder for Trades — Itemised, With Ranges",
-  description:
-    "Price a deck, an interior paint job or a bathroom remodel on a live takeoff sheet. Edit any line, watch the total move, print the sheet your customer gets.",
-  alternates: { canonical: "/trades" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/trades");
 
 /*
  * `WebApplication` for the tool root, matching /loans, /paycheck and /aca.
@@ -23,17 +25,18 @@ export const metadata: Metadata = {
  * statements, and marking up an FAQ that a reader cannot see on the page is
  * the structured-data abuse the policy prohibits.
  */
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
+const TOOL_APP = webApplication({
   name: "Trades Estimate and Contract Builder",
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Any",
-  url: absoluteUrl("/trades"),
+  path: "/trades",
+  category: "BusinessApplication",
   description:
     "Builds an itemised trade estimate with a low-high range and the basis for every line, then a matching invoice and a contract template carrying the clauses the job's state requires, each with its statute.",
-  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-};
+  features: [
+    "Builds an itemised takeoff with a low-high range per line",
+    "Turns the takeoff into an invoice that matches to the cent",
+    "Assembles the contract clauses the job's state requires, each cited",
+  ],
+});
 
 export default function HomePage() {
   // Rendered through `renderableCitation` because the pricing rulesets cite a
@@ -121,12 +124,17 @@ export default function HomePage() {
           <span className="num">{formatDate(citation?.lastVerified ?? "")}</span>. Nothing
           you enter leaves your browser.
         </p>
+
+          {/* The pillar end of the internal link model: this tool's guides, the
+              glossary terms it uses, and its own workings — all resolved from
+              metadata, never a hand-kept list. See src/lib/seo/links.ts. */}
+          <ToolLinks tool="trades" />
         </div>
       }
     >
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: renderJsonLd(TOOL_APP) }}
       />
       {/* The hero is the tool. The estimate band leads it. */}
       <TakeoffBuilder />

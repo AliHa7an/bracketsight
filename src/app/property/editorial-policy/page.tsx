@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { CONTACT_EMAIL } from "@/lib/site";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/property/editorial-policy" },
-  title: "Property Tax Editorial Policy — Review, Corrections",
-  description:
-    "Who writes the county playbooks, how each deadline and fee is verified, how corrections work, how the site is funded, and where AI is and is not used.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/property/editorial-policy");
 
 export default function EditorialPolicyPage() {
   return (

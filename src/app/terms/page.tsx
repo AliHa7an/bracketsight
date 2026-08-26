@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
+
+import { POLICY_UPDATED, pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
 import { PolicyPage, type PolicySection } from "@/components/layout/PolicyPage";
 import { CONTACT_EMAIL, SECTIONS } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Terms & Disclaimer — Estimates, Not Advice",
-  description:
-    "These tools produce estimates from published rules, not financial, tax or legal advice. What each figure is, what it is not, and where the known gaps are documented.",
-  alternates: { canonical: "/terms" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/terms");
 
 /**
  * Terms and disclaimer.
@@ -22,7 +24,11 @@ export const metadata: Metadata = {
  * BUMP `UPDATED` IN THE SAME EDIT that changes any wording below. A dated
  * disclaimer carrying a stale date is worse than an undated one.
  */
-const UPDATED = "2026-08-19";
+/* The visible "Last updated" stamp AND the sitemap's <lastmod> for this
+   page, from one constant. Four policy pages each held their own copy of this
+   date, which is four chances for the stamp a reader sees to disagree with the
+   date submitted to a crawler. See src/lib/seo/routes.ts. */
+const UPDATED = POLICY_UPDATED;
 
 export default function TermsPage() {
   const sections: readonly PolicySection[] = [

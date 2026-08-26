@@ -15,4 +15,5 @@ export { LastReviewed, type LastReviewedProps } from "./LastReviewed";
 export { RelatedArticles, type RelatedArticlesProps } from "./RelatedArticles";
 export { Sources, type SourcesProps } from "./Sources";
 export { ToolCTA, type ToolCTAProps } from "./ToolCTA";
+export { ToolLinks, type ToolLinksProps } from "./ToolLinks";
 export { articleComponents } from "./mdx-components";

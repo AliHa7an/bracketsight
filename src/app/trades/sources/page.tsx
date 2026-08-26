@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
 import {
@@ -12,12 +14,12 @@ import {
 import { SourceCitation, WarningStack } from "@/components/ui";
 import { formatDate } from "@/components/ui/format";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/trades/sources" },
-  title: "Trades Sources — Pricing and State Rulesets, Cited",
-  description:
-    "Every pricing ruleset and state contract ruleset behind the estimator, with its citations, last-verified dates, and the honest status of placeholder pricing.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/trades/sources");
 
 export default function SourcesPage() {
   return (

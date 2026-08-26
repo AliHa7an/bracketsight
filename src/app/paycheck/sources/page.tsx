@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { resolveRules } from "@/engines/paycheck";
 import type { RuleEnvelope } from "@/engines/paycheck";
@@ -7,12 +9,12 @@ import { TAX_YEAR } from "@/lib/paycheck/rules-meta";
 import { ErrorState } from "@/components/ui";
 import { ContentsRail } from "@/components/content";
 
-export const metadata: Metadata = {
-  title: "OBBBA Deduction Sources — IRS Citations, Dated",
-  description:
-    "Every OBBBA deduction rule traced to its primary source: P.L. 119-21, IRS guidance and the FLSA, with last-verified dates and open items named.",
-  alternates: { canonical: "/paycheck/sources" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/paycheck/sources");
 
 const link =
   "text-ink underline decoration-rule underline-offset-4 hover:decoration-current";

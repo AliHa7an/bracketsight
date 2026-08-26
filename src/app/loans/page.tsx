@@ -1,70 +1,61 @@
 import type { Metadata } from "next";
+
+import { faqPage, pageMetadata, renderJsonLdAll, webApplication } from "@/lib/seo";
 import Link from "next/link";
 import { resolveRules } from "@/engines/repayment";
 import { CalculatorApp } from "@/components/loans/CalculatorApp";
+import { ToolLinks } from "@/components/content";
 import { ToolShell } from "@/components/tool/ToolShell";
 import { AnswerBox, FactTable, LastVerified, SourceCitation } from "@/components/ui";
 import { formatDate, usd } from "@/components/ui";
-import { absoluteUrl } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Which Student Loan Plan Costs Least? All 9 Compared",
-  description:
-    "See your exact payment under all 9 federal plans, ranked by 30-year total cost. Every rule cited to the regulation. Free, no signup.",
-  alternates: { canonical: "/loans" },
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/loans");
 
-const webAppJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
+/*
+ * The tool, and the questions this page visibly answers.
+ *
+ * Both go through the builders in `src/lib/seo/schema.ts`, which validate the
+ * node before it is serialised and fail the build on a missing property. The
+ * FAQ entries are the page's own H2s and the first paragraph under each, so a
+ * reader sees every sentence that is marked up — `scripts/seo-check.mjs`
+ * re-checks that against the emitted HTML after the build.
+ */
+const TOOL_APP = webApplication({
   name: "Student Loan Repayment Decision Engine",
-  applicationCategory: "FinanceApplication",
-  operatingSystem: "Any",
-  url: absoluteUrl("/loans"),
+  path: "/loans",
+  category: "FinanceApplication",
   description:
     "Simulates all nine federal student loan repayment plans month-by-month over 30 years and ranks them by total lifetime cost, with irreversible choices flagged.",
-  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-};
-
-/* Only questions that are visibly answered on this page are marked up. */
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "Why is the cheapest monthly payment often the most expensive plan?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "A smaller payment stretches repayment across more years of interest. On plans with no interest waiver that unpaid interest compounds against you, so a plan that starts cheaper each month can finish tens of thousands of dollars more expensive. The engine simulates each plan month by month and ranks by total lifetime cost, including the estimated tax on any forgiven balance.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Can RAP cost more than the Standard plan?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Yes. RAP has no cap at the 10-year Standard payment, and IBR does. At $120,000 AGI with one dependent RAP is about $950 a month whatever the balance, which on a $30,000 loan is nearly three times the Standard payment. High income with a moderate balance is the profile where an income-driven plan quietly becomes the expensive choice.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Does RAP payment history transfer back to IBR?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "No. Payments made on IBR, PAYE or ICR count toward those plans' forgiveness clocks, and switching to RAP forfeits that credit permanently. PSLF credit is tracked separately and survives the switch.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What happens to PAYE and ICR after 1 July 2028?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "They end under P.L. 119-21. If you do not choose a plan by then, 34 C.F.R. § 685.209(c)(7)(iii)(A) places you on RAP for whichever loans qualify for it, and on IBR for the loans that do not. Any projection running past that date models that move rather than projecting a plan that no longer exists.",
-      },
-    },
+  features: [
+    "Simulates all nine federal repayment plans month by month",
+    "Ranks plans by total lifetime cost, including tax on forgiveness",
+    "Flags irreversible choices before you make one",
   ],
-};
+});
+
+const FAQ_ITEMS = [
+    {
+      question: "Why is the cheapest monthly payment often the most expensive plan?",
+      answer: "A smaller payment stretches repayment across more years of interest. On plans with no interest waiver that unpaid interest compounds against you, so a plan that starts cheaper each month can finish tens of thousands of dollars more expensive. The engine simulates each plan month by month and ranks by total lifetime cost, including the estimated tax on any forgiven balance.",
+    },
+    {
+      question: "Can RAP cost more than the Standard plan?",
+      answer: "Yes. RAP has no cap at the 10-year Standard payment, and IBR does. At $120,000 AGI with one dependent RAP is about $950 a month whatever the balance, which on a $30,000 loan is nearly three times the Standard payment. High income with a moderate balance is the profile where an income-driven plan quietly becomes the expensive choice.",
+    },
+    {
+      question: "Does RAP payment history transfer back to IBR?",
+      answer: "No. Payments made on IBR, PAYE or ICR count toward those plans' forgiveness clocks, and switching to RAP forfeits that credit permanently. PSLF credit is tracked separately and survives the switch.",
+    },
+    {
+      question: "What happens to PAYE and ICR after 1 July 2028?",
+      answer: "They end under P.L. 119-21. If you do not choose a plan by then, 34 C.F.R. § 685.209(c)(7)(iii)(A) places you on RAP for whichever loans qualify for it, and on IBR for the loans that do not. Any projection running past that date models that move rather than projecting a plan that no longer exists.",
+    },
+] as const;
 
 /**
  * The three sources this page's prose rests on, read from the rule files
@@ -298,16 +289,17 @@ export default function HomePage() {
             </ol>
           </section>
           </article>
+
+          {/* The pillar end of the internal link model: this tool's guides, the
+              glossary terms it uses, and its own workings — all resolved from
+              metadata, never a hand-kept list. See src/lib/seo/links.ts. */}
+          <ToolLinks tool="loans" />
         </>
       }
     >
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: renderJsonLdAll([TOOL_APP, faqPage(FAQ_ITEMS)]) }}
       />
 
       {/*

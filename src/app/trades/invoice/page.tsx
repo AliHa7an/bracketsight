@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
+
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 
 import { AnswerBox } from "@/components/ui";
 
 import InvoiceView from "@/components/trades/InvoiceView";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/trades/invoice" },
-  title: "Invoice — Matches Your Estimate to the Cent",
-  description:
-    "Turn your takeoff sheet into an invoice that mirrors it line for line, tracks the deposit, and prints clean. Free, no signup.",
-};
+/*
+ * Title, description and canonical come from the route registry in
+ * `src/lib/seo/routes.ts`, where all 55 routes are measured against each other
+ * for length and uniqueness at build time. A page does not write its own.
+ */
+export const metadata: Metadata = pageMetadata("/trades/invoice");
 
 /**
  * The invoice.

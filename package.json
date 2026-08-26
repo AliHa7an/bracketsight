@@ -9,7 +9,9 @@
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "next lint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "seo:check": "node scripts/seo-check.mjs",
+    "seo:report": "node scripts/seo-check.mjs --warn-only --json seo-report.json"
   },
   "dependencies": {
     "@hookform/resolvers": "5.7.1",

@@ -340,3 +340,25 @@
   padding-bottom: 10px;
   border-bottom: 1px solid var(--ink);
 }
+
+/* ──────────────────────────────────────────────────────────── ad slots ── */
+
+/*
+ * The measure and the rhythm for the two mapped placements — nothing about
+ * the slot itself, which reserves its own fixed height in `AdSlot`.
+ *
+ * It is applied to the slot element rather than to a wrapper on purpose. With
+ * `NEXT_PUBLIC_ADS_MODE=off` the placement renders no element at all, so a
+ * wrapper would be an empty div sitting in the page for a reader and a crawler
+ * to find; this way the page is byte-for-byte the page it was before the slots
+ * were wired. See src/lib/ads/config.ts.
+ *
+ * The block margin is the workbench's own closing rhythm, so the reserved box
+ * lands on the band grid rather than floating between two of them.
+ */
+.adSlot {
+  max-width: 72rem;
+  margin-inline: auto;
+  margin-block: 0 clamp(24px, 3vw, 36px);
+  padding-inline: 16px;
+}
