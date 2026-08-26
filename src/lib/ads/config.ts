@@ -101,8 +101,46 @@ export const AD_RESERVING: boolean = AD_MODE !== "off";
  * on why that prefix is never used for anything that is.
  */
 
-/** The publisher ID an ad unit is served against. `ca-pub-…`. */
+/**
+ * The publisher ID an ad unit is served against. `ca-pub-…`.
+ *
+ * `NEXT_PUBLIC_AD_CLIENT`, and deliberately NOT `NEXT_PUBLIC_ADSENSE_CLIENT`.
+ *
+ * Those are two different switches for two different things and they must not
+ * be one. `NEXT_PUBLIC_ADSENSE_CLIENT` drives the ownership-verification tag in
+ * `src/app/layout.tsx` — a bare loader in <head>, outside `<ConsentGate>`,
+ * whose purpose is to let Google confirm the domain and review the site. This
+ * one drives the ad units, which serve only behind consent.
+ *
+ * If they shared a variable, an operator following the runbook in
+ * MONETISATION.md would set one value and get two loaders on the page — the
+ * gated one and the ungated one — which is both a consent failure and the
+ * "only one AdSense head tag supported per page" error. Separate names, so each
+ * mechanism is turned on by the person who meant to turn it on.
+ *
+ * The name also matches the rest of this module, which is vendor-agnostic by
+ * design: `NEXT_PUBLIC_AD_LOADER_SRC`, `NEXT_PUBLIC_AD_UNIT_TAG`,
+ * `NEXT_PUBLIC_AD_CLIENT`. Nothing here knows which network it is talking to.
+ */
 export const AD_CLIENT: string | null =
+  process.env.NEXT_PUBLIC_AD_CLIENT?.trim() || null;
+
+/**
+ * The publisher ID for the OWNERSHIP-VERIFICATION tag, which is a different
+ * thing from everything else in this directory and is not part of the switch.
+ *
+ * Read by `src/app/layout.tsx` and by nothing else. That tag is a bare loader
+ * in `<head>`, outside `<ConsentGate>`, placed so Google can confirm the domain
+ * and review the site; it is not gated by `AD_MODE` and it serves no ad unit.
+ *
+ * It lives here so that both publisher-ID variables are declared in one file
+ * and the difference between them is written down where somebody setting one
+ * will read it. Whether that tag should exist before approval at all is a live
+ * question — see MONETISATION.md, "Two loaders". This constant takes no
+ * position on it; it only makes sure the two switches cannot be confused for
+ * each other.
+ */
+export const ADSENSE_VERIFICATION_CLIENT: string | null =
   process.env.NEXT_PUBLIC_ADSENSE_CLIENT?.trim() || null;
 
 /** The full https URL of the network's loader script. Validated in network.ts. */

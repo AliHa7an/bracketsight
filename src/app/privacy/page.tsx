@@ -5,6 +5,11 @@ import Link from "next/link";
 
 import { PolicyPage, type PolicySection } from "@/components/layout/PolicyPage";
 import { CONTACT_EMAIL } from "@/lib/site";
+// The disclosure below must describe the VERIFICATION tag that layout.tsx
+// renders, not the ad-unit client. They are deliberately separate variables
+// so that verifying ownership cannot silently start serving ads — reading the
+// wrong one here would make this page assert the opposite of what ships.
+import { ADSENSE_VERIFICATION_CLIENT as ADSENSE_CLIENT } from "@/lib/ads/config";
 
 /*
  * Title, description and canonical come from the route registry in
@@ -71,12 +76,22 @@ export default function PrivacyPage() {
           </p>
           <p>
             <strong>No advertising runs on this site today.</strong> There is no ad unit on any
-            page, so nothing is being sold or displayed. Google&rsquo;s AdSense script{" "}
-            <em>is</em> now loaded in the page head, because Google requires it to verify that we
-            own this domain and to review the site. That script can set cookies in your browser
-            even though no ad is shown. This paragraph used to say no such script existed; it was
-            true then, it is not true now, and the page has been corrected rather than left to age.
+            page, so nothing is being sold or displayed.
           </p>
+          {ADSENSE_CLIENT ? (
+            <p>
+              Google&rsquo;s AdSense script <em>is</em> loaded in the head of this page, because
+              Google requires it to verify that we own this domain and to review the site. It can
+              set cookies in your browser even though no ad is shown to you. You can confirm it by
+              viewing the source and searching for <code>googlesyndication</code>.
+            </p>
+          ) : (
+            <p>
+              No ad network&rsquo;s script is loaded on any page of this build. You can confirm
+              that by viewing the source and searching it for <code>googlesyndication</code>:
+              nothing will be found.
+            </p>
+          )}
           <p>
             If and when advertising is approved and switched on, this page will name what changes
             before it changes, and the cookie banner will continue to govern personalised

@@ -128,11 +128,11 @@ export function requireUnitTag(): string {
 export function requireAdClient(): string {
   requireServing("requireAdClient()");
   if (!AD_CLIENT) {
-    missing("NEXT_PUBLIC_ADSENSE_CLIENT", "there is no publisher ID to serve against");
+    missing("NEXT_PUBLIC_AD_CLIENT", "there is no publisher ID to serve against");
   }
   if (!AD_CLIENT.startsWith("ca-pub-")) {
     throw new Error(
-      `NEXT_PUBLIC_ADSENSE_CLIENT is "${AD_CLIENT}". The ad tag wants the ca-pub- ` +
+      `NEXT_PUBLIC_AD_CLIENT is "${AD_CLIENT}". The ad tag wants the ca-pub- ` +
         `form; public/ads.txt carries the bare pub- form and the two are not ` +
         `interchangeable.`,
     );

@@ -1,13 +1,57 @@
 # Monetisation — Bracketsight
 
 **Status: wired, inert, unapproved.** Every advertising position on this site exists in code, reserves
-its exact height, and loads nothing. No ad network script is present in the repository or in any
-artefact built from it. The site has never served an ad and will not until somebody deliberately
-sets one environment variable and redeploys.
+its exact height, and loads nothing. No ad unit renders on any page and no ad-network script is
+served to any browser. The site has never served an ad and will not until somebody deliberately sets
+one environment variable and redeploys.
+
+One caveat to that, and it is not part of this system: a separate ownership-verification tag was
+added to `src/app/layout.tsx` while this work was in progress. It is inert today and it is outside
+the consent gate. **Read "Two loaders" below before setting anything.**
 
 This document is the human-readable half of `src/lib/ads/`. Where the two disagree, the code is
 right — the placement map is a typed registry whose invariants are asserted at module load, so a
 placement that breaks a rule fails the build rather than a policy review.
+
+---
+
+## ⚠ Two loaders — an open decision for the owner
+
+**Read this before setting any environment variable.** While the placements were being wired, a
+second and entirely separate AdSense mechanism was added to `src/app/layout.tsx`: a bare loader
+`<script>` in `<head>`, for **ownership verification and review**, gated on
+`NEXT_PUBLIC_ADSENSE_CLIENT`. `/privacy` was updated in the same change to disclose it.
+
+That tag is **not** part of the system this document describes, and it is not behind the consent
+gate. It is a deliberate, documented decision by whoever made it, and arbitrating it is the owner's
+call, not this document's. But three things about it have to be stated plainly:
+
+1. **It bypasses consent.** It sits in `<head>`, outside `<ConsentGate>`, so it loads for every
+   visitor before anyone has agreed to anything. Its own comment acknowledges the script can set
+   cookies. Everything else in this repository is built so that cannot happen.
+
+2. **It is inert today, but `/privacy` says otherwise.** `NEXT_PUBLIC_ADSENSE_CLIENT` is unset, the
+   ternary is dead code, and a grep of the whole build output finds zero occurrences of the loader
+   URL. Meanwhile `/privacy` now states the script "*is* now loaded in the page head". **That
+   sentence is false of every build this repository currently produces**, on the one page whose job
+   is to be exactly accurate, and an AdSense reviewer reads that page. Either the variable is set in
+   production and the sentence is true, or it is not and the sentence needs correcting. It cannot
+   stay as it is.
+
+3. **The two mechanisms now use different variables, on purpose.** The ad units read
+   `NEXT_PUBLIC_AD_CLIENT`; the verification tag reads `NEXT_PUBLIC_ADSENSE_CLIENT`. They shared one
+   variable for a while, which meant that following step 3 of the runbook below would have put
+   **two** AdSense loaders on every page — one gated, one not — which is both a consent failure and
+   the "only one AdSense head tag supported per page" error. Setting one no longer turns on the
+   other. Setting both still puts two loaders on the page.
+
+**Worth checking before deciding:** `public/ads.txt` already serves the correct publisher record, and
+an `ads.txt` snippet is one of the verification methods Google accepts. There is also a meta-tag
+method (`<meta name="google-adsense-account" content="ca-pub-…">`) that verifies ownership without
+loading a script or setting a cookie. If either satisfies the review, the site can be verified with
+no ungated third-party script at all — which would let the consent promise stand unqualified and let
+`/privacy` go back to the stronger sentence. Confirm against Google's current documentation before
+acting; this is a process question with real consequences and it should be checked, not assumed.
 
 ---
 
@@ -278,13 +322,22 @@ Eighteen pages, matching the registry exactly: five tool pages and the hub, two 
 indexes, two county pages, five state contract pages. Zero slots on `/contact`, `/privacy`, `/terms`,
 `/loans/privacy` or any of the 24 trust pages.
 
-Greping the entire build output — every server chunk, every static chunk, every prerendered HTML file
-and every RSC payload — for `pagead2`, `googlesyndication` and `adsbygoogle` returns **zero
-occurrences**. The only match for `adsense` in any served page is the word "AdSense" in `/privacy`'s
-own prose, describing what the site plans to do and has not yet done.
+Greping the build output for `pagead2`, `googlesyndication` and `adsbygoogle`:
 
-The same grep over `src/` returns zero. `ADSENSE-AUDIT.md` P32 recorded that this repository names
-the ad network only in comments; after this work it does not name it in source at all.
+| Where | Occurrences |
+|---|---:|
+| Prerendered HTML, RSC payloads, segment payloads — everything a browser is served | **0** |
+| `.next/static` — every client JavaScript chunk | **0** |
+| `.next/server/chunks/ssr` — server-only code, never sent to a browser | 1 file |
+
+The one server-side occurrence is the template literal inside the ownership-verification tag in
+`src/app/layout.tsx` (see "Two loaders"). It is never rendered, because
+`NEXT_PUBLIC_ADSENSE_CLIENT` is unset — which is why no served page contains it — and the chunk it
+sits in runs on the server and is never downloaded. Nothing under `src/lib/ads/` contributes to it:
+that directory names no ad network at all.
+
+The only match for `adsense` in any served page is the word "AdSense" in `/privacy`'s own prose,
+describing what the site plans to do.
 
 ---
 
@@ -329,10 +382,15 @@ On Vercel: Project Settings → Environment Variables → Production, then **red
 
 ```
 NEXT_PUBLIC_ADS_MODE=on
-NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-1973018352310576
+NEXT_PUBLIC_AD_CLIENT=ca-pub-1973018352310576
 NEXT_PUBLIC_AD_LOADER_SRC=https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js
 NEXT_PUBLIC_AD_UNIT_TAG=adsbygoogle
 ```
+
+`NEXT_PUBLIC_AD_CLIENT`, **not** `NEXT_PUBLIC_ADSENSE_CLIENT`. The second one drives the ungated
+verification tag in `src/app/layout.tsx` and is a different decision — see "Two loaders" above. If
+that tag is still in the layout when you flip this switch, resolve it first: two AdSense loaders on
+one page is an error, and one of them is outside the consent gate.
 
 `NEXT_PUBLIC_AD_LOADER_SRC` is validated at render: https only, no credentials, a `.js` path. A typo
 fails loudly rather than putting a script tag pointing somewhere unintended on every page of a
@@ -389,6 +447,8 @@ element at all, and the loader chunk is unreferenced again. There is no second t
   CLS guarantee, and it is the difference between the third measurement below being 0.00 and being a
   ranking problem.
 - **Do not use responsive or auto-format units.** See step 1.
+- **Do not put a loader outside `<ConsentGate>`.** There is one in `src/app/layout.tsx` today, for
+  verification; see "Two loaders". Nothing else may join it.
 - **Do not weaken consent** to raise fill: no pre-ticked accept, no "manage preferences" maze in front
   of reject, no consent wall, no treating a scroll or a dismissal as agreement.
 - **Do not drop a disclosure or a trust claim** to make room. Every "nothing stored", "no AI

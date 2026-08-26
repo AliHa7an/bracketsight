@@ -13,7 +13,12 @@ import { ConsentBanner } from "@/components/layout/ConsentBanner";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AdsRuntime } from "@/lib/ads";
-import { AD_CLIENT as ADSENSE_CLIENT } from "@/lib/ads/config";
+// NEXT_PUBLIC_ADSENSE_CLIENT, and NOT the ad units' NEXT_PUBLIC_AD_CLIENT. Two
+// switches for two different things: this tag verifies domain ownership from
+// <head>, outside the consent gate; that one turns on consent-gated ad units.
+// Sharing a variable would put two AdSense loaders on every page the moment
+// either was set. See src/lib/ads/config.ts and MONETISATION.md, "Two loaders".
+import { ADSENSE_VERIFICATION_CLIENT as ADSENSE_CLIENT } from "@/lib/ads/config";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 /*
