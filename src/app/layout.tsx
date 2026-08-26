@@ -13,6 +13,7 @@ import { ConsentBanner } from "@/components/layout/ConsentBanner";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { AdsRuntime } from "@/lib/ads";
+import { AD_CLIENT as ADSENSE_CLIENT } from "@/lib/ads/config";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 /*
@@ -144,6 +145,33 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${bricolage.variable} ${instrumentSerif.variable} ${publicSans.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
+      {/*
+        THE ADSENSE SNIPPET — FOR OWNERSHIP VERIFICATION AND REVIEW.
+
+        Google's site-verification flow asks for this exact tag, and the review
+        that follows expects to find it. It is not an ad: no ad unit is rendered
+        anywhere on this site, so nothing is served. What it does do is load
+        Google's script, which can set cookies — which is why /privacy now says
+        so plainly instead of claiming, as it did until today, that no such
+        script exists.
+
+        Next hoists a script rendered here into <head>; a hand-written <head>
+        element in an App Router layout is not the way to do this.
+
+        Driven by NEXT_PUBLIC_ADSENSE_CLIENT, so the tag is absent from local and
+        preview builds and appears only where that variable is set. Like every
+        NEXT_PUBLIC_* value it is inlined at BUILD time — setting it on the
+        running server does nothing. That is the same trap that shipped 53
+        localhost canonicals to Search Console.
+      */}
+      {ADSENSE_CLIENT ? (
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          crossOrigin="anonymous"
+        />
+      ) : null}
+
       <body className="flex min-h-screen flex-col antialiased">
         {/*
           THE THEME, BEFORE THE FIRST PAINT.

@@ -1,6 +1,10 @@
-# Inert until AdSense approves this site. The record below authorises the
-# publisher account to sell inventory here; it does nothing on its own, and no
-# AdSense loader script is included anywhere in this app. Ad slots reserve their
-# height before load (src/components/ui/components/AdSlot.tsx), so serving can be
-# switched on after approval without moving a single pixel.
+# The record below authorises this publisher account to sell inventory here.
+# It does nothing on its own.
+#
+# The AdSense loader script IS now present in <head>, because Google's site
+# verification and review flow requires it. No ad unit is rendered anywhere on
+# this site, so nothing is served — see /privacy for what the script does and
+# MONETISATION.md for the placement map that applies once serving is switched
+# on. Ad slots reserve a fixed height, so serving can begin without moving a
+# single pixel.
 google.com, pub-1973018352310576, DIRECT, f08c47fec0942fa0

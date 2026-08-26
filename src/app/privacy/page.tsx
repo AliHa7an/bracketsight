@@ -67,10 +67,21 @@ export default function PrivacyPage() {
       children: (
         <>
           <p>
-            No cookies of our own, and no analytics that identify you. No advertising runs on this
-            site today and no ad network&rsquo;s script is loaded on any page — you can confirm
-            that by viewing the source of any page and searching it for the word{" "}
-            <code>googlesyndication</code>. Nothing will be found.
+            No cookies of our own, and no analytics that identify you.
+          </p>
+          <p>
+            <strong>No advertising runs on this site today.</strong> There is no ad unit on any
+            page, so nothing is being sold or displayed. Google&rsquo;s AdSense script{" "}
+            <em>is</em> now loaded in the page head, because Google requires it to verify that we
+            own this domain and to review the site. That script can set cookies in your browser
+            even though no ad is shown. This paragraph used to say no such script existed; it was
+            true then, it is not true now, and the page has been corrected rather than left to age.
+          </p>
+          <p>
+            If and when advertising is approved and switched on, this page will name what changes
+            before it changes, and the cookie banner will continue to govern personalised
+            advertising. Nothing you type into a calculator is sent to Google, or to anyone —
+            that is a property of how the tools are built, not a promise about advertising.
           </p>
           <p>
             What the site does store, it stores on your own device, and there are only two things:

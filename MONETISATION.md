@@ -119,6 +119,16 @@ instead of writing it down.
    slot is an `<aside>` with that accessible name and a permanently visible label of the same word —
    a landmark a screen-reader user skips in one keystroke.
 
+### The guards, verified rather than asserted
+
+Each enforcement above was tested by deliberately breaking it.
+
+| Test | Result |
+|---|---|
+| Declare `flag-warning` as a neighbour of `tool-foot` | `next build` **fails**: *Ad placement "tool-foot" declares "flag-warning" as a neighbour. That adjacency is forbidden … Move the slot in src/components/tool/ToolShell.tsx, do not relax the rule.* |
+| Wire `<AdPlacement id="index-foot" />` onto `/privacy` | Production build renders **0** slot elements on `/privacy`; `/glossary` still renders its own. The path gate refused it silently, as it must in production, and would have thrown in development. |
+| Wire `<AdPlacement id="tool-below-answer" />` **inside** the `/loans` workbench | Production build renders exactly the same **2** slots as the correct build — `ad-tool-below-answer` and `ad-tool-foot`, both outside the tool. The one inside `<ToolBoundary>` rendered nothing, and would have thrown in development naming the slot. |
+
 ### The one placement that is computed rather than written
 
 `article-mid` is not placed by hand. `src/lib/ads/article.tsx` reads the article's H2 outline from
@@ -173,7 +183,108 @@ scroll of the page — a strict upper bound on CLS, not a session-window maximum
 
 Three cases per page, and the third is the one that matters.
 
-<!-- CLS_RESULTS -->
+| | | **inert** | **creative at the reserved size** | **creative 2.4× taller than reserved** |
+|---|---|---:|---:|---:|
+| `/` | mobile 390×844 | **0.0000** | **0.0000** | **0.0000** |
+| | desktop 1440×900 | **0.0000** | **0.0000** | **0.0000** |
+| `/loans` | mobile 390×844 | **0.0000** | **0.0000** | **0.0000** |
+| | desktop 1440×900 | **0.0000** | **0.0000** | **0.0000** |
+| `/guides/rap-can-cost-more-than-standard` | mobile 390×844 | **0.0000** | **0.0000** | **0.0000** |
+| | desktop 1440×900 | **0.0000** | **0.0000** | **0.0000** |
+
+Three consecutive runs of all eighteen cells. Every one 0.0000; not one `layout-shift` entry was recorded
+against a slot in any run, at any size.
+
+**The third column is the one that matters**, and a total is not enough to prove it — a shift that
+happens below the fold and is never scrolled into view is not recorded. So the document height was
+measured directly, before and after the oversized creative arrived:
+
+| Slot | Reserved | Creative injected | Box after | Document height before → after |
+|---|---:|---:|---:|---:|
+| `ad-tool-below-answer` on `/loans` | 304px | **682px** | 304px | 12271px → **12271px** |
+| `ad-tool-foot` on `/loans` | 124px | **250px** | 124px | 12271px → **12271px** |
+
+A creative more than twice the height of its reservation left the box at exactly its reserved height
+and the page exactly as long as it was. **The fixed height clips; it does not push.** That is the
+whole guarantee, and it is a property of two CSS declarations in `AdSlot` — `height` (not
+`min-height`) and `overflow: hidden`. Changing either one is a ranking regression, not a style
+preference.
+
+### How the numbers were produced
+
+A production build with `NEXT_PUBLIC_ADS_MODE=reserve`, served by `next start`, driven through the
+Chrome DevTools Protocol. The observer is installed with
+`Page.addScriptToEvaluateOnNewDocument`, so it is running before the document's first byte and sees
+buffered entries. Each page is walked top to bottom in viewport-height steps, so every lazily-mounted
+slot enters the viewport and any shift it causes is recorded; the simulated creative is then injected
+into each slot **after paint**, which is the only moment CLS cares about, and the page is walked
+again.
+
+Two honest caveats. These are simulated creatives, not real ones — a real ad also brings an iframe, a
+font and its own paint, and step 5 of the runbook says to re-measure with real inventory. And the
+figure reported is the sum of every shift with `hadRecentInput === false`, which is stricter than the
+session-window maximum browsers actually report as CLS, so the real number cannot be worse than the
+one above.
+
+The one non-zero reading seen anywhere during this work was `0.0008` on the hub at desktop width, in
+the **inert** run — the tool cards' and proof row's entrance animation (`RevealGroup`), not a slot. It
+did not reproduce across the three final runs and it is unrelated to advertising; it is noted here
+because a measurement report that only lists the numbers that flattered the result is not a
+measurement report.
+
+### What the wiring costs when it is switched off
+
+Not nothing, and the honest number is **6.4 KB of uncompressed JavaScript per page** (≈2 KB over the
+wire) — the `AdSlot` primitive, the slot component and the path denylist, which sit in a shared chunk
+because they are client components in the module graph even though `off` mode never renders one.
+
+It was 12.8 KB before the placement registry was moved off the client. `placements.ts` documents every
+placement in prose, minification strips comments but not string literals, and the whole map was being
+shipped to every reader of every page. `AdPlacement` now resolves a placement on the server and hands
+the browser seven values; `paths.ts` holds the only part of the map that has to run there. Getting the
+remaining 6.4 KB to zero would need build-time module elimination that neither a static nor a
+`next/dynamic` import achieves — both were measured, both give the same figure.
+
+No HTML, no reserved height, no third-party request, and nothing a reader or a reviewer can see. But
+it is 6.4 KB, and this document is not going to pretend otherwise.
+
+---
+
+## Proof: nothing loads
+
+A crawl of all 55 sitemap routes plus the six non-indexed ones, against a production build served by
+`next start`, with the default configuration (`NEXT_PUBLIC_ADS_MODE` unset):
+
+```
+routes crawled                : 55
+ad-network <script src> tags  : 0
+ad <ins> elements             : 0
+pages with a reserved slot    : 0
+violations                    : 0
+```
+
+And the same crawl against a `reserve` build, which is what the site would look like with the boxes
+visible:
+
+```
+routes crawled                : 55
+ad-network <script src> tags  : 0
+ad <ins> elements             : 0
+pages with a reserved slot    : 18
+violations                    : 0
+```
+
+Eighteen pages, matching the registry exactly: five tool pages and the hub, two articles, three
+indexes, two county pages, five state contract pages. Zero slots on `/contact`, `/privacy`, `/terms`,
+`/loans/privacy` or any of the 24 trust pages.
+
+Greping the entire build output — every server chunk, every static chunk, every prerendered HTML file
+and every RSC payload — for `pagead2`, `googlesyndication` and `adsbygoogle` returns **zero
+occurrences**. The only match for `adsense` in any served page is the word "AdSense" in `/privacy`'s
+own prose, describing what the site plans to do and has not yet done.
+
+The same grep over `src/` returns zero. `ADSENSE-AUDIT.md` P32 recorded that this repository names
+the ad network only in comments; after this work it does not name it in source at all.
 
 ---
 
